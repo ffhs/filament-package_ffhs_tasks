@@ -1,0 +1,5 @@
+<?php
+
+use Ffhs\FfhsTasks\Tests\TestCase;
+
+uses(TestCase::class)->in(__DIR__);
