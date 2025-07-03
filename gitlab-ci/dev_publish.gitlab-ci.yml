@@ -7,6 +7,8 @@ publish-dev:
       when: never
     - if: '$CI_COMMIT_BRANCH =~ /^develop\/.*$/ && $CI_PIPELINE_SOURCE == "push"' # Runs only on push after MR merge
   before_script:
+    - cp /etc/gitlab-runner/certs/ca.crt /usr/local/share/ca-certificates/
+    - update-ca-certificates
     - apt-get update && apt-get install -y jq
   script:
     - VERSION=$(jq -r '.version' composer.json)
@@ -16,4 +18,4 @@ publish-dev:
     - 'git config --global user.name "GitLab CI"'  # Set user name for git tagging
     - 'git tag $TAG_NAME  # Create the tag locally'
     - 'git -c http.sslVerify=false push https://oauth2:${CI_ACCESS_TOKEN}@${CI_SERVER_HOST}/$CI_PROJECT_PATH.git $TAG_NAME'
-    - 'curl -k --fail-with-body --header "Job-Token: $CI_JOB_TOKEN" --data tag=$TAG_NAME "${CI_API_V4_URL}/projects/$CI_PROJECT_ID/packages/composer"'
+    - 'curl --fail-with-body --header "Job-Token: $CI_JOB_TOKEN" --data tag=$TAG_NAME "${CI_API_V4_URL}/projects/$CI_PROJECT_ID/packages/composer"'

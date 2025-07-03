@@ -3,5 +3,8 @@ publish:
   stage: publish
   rules:
     - if: '$CI_COMMIT_TAG =~ /^v/ && $CI_COMMIT_TAG !~ /dev/'
+  before_script:
+    - cp /etc/gitlab-runner/certs/ca.crt /usr/local/share/ca-certificates/
+    - update-ca-certificates
   script:
-    - 'curl -k --fail-with-body --header "Job-Token: $CI_JOB_TOKEN" --data tag=$CI_COMMIT_TAG "${CI_API_V4_URL}/projects/$CI_PROJECT_ID/packages/composer"'
+    - 'curl --fail-with-body --header "Job-Token: $CI_JOB_TOKEN" --data tag=$CI_COMMIT_TAG "${CI_API_V4_URL}/projects/$CI_PROJECT_ID/packages/composer"'
