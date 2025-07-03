@@ -9,7 +9,7 @@ class FfhsTasksPlugin implements Plugin
 {
     public function getId(): string
     {
-        return 'filament-package-ffhs-tasks';
+        return 'filament-package_ffhs_tasks';
     }
 
     public function register(Panel $panel): void

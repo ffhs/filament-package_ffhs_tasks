@@ -1,17 +1,18 @@
 {
     "version": "0.1.0",
-    "name": "ffhs/filament-package-ffhs-tasks",
-    "description": "This is my package filament-package-ffhs-tasks",
+    "name": "ffhs/filament-package_ffhs_tasks",
+    "description": "",
     "keywords": [
         "ffhs",
         "laravel",
         "filamentphp",
-        "filament-package-ffhs-tasks"
+        "filament-package_ffhs_tasks",
+        "tasks"
     ],
-    "homepage": "https://github.com/ffhs/filament-package-ffhs-tasks",
+    "homepage": "https://github.com/ffhs/filament-package_ffhs_tasks",
     "support": {
-        "issues": "https://github.com/ffhs/filament-package-ffhs-tasks/issues",
-        "source": "https://github.com/ffhs/filament-package-ffhs-tasks"
+        "issues": "https://github.com/ffhs/filament-package_ffhs_tasks/issues",
+        "source": "https://github.com/ffhs/filament-package_ffhs_tasks"
     },
     "license": "MIT",
     "authors": [

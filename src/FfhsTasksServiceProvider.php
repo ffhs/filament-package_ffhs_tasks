@@ -18,9 +18,9 @@ use Ffhs\FfhsTasks\Testing\TestsFfhsTasks;
 
 class FfhsTasksServiceProvider extends PackageServiceProvider
 {
-    public static string $name = 'filament-package-ffhs-tasks';
+    public static string $name = 'filament-package_ffhs_tasks';
 
-    public static string $viewNamespace = 'filament-package-ffhs-tasks';
+    public static string $viewNamespace = 'filament-package_ffhs_tasks';
 
     public function configurePackage(Package $package): void
     {
@@ -36,7 +36,7 @@ class FfhsTasksServiceProvider extends PackageServiceProvider
                     ->publishConfigFile()
                     ->publishMigrations()
                     ->askToRunMigrations()
-                    ->askToStarRepoOnGitHub('ffhs/filament-package-ffhs-tasks');
+                    ->askToStarRepoOnGitHub('ffhs/filament-package_ffhs_tasks');
             });
 
         $configFileName = $package->shortName();
@@ -80,8 +80,8 @@ class FfhsTasksServiceProvider extends PackageServiceProvider
         if (app()->runningInConsole()) {
             foreach (app(Filesystem::class)->files(__DIR__ . '/../stubs/') as $file) {
                 $this->publishes([
-                    $file->getRealPath() => base_path("stubs/filament-package-ffhs-tasks/{$file->getFilename()}"),
-                ], 'filament-package-ffhs-tasks-stubs');
+                    $file->getRealPath() => base_path("stubs/filament-package_ffhs_tasks/{$file->getFilename()}"),
+                ], 'filament-package_ffhs_tasks-stubs');
             }
         }
 
@@ -91,7 +91,7 @@ class FfhsTasksServiceProvider extends PackageServiceProvider
 
     protected function getAssetPackageName(): ?string
     {
-        return 'ffhs/filament-package-ffhs-tasks';
+        return 'ffhs/filament-package_ffhs_tasks';
     }
 
     /**
@@ -100,9 +100,9 @@ class FfhsTasksServiceProvider extends PackageServiceProvider
     protected function getAssets(): array
     {
         return [
-            // AlpineComponent::make('filament-package-ffhs-tasks', __DIR__ . '/../resources/dist/components/filament-package-ffhs-tasks.js'),
-            // Css::make('filament-package-ffhs-tasks-styles', __DIR__ . '/../resources/dist/filament-package-ffhs-tasks.css'),
-            // Js::make('filament-package-ffhs-tasks-scripts', __DIR__ . '/../resources/dist/filament-package-ffhs-tasks.js'),
+            // AlpineComponent::make('filament-package_ffhs_tasks', __DIR__ . '/../resources/dist/components/filament-package_ffhs_tasks.js'),
+            // Css::make('filament-package_ffhs_tasks-styles', __DIR__ . '/../resources/dist/filament-package_ffhs_tasks.css'),
+            // Js::make('filament-package_ffhs_tasks-scripts', __DIR__ . '/../resources/dist/filament-package_ffhs_tasks.js'),
         ];
     }
 
@@ -146,7 +146,7 @@ class FfhsTasksServiceProvider extends PackageServiceProvider
     protected function getMigrations(): array
     {
         return [
-            'create_filament-package-ffhs-tasks_table',
+            'create_filament-package_ffhs_tasks_table',
         ];
     }
 }

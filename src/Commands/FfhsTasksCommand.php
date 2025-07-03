@@ -6,7 +6,7 @@ use Illuminate\Console\Command;
 
 class FfhsTasksCommand extends Command
 {
-    public $signature = 'filament-package-ffhs-tasks';
+    public $signature = 'filament-package_ffhs_tasks';
 
     public $description = 'My command';
 
