@@ -7,4 +7,4 @@ include:
   - local: gitlab-ci/run_test.gitlab-ci.yml
   - local: gitlab-ci/intern_publish.gitlab-ci.yml
   - local: gitlab-ci/dev_publish.gitlab-ci.yml
-  - local: gitlab-ci/publish-ci.yml
+  - local: gitlab-ci/publish-main.gitlab-ci.yml
