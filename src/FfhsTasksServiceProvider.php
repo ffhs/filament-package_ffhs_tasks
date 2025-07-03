@@ -39,7 +39,7 @@ class FfhsTasksServiceProvider extends PackageServiceProvider
                     ->askToStarRepoOnGitHub('ffhs/filament-package_ffhs_tasks');
             });
 
-        $configFileName = $package->shortName();
+        $configFileName = 'ffhs-tasks';
 
         if (file_exists($package->basePath("/../config/{$configFileName}.php"))) {
             $package->hasConfigFile();
