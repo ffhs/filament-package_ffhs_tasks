@@ -111,9 +111,7 @@ class FfhsTasksServiceProvider extends PackageServiceProvider
      */
     protected function getCommands(): array
     {
-        return [
-            FfhsTasksCommand::class,
-        ];
+        return [];
     }
 
     /**
@@ -146,7 +144,7 @@ class FfhsTasksServiceProvider extends PackageServiceProvider
     protected function getMigrations(): array
     {
         return [
-            'create_filament-package_ffhs_tasks_table',
+            'create_ffhs_tasks_table',
         ];
     }
 }
