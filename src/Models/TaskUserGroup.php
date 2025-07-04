@@ -2,18 +2,25 @@
 
 namespace Ffhs\FfhsTasks\Models;
 
-use Ffhs\FfhsTasks\Facades\FfhsTasks;
+use Ffhs\FfhsTasks\Traits\IsFfhsTaskModel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class TaskUserGroup extends Model
 {
+    use IsFfhsTaskModel;
+
     protected $fillable = [
-      'task_id',
-      'user_group_id',
-      'user_group_type'
+        'task_id',
+        'user_group_id',
+        'user_group_type'
     ];
+
+    protected static function configKey(): string
+    {
+        return 'task_user_group';
+    }
 
     public function task(): BelongsTo
     {
@@ -23,10 +30,5 @@ class TaskUserGroup extends Model
     public function userGroup(): MorphTo
     {
         return $this->morphTo('user_group');
-    }
-
-    public function getTable()
-    {
-        return  FfhsTasks::config('table_names.task_user_group') ?: parent::getTable();
     }
 }

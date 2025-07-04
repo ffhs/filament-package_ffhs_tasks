@@ -4,12 +4,15 @@ namespace Ffhs\FfhsTasks\Models;
 
 use App\Models\User;
 use Ffhs\FfhsTasks\Facades\FfhsTasks;
+use Ffhs\FfhsTasks\Traits\IsFfhsTaskModel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Task extends Model
 {
+    use IsFfhsTaskModel;
+
     protected $fillable = [
         'title',
         'description',
@@ -21,9 +24,9 @@ class Task extends Model
         'start_at',
     ];
 
-    public function getTable()
+    protected static function configKey(): string
     {
-        return  FfhsTasks::config('table_names.tasks') ?: parent::getTable();
+        return 'tasks';
     }
 
     public function users(): BelongsToMany

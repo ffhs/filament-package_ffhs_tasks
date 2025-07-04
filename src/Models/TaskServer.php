@@ -2,14 +2,13 @@
 
 namespace Ffhs\FfhsTasks\Models;
 
-use App\Models\User;
-use Ffhs\FfhsTasks\Facades\FfhsTasks;
+use Ffhs\FfhsTasks\Traits\IsFfhsTaskModel;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class TaskServer extends Model
 {
+    use IsFfhsTaskModel;
+
     protected $fillable = [
         'title',
         'url',
@@ -18,9 +17,9 @@ class TaskServer extends Model
 
     protected $hidden = ['token'];
 
-    public function getTable()
+    protected static function configKey(): string
     {
-        return  FfhsTasks::config('table_names.task_servers') ?: parent::getTable();
+        return 'task_servers';
     }
 
     protected function casts(): array
@@ -29,6 +28,4 @@ class TaskServer extends Model
             'token' => 'encrypted',
         ];
     }
-
-
 }
