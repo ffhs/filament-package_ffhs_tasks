@@ -5,7 +5,9 @@ namespace Ffhs\FfhsTasks\Models;
 use App\Models\User;
 use Ffhs\FfhsTasks\Contracts\TaskCreator;
 use Ffhs\FfhsTasks\Facades\FfhsTasks;
+use Ffhs\FfhsTasks\TaskType\TaskType;
 use Ffhs\FfhsTasks\Traits\IsFfhsTaskModel;
+use Ffhs\FfhsUtils\Traits\HasType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -19,7 +21,9 @@ use Illuminate\Support\Collection;
  */
 class Task extends Model
 {
-    use IsFfhsTaskModel, SoftDeletes;
+    use IsFfhsTaskModel, SoftDeletes, HasType;
+
+    protected string $parentTypeClass = TaskType::class;
 
     protected $fillable = [
         'title',
@@ -30,7 +34,6 @@ class Task extends Model
         'finished',
         'deadline_at',
         'start_at',
-
         'creator_type',
         'creator_id'
     ];
@@ -65,6 +68,7 @@ class Task extends Model
         return [
             'deadline_at' => 'datetime',
             'start_at' => 'datetime',
+            'settings' => 'array'
         ];
     }
 }

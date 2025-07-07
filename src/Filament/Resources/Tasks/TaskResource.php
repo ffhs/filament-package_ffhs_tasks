@@ -5,9 +5,9 @@ namespace Ffhs\FfhsTasks\Filament\Resources\Tasks;
 use BackedEnum;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\CreateTask;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\EditTask;
+use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\HandleTask;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\ListAdminTasks;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\ListTasks;
-use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\ViewTask;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Schemas\TaskInfolist;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Tables\TasksTable;
 use Ffhs\FfhsTasks\Models\Task;
@@ -50,7 +50,7 @@ class TaskResource extends Resource
             'index' => ListTasks::route('/'),
             'admin-index' => ListAdminTasks::route('/admin'),
             'create' => CreateTask::route('/create'),
-            'view' => ViewTask::route('/{record}'),
+            'handle' => HandleTask::route('/{record}'),
 //            'edit' => EditTask::route('/{record}/edit'),
         ];
     }

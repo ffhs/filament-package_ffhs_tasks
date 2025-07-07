@@ -27,7 +27,7 @@ class AssignActions extends ActionGroup
 
         parent::setUp();
         $this->icon(Heroicon::User);
-        $this->color(Color::Gray);
+        $this->color(fn(Task $record) => $record->users->count() > 0 ? Color::Gray : Color::Emerald);
         $this->iconButton();
         $this->actions([
             Action::make('assign_me')

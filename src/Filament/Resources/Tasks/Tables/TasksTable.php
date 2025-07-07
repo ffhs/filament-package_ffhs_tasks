@@ -3,7 +3,9 @@
 namespace Ffhs\FfhsTasks\Filament\Resources\Tasks\Tables;
 
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Actions\AssignActions;
+use Ffhs\FfhsTasks\Filament\Resources\Tasks\TaskResource;
 use Ffhs\FfhsTasks\Models\Task;
+use Ffhs\FfhsTasks\TaskType\TaskType;
 use Filament\Support\Colors\Color;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\IconColumn;
@@ -24,8 +26,6 @@ class TasksTable
             ->columns([
                 Split::make([
                     IconColumn::make('finished')
-//                    ->label(Task::__('attributes.finished.label'))
-                        ->label('')
                         ->true(Heroicon::CheckBadge, Color::Gray)
                         ->false(Heroicon::Ticket, Color::Amber)
                         ->grow(false),
@@ -38,11 +38,22 @@ class TasksTable
                             ) => new HtmlString('<strong>' . htmlspecialchars($state) . '</strong>')),
                         TextColumn::make('description'),
                     ]),
+                    TextColumn::make('type')
+                        ->grow(false)
+                        ->alignEnd()
+                        ->formatStateUsing(function ($state) {
+                            if (empty($state)) {
+                                return null;
+                            }
+                            $taskType = TaskType::getTypeFromIdentifier($state);
+                            return $taskType ? $taskType::displayname() : null;
+                        }),
                     TextColumn::make('users.name')
                         ->label(Task::__('relations.users.label'))
-                        ->alignCenter(),
+                        ->alignEnd(),
                 ])
             ])
+            ->recordUrl(fn($record) => TaskResource::getUrl('handle', ['record' => $record]))
             ->recordActions([
                 AssignActions::make()
 //                ViewAction::make(),

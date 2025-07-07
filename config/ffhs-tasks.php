@@ -3,6 +3,7 @@
 // config for Ffhs/FfhsTasks
 use Ffhs\FfhsTasks\Models\Task;
 use Ffhs\FfhsTasks\Models\TaskServer;
+use Ffhs\FfhsTasks\TaskType\Types\ConfirmTaskType;
 
 return [
     'table_names' => [
@@ -12,9 +13,16 @@ return [
         'task_servers' => 'ffhs_task_servers',
     ],
 
-
     'models' => [
         'task_servers' => TaskServer::class,
         'tasks' => Task::class,
+    ],
+
+    'types' => [
+        ConfirmTaskType::class
+    ],
+
+    'user_creatable_types' => [
+        ConfirmTaskType::class
     ]
 ];

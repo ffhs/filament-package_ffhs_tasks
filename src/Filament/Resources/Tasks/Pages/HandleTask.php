@@ -3,17 +3,17 @@
 namespace Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages;
 
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\TaskResource;
-use Filament\Actions\EditAction;
-use Filament\Resources\Pages\ViewRecord;
+use Filament\Resources\Pages\EditRecord;
 
-class ViewTask extends ViewRecord
+class HandleTask extends EditRecord
 {
     protected static string $resource = TaskResource::class;
+
 
     protected function getHeaderActions(): array
     {
         return [
-            EditAction::make(),
+
         ];
     }
 }
