@@ -11,4 +11,9 @@ trait IsTaskUser
     {
         return $this->belongsToMany(Task::class, FfhsTasks::config('table_names.task_user'), 'user_id', 'task_id');
     }
+
+    public function displayCreatorName(): string
+    {
+        return $this->email;
+    }
 }

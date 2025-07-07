@@ -3,7 +3,6 @@
 namespace Ffhs\FfhsTasks\Traits;
 
 use Ffhs\FfhsTasks\Facades\FfhsTasks;
-use Ffhs\FfhsTasks\Models\TaskServer;
 use UnitEnum;
 
 trait IsTaskResource
@@ -24,7 +23,7 @@ trait IsTaskResource
     {
         /**@var \Ffhs\FfhsTasks\Traits\IsFfhsTaskModel $modelClass */
         $modelClass = static::$model;
-        return FfhsTasks::config('models.' . $modelClass::configKey()) ?: TaskServer::class;
+        return FfhsTasks::config('models.' . $modelClass::configKey()) ?: $modelClass;
     }
 
 
