@@ -18,6 +18,10 @@ return [
         'tasks' => Task::class,
     ],
 
+    'user' => [
+        'name_attribute' => 'name',
+    ],
+
     'types' => [
         ConfirmTaskType::class
     ],

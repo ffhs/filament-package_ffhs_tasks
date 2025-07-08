@@ -21,6 +21,8 @@ return new class extends Migration {
             $table->string('type');
             $table->json('settings')->nullable();
             $table->json('data')->nullable();
+            $table->boolean('can_cancel')->default(false);
+            $table->boolean('cancelled')->default(false);
             $table->boolean('finished')->default(false);
             $table->dateTime('deadline_at')->nullable();
             $table->dateTime('start_at')->nullable();

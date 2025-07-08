@@ -3,6 +3,7 @@
 namespace Ffhs\FfhsTasks\TaskType;
 
 use Ffhs\FfhsTasks\Facades\FfhsTasks;
+use Ffhs\FfhsTasks\Models\Task;
 use Ffhs\FfhsUtils\Contracts\Type;
 use Ffhs\FfhsUtils\Traits\IsType;
 use Illuminate\Contracts\Translation\Translator;
@@ -27,4 +28,24 @@ abstract class TaskType implements Type
     }
 
     abstract public function getSettingSchema(): array;
+
+    public function mutateDataBeforeCancel(Task $record, $data): array
+    {
+        return $data;
+    }
+
+    public function mutateDataBeforeFinish(Task $record, array $data): array
+    {
+        return $data;
+    }
+
+    public function afterCancel(Task $record, array $getState): void
+    {
+
+    }
+
+    public function afterFinish(Task $record, array $getState): void
+    {
+
+    }
 }

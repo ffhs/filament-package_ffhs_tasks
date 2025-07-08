@@ -3,7 +3,11 @@
 namespace Ffhs\FfhsTasks;
 
 use Illuminate\Contracts\Translation\Translator;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\Relation;
 
+/**
+ */
 class FfhsTasks
 {
     public function config(string ...$key)
@@ -21,4 +25,30 @@ class FfhsTasks
         return __('filament-package_ffhs_tasks::' . $key);
     }
 
+
+    public function modifyQueryActiveTask(Builder|Relation &$baseQuery): Builder|Relation
+    {
+        return $baseQuery
+            ->where(function (Builder|Relation $query) {
+                return $query
+                    ->where(function (Builder|Relation $q) {
+                        $q->where('start_at', '<=', now())
+                            ->orWhereNull('start_at');
+                    })
+                    ->whereNot('finished', true)
+                    ->whereNot('cancelled', true);
+            });
+    }
+
+    public function modifyQueryArchiveTasks(Builder|Relation &$baseQuery): Builder|Relation
+    {
+        return $baseQuery
+            ->withTrashed()
+            ->where(function (Builder|Relation $query) {
+                return $query
+                    ->whereNotNull('deleted_at')
+                    ->orWhere('finished', true)
+                    ->orWhere('cancelled', true);
+            });
+    }
 }

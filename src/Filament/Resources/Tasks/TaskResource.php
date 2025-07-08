@@ -2,12 +2,14 @@
 
 namespace Ffhs\FfhsTasks\Filament\Resources\Tasks;
 
+use App\Models\User;
 use BackedEnum;
+use Ffhs\FfhsTasks\Facades\FfhsTasks;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\CreateTask;
-use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\EditTask;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\HandleTask;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\ListAdminTasks;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\ListTasks;
+use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\ListTasksArchive;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Schemas\TaskInfolist;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Tables\TasksTable;
 use Ffhs\FfhsTasks\Models\Task;
@@ -51,7 +53,6 @@ class TaskResource extends Resource
             'admin-index' => ListAdminTasks::route('/admin'),
             'create' => CreateTask::route('/create'),
             'handle' => HandleTask::route('/{record}'),
-//            'edit' => EditTask::route('/{record}/edit'),
         ];
     }
 
@@ -61,5 +62,12 @@ class TaskResource extends Resource
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
             ]);
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        /**@var User $user */
+        $user = auth()->user();
+        return FfhsTasks::modifyQueryActiveTask($user->tasks())->count() > 0;
     }
 }

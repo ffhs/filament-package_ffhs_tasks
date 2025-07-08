@@ -3,6 +3,7 @@
 namespace Ffhs\FfhsTasks\Filament\Resources\Tasks\Actions;
 
 use App\Models\User;
+use Ffhs\FfhsTasks\Facades\FfhsTasks;
 use Ffhs\FfhsTasks\Models\Task;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
@@ -28,6 +29,9 @@ class AssignActions extends ActionGroup
         parent::setUp();
         $this->icon(Heroicon::User);
         $this->color(fn(Task $record) => $record->users->count() > 0 ? Color::Gray : Color::Emerald);
+        $this->hidden(function (Task $record) {
+            return $record->isArchived();
+        });
         $this->iconButton();
         $this->actions([
             Action::make('assign_me')
@@ -92,7 +96,7 @@ class AssignActions extends ActionGroup
             Select::make('usersIdRaw')
                 ->label(Task::__('actions.assign_user.schema.users.label'))
                 ->helperText(Task::__('actions.assign_user.schema.users.helper_text'))
-                ->relationship('users', 'email')
+                ->relationship('users', FfhsTasks::config('user.name_attribute'))
                 ->multiple()
                 ->required()
                 ->disableOptionWhen(static function (Task $record, $value) {

@@ -2,13 +2,13 @@
 
 namespace Ffhs\FfhsTasks\Filament\Resources\Tasks\Tables;
 
+use Ffhs\FfhsTasks\Facades\FfhsTasks;
+use Ffhs\FfhsTasks\Filament\Resources\Tasks\Actions\AssignActions;
 use Ffhs\FfhsTasks\Models\Task;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
-use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
@@ -23,17 +23,34 @@ class TasksAdminTable
                 TextColumn::make('id'),
                 TextColumn::make('title')
                     ->label(Task::__('attributes.title.label'))
-                    ->sortable()
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable(),
                 IconColumn::make('finished')
                     ->label(Task::__('attributes.finished.label'))
+                    ->alignCenter()
+                    ->searchable()
+                    ->sortable()
+                    ->boolean(),
+                IconColumn::make('cancelled')
+                    ->label(Task::__('attributes.cancelled.label'))
+                    ->alignCenter()
+                    ->searchable()
+                    ->sortable()
+                    ->boolean(),
+                IconColumn::make('can_cancel')
+                    ->label(Task::__('attributes.can_cancel.label'))
+                    ->alignCenter()
+                    ->searchable()
+                    ->sortable()
                     ->boolean(),
                 TextColumn::make('creator')
-                    ->label(Task::__('attributes.creator.label'))
-                    ->state(fn(Task $record) => $record->creator->displayCreatorName()),
-                TextColumn::make('users.name')
+                    ->state(fn(Task $record) => $record->creator?->displayCreatorName())
+                    ->label(Task::__('attributes.creator.label')),
+                TextColumn::make('users.' . FfhsTasks::config('user.name_attribute'))
                     ->label(Task::__('relations.users.label'))
                     ->searchable()
+                    ->searchable()
+                    ->sortable()
             ])
             ->modifyQueryUsing(function ($query) {
                 $query->with('creator');
@@ -42,8 +59,7 @@ class TasksAdminTable
                 TrashedFilter::make(),
             ])
             ->recordActions([
-                ViewAction::make(),
-                EditAction::make(),
+                AssignActions::make()
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

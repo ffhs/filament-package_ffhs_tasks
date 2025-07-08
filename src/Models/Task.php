@@ -18,12 +18,14 @@ use Illuminate\Support\Collection;
 /**
  * @property ?TaskCreator $creator
  * @property Collection $users
+ * @property bool $finished
+ * @property bool $cancelled
  */
 class Task extends Model
 {
     use IsFfhsTaskModel, SoftDeletes, HasType;
 
-    protected string $parentTypeClass = TaskType::class;
+    protected static string $parentTypeClass = TaskType::class;
 
     protected $fillable = [
         'title',
@@ -35,7 +37,9 @@ class Task extends Model
         'deadline_at',
         'start_at',
         'creator_type',
-        'creator_id'
+        'creator_id',
+        'can_cancel',
+        'cancelled'
     ];
 
     protected static function configKey(): string
@@ -61,6 +65,11 @@ class Task extends Model
     public function creator(): MorphTo
     {
         return $this->morphTo('creator');
+    }
+
+    public function isArchived(): bool
+    {
+        return $this->finished || $this->cancelled || !is_null($this->deleted_at);
     }
 
     protected function casts(): array

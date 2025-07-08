@@ -10,6 +10,7 @@ use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
@@ -53,7 +54,6 @@ class TaskCreateForm
             }));
     }
 
-
     private static function getDefaultSection(): Section
     {
         $typeOptions = collect(config('ffhs-tasks.user_creatable_types'))
@@ -87,6 +87,8 @@ class TaskCreateForm
                             $set('settings.' . $settingSchema->getStatePath(false), $settingSchema->getDefaultState());
                         }
                     }),
+                Toggle::make('can_cancel')
+                    ->label(Task::__('attributes.can_cancel.label')),
                 Textarea::make('description')
                     ->helperText(Task::__('attributes.description.helper_text'))
                     ->label(Task::__('attributes.description.label'))

@@ -16,6 +16,12 @@ return [
                 ],
                 'index' => [
                     'title' => 'Meine Aufgaben',
+                    'tabs' => [
+                        'my' => 'Meine Aufgaben',
+                        'archive' => 'Archiv',
+                        'all' => 'Alle',
+                        'created' => 'Erstellte Aufgaben'
+                    ]
                 ]
             ]
         ],
@@ -25,6 +31,15 @@ return [
             ]
         ],
         'attributes' => [
+            'state' => [
+                'label' => 'Status',
+            ],
+            'can_cancel' => [
+                'label' => 'Kann Abgebrochen werden'
+            ],
+            'cancelled' => [
+                'label' => 'Abgebrochen'
+            ],
             'title' => [
                 'label' => 'Aufgaben Titel',
                 'helper_text' => ''
@@ -84,6 +99,12 @@ return [
             'unassign_me' => [
                 'label' => 'Mich entfernen',
                 'tooltip' => '',
+            ],
+            'cancel' => [
+                'label' => 'Stonieren',
+            ],
+            'finish' => [
+                'label' => 'Abschliessen',
             ]
         ],
     ],

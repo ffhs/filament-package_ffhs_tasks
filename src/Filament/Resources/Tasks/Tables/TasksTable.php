@@ -2,6 +2,7 @@
 
 namespace Ffhs\FfhsTasks\Filament\Resources\Tasks\Tables;
 
+use Ffhs\FfhsTasks\Facades\FfhsTasks;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Actions\AssignActions;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\TaskResource;
 use Ffhs\FfhsTasks\Models\Task;
@@ -25,40 +26,98 @@ class TasksTable
             ->reorderable(false)
             ->columns([
                 Split::make([
-                    IconColumn::make('finished')
-                        ->true(Heroicon::CheckBadge, Color::Gray)
-                        ->false(Heroicon::Ticket, Color::Amber)
-                        ->grow(false),
+                    self::getIconColumn(),
                     TextColumn::make('space')
                         ->grow(false)
                         ->state(''),
                     Stack::make([
                         TextColumn::make('title')
-                            ->formatStateUsing(fn($state
-                            ) => new HtmlString('<strong>' . htmlspecialchars($state) . '</strong>')),
-                        TextColumn::make('description'),
-                    ]),
-                    TextColumn::make('type')
+                            ->searchable()
+                            ->formatStateUsing(function ($state) {
+                                return new HtmlString('<strong>' . htmlspecialchars($state) . '</strong>');
+                            }),
+                        TextColumn::make('description')
+                            ->searchable(),
+                    ])
+                        ->grow(false),
+                    TextColumn::make('space')
                         ->grow(false)
-                        ->alignEnd()
+                        ->state(''),
+                    TextColumn::make('type')
+                        ->sortable()
+                        ->alignCenter()
                         ->formatStateUsing(function ($state) {
-                            if (empty($state)) {
-                                return null;
-                            }
-                            $taskType = TaskType::getTypeFromIdentifier($state);
-                            return $taskType ? $taskType::displayname() : null;
-                        }),
-                    TextColumn::make('users.name')
-                        ->label(Task::__('relations.users.label'))
+                            return TaskType::getTypeIdentifierNameList()[$state] ?? null;
+                        })
+                        ->searchable(query: function (Builder $query, string $search) {
+                            $matchingTypes = collect(TaskType::getTypeIdentifierNameList())
+                                ->filter(fn($label) => str_contains(strtolower($label), strtolower($search)))
+                                ->keys()
+                                ->toArray();
+
+                            $query->whereIn('type', $matchingTypes);
+                        })
+                    ,
+                    Stack::make([
+                        TextColumn::make('creator_type')
+                            ->state(fn(Task $record) => $record->creator?->displayCreatorName())
+                            ->label(Task::__('attributes.creator.label'))
+                            ->alignLeft()
+                            ->sortable(),
+                        TextColumn::make('users.' . FfhsTasks::config('user.name_attribute'))
+                            ->label(Task::__('relations.users.label'))
+                            ->sortable(),
+                    ])
                         ->alignEnd(),
                 ])
             ])
-            ->recordUrl(fn($record) => TaskResource::getUrl('handle', ['record' => $record]))
+            ->recordUrl(function (Task $record) {
+                return $record->isArchived() ? null : TaskResource::getUrl('handle', ['record' => $record]);
+            })
             ->recordActions([
                 AssignActions::make()
 //                ViewAction::make(),
 //                EditAction::make(),
             ])
             ->toolbarActions([]);
+    }
+
+
+    protected static function getIconColumn(): IconColumn
+    {
+        return IconColumn::make('finished')
+            ->label(Task::__('attributes.state.label'))
+            ->grow(false)
+            ->sortable(query: function (Builder $query, string $direction) {
+                $query->orderBy('finished', $direction)
+                    ->orderBy('cancelled', $direction);
+            })
+            ->icon(function (Task $record) {
+                if ($record->finished) {
+                    return Heroicon::CheckBadge;
+                }
+                if ($record->cancelled) {
+                    return Heroicon::XCircle;
+                }
+                return Heroicon::Ticket;
+            })
+            ->color(function (Task $record) {
+                if ($record->finished) {
+                    return Color::Gray;
+                }
+                if ($record->cancelled) {
+                    return Color::Red;
+                }
+                return Color::Amber;
+            })
+            ->tooltip(function (Task $record) {
+                if ($record->finished) {
+                    return Task::__('attributes.finished.label');
+                }
+                if ($record->cancelled) {
+                    return Task::__('attributes.cancelled.label');
+                }
+                return '';
+            });
     }
 }
