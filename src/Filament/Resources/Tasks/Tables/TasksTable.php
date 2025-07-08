@@ -24,7 +24,7 @@ class TasksTable
         return $table
             ->modifyQueryUsing(fn(Builder $query) => $query->with(['users', 'creator']))
             ->reorderable(false)
-            ->columns([
+            ->columns(components: [
                 Split::make([
                     self::getIconColumn(),
                     TextColumn::make('space')
@@ -43,6 +43,10 @@ class TasksTable
                     TextColumn::make('space')
                         ->grow(false)
                         ->state(''),
+                    TextColumn::make('deadline_at')
+                        ->label(Task::__('attributes.deadline_at.label'))
+                        ->dateTime()
+                        ->sortable(),
                     TextColumn::make('type')
                         ->sortable()
                         ->alignCenter()

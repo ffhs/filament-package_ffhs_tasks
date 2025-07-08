@@ -35,13 +35,15 @@ class ListTasks extends ListRecords
                     return FfhsTasks::modifyQueryActiveTask($query)
                         ->whereHas('users', function ($query) {
                             $query->where('users.id', auth()->id());
-                        });
+                        })
+                        ->orderBy('created_at');
                 }),
             'created' => Tab::make()
                 ->label(Task::__('resource.pages.index.tabs.created'))
                 ->modifyQueryUsing(function ($query) {
                     $query->where('creator_type', auth()->user()::class)
-                        ->where('creator_id', auth()->id());
+                        ->where('creator_id', auth()->id())
+                        ->orderByDesc('created_at');
                 }),
             'archive' => Tab::make()
                 ->label(Task::__('resource.pages.index.tabs.archive'))
@@ -49,7 +51,8 @@ class ListTasks extends ListRecords
                     return FfhsTasks::modifyQueryArchiveTasks($query)
                         ->whereHas('users', function ($query) {
                             $query->where('users.id', auth()->id());
-                        });
+                        })
+                        ->orderByDesc('created_at');
                 }),
         ];
     }
