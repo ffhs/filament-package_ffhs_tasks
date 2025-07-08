@@ -2,9 +2,11 @@
 
 namespace Ffhs\FfhsTasks;
 
+use Ffhs\FfhsTasks\Models\TaskServer;
 use Illuminate\Contracts\Translation\Translator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Collection;
 
 /**
  */
@@ -50,5 +52,10 @@ class FfhsTasks
                     ->orWhere('finished', true)
                     ->orWhere('cancelled', true);
             });
+    }
+
+    public function taskServers(): Collection
+    {
+        return once(fn() => TaskServer::all());
     }
 }

@@ -10,16 +10,15 @@ use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Support\Enums\Width;
-use Illuminate\Contracts\Support\Htmlable;
 
-class ListTasks extends ListRecords
+class ListRemoteTasks extends ListRecords
 {
     protected static string $resource = TaskResource::class;
 
-    public function getTitle(): string|Htmlable
-    {
-        return Task::__('resource.pages.index.title');
-    }
+//    public function getTitle(): string|Htmlable
+//    {
+//        return Task::__('resource.pages.index.title');
+//    }
 
     public function getMaxContentWidth(): Width|string|null
     {

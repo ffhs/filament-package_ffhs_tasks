@@ -8,6 +8,7 @@ use Ffhs\FfhsTasks\Facades\FfhsTasks;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\CreateTask;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\HandleTask;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\ListAdminTasks;
+use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\ListRemoteTasks;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\ListTasks;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\ListTasksArchive;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Schemas\TaskInfolist;
@@ -53,6 +54,7 @@ class TaskResource extends Resource
             'admin-index' => ListAdminTasks::route('/admin'),
             'create' => CreateTask::route('/create'),
             'handle' => HandleTask::route('/{record}'),
+            'index-remote' => ListRemoteTasks::route('/remote/{server}'),
         ];
     }
 
