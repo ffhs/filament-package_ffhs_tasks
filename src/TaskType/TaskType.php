@@ -29,6 +29,8 @@ abstract class TaskType implements Type
 
     abstract public function getSettingSchema(): array;
 
+    abstract function canBeDoneRemote(): bool;
+
     public function mutateDataBeforeCancel(Task $record, $data): array
     {
         return $data;

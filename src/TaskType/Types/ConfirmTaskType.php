@@ -15,4 +15,9 @@ class ConfirmTaskType extends TaskType
     {
         return [];
     }
+
+    public function canBeDoneRemote(): bool
+    {
+        return false;
+    }
 }

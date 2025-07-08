@@ -72,6 +72,11 @@ class Task extends Model
         return $this->finished || $this->cancelled || !is_null($this->deleted_at);
     }
 
+    public function getHandleSchema(): array
+    {
+        return [];
+    }
+
     protected function casts(): array
     {
         return [
