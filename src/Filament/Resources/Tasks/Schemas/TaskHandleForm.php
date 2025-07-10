@@ -36,8 +36,8 @@ class TaskHandleForm
 
                 Section::make()
                     ->statePath('data')
-                    ->visible(fn(Section $component) => count($component->getContainer()->getComponents(false)))
-                    ->schema(fn(Task $record) => once(fn() => $record->getHandleSchema()))
+                    ->columnSpanFull()
+                    ->schema(fn(Task $record) => once(fn() => $record->getType()->getHandleSchema()))
             ]);
     }
 

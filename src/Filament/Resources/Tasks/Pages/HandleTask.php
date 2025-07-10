@@ -103,8 +103,7 @@ class HandleTask extends EditRecord
             ->label(Task::__('actions.finish.label'))
             ->submit('finish')
             ->action('finish')
-            ->color(Color::Green)
-            ->keyBindings(['mod+s']);
+            ->color(Color::Green);
     }
 
     protected function getCanceleFormAction(): Action
