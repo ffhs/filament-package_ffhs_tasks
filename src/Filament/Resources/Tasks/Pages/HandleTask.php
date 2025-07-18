@@ -87,7 +87,6 @@ class HandleTask extends EditRecord
             : $taskType->mutateDataBeforeFinish($record, $data);
     }
 
-
     protected function getFormActions(): array
     {
         return [
@@ -115,4 +114,6 @@ class HandleTask extends EditRecord
             ->action('cancel')
             ->color('danger');
     }
+
+
 }
