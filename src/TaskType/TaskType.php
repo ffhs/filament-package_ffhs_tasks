@@ -6,7 +6,7 @@ use Ffhs\FfhsTasks\Facades\FfhsTasks;
 use Ffhs\FfhsTasks\Models\Task;
 use Ffhs\FfhsUtils\Contracts\Type;
 use Ffhs\FfhsUtils\Traits\IsType;
-use Ffhs\FfhsWorkflows\Filament\Components\WorkflowEditor;
+use Ffhs\FfhsWorkflows\Filament\Components\FlowEditor;
 use Illuminate\Contracts\Translation\Translator;
 
 abstract class TaskType implements Type
@@ -55,7 +55,7 @@ abstract class TaskType implements Type
     public function getHandleSchema(): array
     {
         return [
-            WorkflowEditor::make('test')
+            FlowEditor::make('test')
                 ->columnSpanFull()
         ];
     }
