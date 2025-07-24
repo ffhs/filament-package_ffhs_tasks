@@ -37,6 +37,7 @@ class TaskHandleForm
                 Section::make()
                     ->statePath('data')
                     ->columnSpanFull()
+                    ->hiddenWhenAllChildComponentsHidden()
                     ->schema(fn(Task $record) => once(fn() => $record->getType()->getHandleSchema()))
             ]);
     }
