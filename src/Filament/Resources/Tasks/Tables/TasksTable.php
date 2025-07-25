@@ -39,7 +39,7 @@ class TasksTable
                         ->label(Task::__('attributes.deadline_at.label'))
                         ->dateTime('d.m.Y H:i')
                         ->sortable()
-                        ->alignLeft()
+                        ->alignRight()
                         ->grow(),
 
                     TextColumn::make('type')
