@@ -26,33 +26,28 @@ class TasksTable
             ->reorderable(false)
             ->columns(components: [
                 Split::make([
-                    self::getIconColumn(),
-                    TextColumn::make('space')
-                        ->grow(false)
-                        ->state(''),
+                    self::getIconColumn()->grow(false),
+
                     Stack::make([
                         TextColumn::make('title')
                             ->searchable()
-                            ->formatStateUsing(function ($state) {
-                                return new HtmlString('<strong>' . htmlspecialchars($state) . '</strong>');
-                            }),
-                        TextColumn::make('description')
-                            ->searchable(),
-                    ])
-                        ->grow(false),
-                    TextColumn::make('space')
-                        ->grow(false)
-                        ->state(''),
+                            ->formatStateUsing(fn($state) => new HtmlString('<strong>' . htmlspecialchars($state) . '</strong>')),
+                        TextColumn::make('description')->searchable(),
+                    ])->grow(),
+
                     TextColumn::make('deadline_at')
                         ->label(Task::__('attributes.deadline_at.label'))
-                        ->dateTime()
-                        ->sortable(),
+                        ->dateTime('d.m.Y H:i')
+                        ->sortable()
+                        ->alignRight()
+                        ->grow(),
+
                     TextColumn::make('type')
+                        ->label('Typ')
                         ->sortable()
                         ->alignCenter()
-                        ->formatStateUsing(function ($state) {
-                            return TaskType::getTypeIdentifierNameList()[$state] ?? null;
-                        })
+                        ->grow()
+                        ->formatStateUsing(fn($state) => TaskType::getTypeIdentifierNameList()[$state] ?? null)
                         ->searchable(query: function (Builder $query, string $search) {
                             $matchingTypes = collect(TaskType::getTypeIdentifierNameList())
                                 ->filter(fn($label) => str_contains(strtolower($label), strtolower($search)))
@@ -60,19 +55,17 @@ class TasksTable
                                 ->toArray();
 
                             $query->whereIn('type', $matchingTypes);
-                        })
-                    ,
+                        }),
+
                     Stack::make([
                         TextColumn::make('creator_type')
                             ->state(fn(Task $record) => $record->creator?->displayCreatorName())
                             ->label(Task::__('attributes.creator.label'))
-                            ->alignLeft()
                             ->sortable(),
                         TextColumn::make('users.' . FfhsTasks::config('user.name_attribute'))
                             ->label(Task::__('relations.users.label'))
                             ->sortable(),
-                    ])
-                        ->alignEnd(),
+                    ])->grow()->alignEnd(),
                 ])
             ])
             ->recordUrl(function (Task $record) {
@@ -80,12 +73,11 @@ class TasksTable
             })
             ->recordActions([
                 AssignActions::make()
-//                ViewAction::make(),
-//                EditAction::make(),
+                // ViewAction::make(),
+                // EditAction::make(),
             ])
             ->toolbarActions([]);
     }
-
 
     protected static function getIconColumn(): IconColumn
     {
