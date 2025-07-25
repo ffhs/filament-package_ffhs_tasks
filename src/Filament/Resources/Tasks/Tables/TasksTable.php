@@ -37,7 +37,7 @@ class TasksTable
 
                     TextColumn::make('deadline_at')
                         ->label(Task::__('attributes.deadline_at.label'))
-                        ->dateTime()
+                        ->dateTime('d.m.Y H:i')
                         ->sortable()
                         ->alignLeft()
                         ->grow(),
