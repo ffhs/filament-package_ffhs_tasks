@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
+/**
+ * @property \Ffhs\FfhsTasks\Contracts\TaskUserGroup|Model $userGroup
+ */
 class TaskUserGroup extends Model
 {
     use IsFfhsTaskModel;
@@ -29,6 +32,6 @@ class TaskUserGroup extends Model
 
     public function userGroup(): MorphTo
     {
-        return $this->morphTo('user_group');
+        return $this->morphTo();
     }
 }

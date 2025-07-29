@@ -5,6 +5,7 @@ namespace Ffhs\FfhsTasks\Filament\Resources\Tasks\Tables;
 use Ffhs\FfhsTasks\Facades\FfhsTasks;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Actions\AssignActions;
 use Ffhs\FfhsTasks\Models\Task;
+use Ffhs\FfhsTasks\Models\TaskUserGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\ForceDeleteBulkAction;
@@ -48,12 +49,19 @@ class TasksAdminTable
                     ->label(Task::__('attributes.creator.label')),
                 TextColumn::make('users.' . FfhsTasks::config('user.name_attribute'))
                     ->label(Task::__('relations.users.label'))
+                    ->listWithLineBreaks()
                     ->searchable()
-                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('taskUserGroups')
+                    ->label(Task::__('relations.taskUserGroups.label'))
+                    ->formatStateUsing(function (TaskUserGroup $state) {
+                        return $state->userGroup?->getGroupModelTitle();
+                    })
+                    ->listWithLineBreaks()
                     ->sortable()
             ])
             ->modifyQueryUsing(function ($query) {
-                $query->with('creator');
+                $query->with('creator', 'users', 'taskUserGroups.userGroup');
             })
             ->filters([
                 TrashedFilter::make(),

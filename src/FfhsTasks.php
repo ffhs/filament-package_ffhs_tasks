@@ -58,4 +58,9 @@ class FfhsTasks
     {
         return once(fn() => TaskServer::all());
     }
+
+    public function userGroups(): array
+    {
+        return $this->config('user_groups');
+    }
 }

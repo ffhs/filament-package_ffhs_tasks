@@ -20,7 +20,8 @@ return [
                         'my' => 'Meine Aufgaben',
                         'archive' => 'Archiv',
                         'all' => 'Alle',
-                        'created' => 'Erstellte Aufgaben'
+                        'created' => 'Erstellte Aufgaben',
+                        'groups' => 'Gruppen Aufgaben',
                     ]
                 ]
             ]
@@ -28,7 +29,10 @@ return [
         'relations' => [
             'users' => [
                 'label' => 'Zugewiesene Nutzer'
-            ]
+            ],
+            'taskUserGroups' => [
+                'label' => 'Zugewiesene Gruppen'
+            ],
         ],
         'attributes' => [
             'state' => [

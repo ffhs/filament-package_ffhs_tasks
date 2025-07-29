@@ -58,7 +58,7 @@ class Task extends Model
         );
     }
 
-    public function taskGroup(): HasMany
+    public function taskUserGroups(): HasMany
     {
         return $this->hasMany(TaskUserGroup::class, 'task_id');
     }
