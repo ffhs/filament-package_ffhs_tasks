@@ -54,9 +54,6 @@ abstract class TaskType implements Type
 
     public function getHandleSchema(): array
     {
-        return [
-            FlowEditor::make('test')
-                ->columnSpanFull()
-        ];
+        return [];
     }
 }

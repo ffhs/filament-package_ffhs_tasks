@@ -20,6 +20,7 @@ use Illuminate\Support\Collection;
  * @property Collection $users
  * @property bool $finished
  * @property bool $cancelled
+ * @property int $id
  */
 class Task extends Model
 {
