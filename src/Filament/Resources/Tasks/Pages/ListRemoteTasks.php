@@ -2,13 +2,11 @@
 
 namespace Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages;
 
-use Ffhs\FfhsTasks\Facades\FfhsTasks;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\TaskResource;
 use Ffhs\FfhsTasks\Models\Task;
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
-use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Support\Enums\Width;
 
 class ListRemoteTasks extends ListRecords
@@ -27,33 +25,7 @@ class ListRemoteTasks extends ListRecords
 
     public function getTabs(): array
     {
-        return [
-            'my' => Tab::make()
-                ->label(Task::__('resource.pages.index.tabs.my'))
-                ->modifyQueryUsing(function ($query) {
-                    return FfhsTasks::modifyQueryActiveTask($query)
-                        ->whereHas('users', function ($query) {
-                            $query->where('users.id', auth()->id());
-                        })
-                        ->orderBy('created_at');
-                }),
-            'created' => Tab::make()
-                ->label(Task::__('resource.pages.index.tabs.created'))
-                ->modifyQueryUsing(function ($query) {
-                    $query->where('creator_type', auth()->user()::class)
-                        ->where('creator_id', auth()->id())
-                        ->orderByDesc('created_at');
-                }),
-            'archive' => Tab::make()
-                ->label(Task::__('resource.pages.index.tabs.archive'))
-                ->modifyQueryUsing(function ($query) {
-                    return FfhsTasks::modifyQueryArchiveTasks($query)
-                        ->whereHas('users', function ($query) {
-                            $query->where('users.id', auth()->id());
-                        })
-                        ->orderByDesc('created_at');
-                }),
-        ];
+        return [];
     }
 
     protected function getHeaderActions(): array

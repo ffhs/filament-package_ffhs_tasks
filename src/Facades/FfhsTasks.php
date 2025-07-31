@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static modifyQueryActiveTask($baseQuery)
  * @method static modifyQueryArchiveTasks($baseQuery)
  * @method static Collection taskServers()
+ * @method static array userGroups()
  */
 class FfhsTasks extends Facade
 {

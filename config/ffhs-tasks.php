@@ -22,6 +22,10 @@ return [
         'name_attribute' => 'name',
     ],
 
+    'user_groups' => [
+
+    ],
+
     'types' => [
         ConfirmTaskType::class
     ],

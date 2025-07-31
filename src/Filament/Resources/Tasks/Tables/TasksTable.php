@@ -31,7 +31,8 @@ class TasksTable
                     Stack::make([
                         TextColumn::make('title')
                             ->searchable()
-                            ->formatStateUsing(fn($state) => new HtmlString('<strong>' . htmlspecialchars($state) . '</strong>')),
+                            ->formatStateUsing(fn($state
+                            ) => new HtmlString('<strong>' . htmlspecialchars($state) . '</strong>')),
                         TextColumn::make('description')->searchable(),
                     ])->grow(),
 
@@ -59,12 +60,14 @@ class TasksTable
 
                     Stack::make([
                         TextColumn::make('creator_type')
-                            ->state(fn(Task $record) => $record->creator?->displayCreatorName())
+                            ->state(fn(Task $record
+                            ) => new HtmlString('<strong>' . htmlspecialchars($record->creator?->displayCreatorName()) . '</strong>'))
                             ->label(Task::__('attributes.creator.label'))
                             ->sortable(),
                         TextColumn::make('users.' . FfhsTasks::config('user.name_attribute'))
                             ->label(Task::__('relations.users.label'))
                             ->sortable(),
+                        //ToDo add groups
                     ])->grow()->alignEnd(),
                 ])
             ])

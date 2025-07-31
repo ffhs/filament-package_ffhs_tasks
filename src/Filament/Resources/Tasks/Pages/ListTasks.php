@@ -2,6 +2,7 @@
 
 namespace Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages;
 
+use Ffhs\FfhsTasks\Contracts\TaskUserGroup;
 use Ffhs\FfhsTasks\Facades\FfhsTasks;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\TaskResource;
 use Ffhs\FfhsTasks\Models\Task;
@@ -11,6 +12,8 @@ use Filament\Resources\Pages\ListRecords;
 use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Support\Enums\Width;
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 class ListTasks extends ListRecords
 {
@@ -38,6 +41,14 @@ class ListTasks extends ListRecords
                         })
                         ->orderBy('created_at');
                 }),
+            'group' => Tab::make()
+                ->label(Task::__('resource.pages.index.tabs.groups'))
+                ->badge(function ($query) {
+                    return $this->modifyGroupTaskQuery(FfhsTasks::modifyQueryActiveTask(Task::query()))->count();
+                })
+                ->modifyQueryUsing(function ($query) {
+                    return $this->modifyGroupTaskQuery(FfhsTasks::modifyQueryActiveTask($query));
+                }),
             'created' => Tab::make()
                 ->label(Task::__('resource.pages.index.tabs.created'))
                 ->modifyQueryUsing(function ($query) {
@@ -55,6 +66,20 @@ class ListTasks extends ListRecords
                         ->orderByDesc('created_at');
                 }),
         ];
+    }
+
+    protected function modifyGroupTaskQuery(Builder $query): Builder
+    {
+        return $query->whereHas('taskUserGroups', function (Builder $query) {
+            $groups = FfhsTasks::userGroups();
+            foreach ($groups as $groupClass) {
+                /**@var  Model|TaskUserGroup $group */
+                $group = app($groupClass);
+                $query->where('user_group_type', $groupClass)
+                    ->whereIn('user_group_id',
+                        $group::getGroupsForUserQuery(auth()->user())->select($group->getTable() . '.id'));
+            }
+        });
     }
 
     protected function getHeaderActions(): array

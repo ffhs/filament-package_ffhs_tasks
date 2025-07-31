@@ -2,7 +2,6 @@
 
 namespace Ffhs\FfhsTasks\Filament\Resources\Tasks\Schemas;
 
-use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\CreateTask;
 use Ffhs\FfhsTasks\Models\Task;
 use Ffhs\FfhsTasks\TaskType\TaskType;
 use Ffhs\FfhsUtils\Contracts\Type;
@@ -54,7 +53,7 @@ class TaskCreateForm
             }));
     }
 
-    private static function getDefaultSection(): Section
+    public static function getDefaultSection(): Section
     {
         $typeOptions = collect(config('ffhs-tasks.user_creatable_types'))
             ->mapWithKeys(function (string|Type $item) {
@@ -75,7 +74,7 @@ class TaskCreateForm
                     ->options($typeOptions)
                     ->required()
                     ->live()
-                    ->afterStateUpdated(function (Set $set, CreateTask $livewire, $state) {
+                    ->afterStateUpdated(function (Set $set, ?string $state) {
                         if (is_null($state)) {
                             $set('settings', []);
                             return;
@@ -88,7 +87,8 @@ class TaskCreateForm
                         }
                     }),
                 Toggle::make('can_cancel')
-                    ->label(Task::__('attributes.can_cancel.label')),
+                    ->label(Task::__('attributes.can_cancel.label'))
+                    ->live(),
                 Textarea::make('description')
                     ->helperText(Task::__('attributes.description.helper_text'))
                     ->label(Task::__('attributes.description.label'))

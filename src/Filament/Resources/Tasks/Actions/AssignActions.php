@@ -3,6 +3,7 @@
 namespace Ffhs\FfhsTasks\Filament\Resources\Tasks\Actions;
 
 use App\Models\User;
+use Ffhs\FfhsTasks\Contracts\TaskUserGroup;
 use Ffhs\FfhsTasks\Facades\FfhsTasks;
 use Ffhs\FfhsTasks\Models\Task;
 use Filament\Actions\Action;
@@ -11,6 +12,7 @@ use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Support\Colors\Color;
 use Filament\Support\Icons\Heroicon;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\HtmlString;
 
 class AssignActions extends ActionGroup
@@ -35,21 +37,25 @@ class AssignActions extends ActionGroup
         $this->iconButton();
         $this->actions([
             Action::make('assign_me')
+                ->closeModalByClickingAway(false)
                 ->label(new HtmlString('<b>' . Task::__('actions.assign_me.label') . '</b>'))
                 ->tooltip(Task::__('actions.assign_me.tooltip'))
                 ->disabled(fn(Task $record) => once(fn() => $record->users->contains($user)))
                 ->action($this->assignMe(...)),
             Action::make('unassign_me')
+                ->closeModalByClickingAway(false)
                 ->label(new HtmlString('<b>' . Task::__('actions.unassign_me.label') . '</b>'))
                 ->tooltip(Task::__('actions.unassign_me.tooltip'))
                 ->visible(fn(Task $record) => once(fn() => $record->users->contains($user)))
                 ->action($this->unassignMe(...)),
             Action::make('assign_group')
+                ->closeModalByClickingAway(false)
                 ->label(Task::__('actions.assign_group.label'))
                 ->tooltip(Task::__('actions.assign_group.tooltip'))
                 ->schema($this->assignGroupSchema(...))
                 ->action($this->assignGroup(...)),
             Action::make('assign_user')
+                ->closeModalByClickingAway(false)
                 ->label(Task::__('actions.assign_user.label'))
                 ->tooltip(Task::__('actions.assign_user.tooltip'))
                 ->schema($this->assignPersonSchema())
@@ -67,6 +73,25 @@ class AssignActions extends ActionGroup
 
     protected function assignGroup(Task $record, array $data): void
     {
+        $group = $data['group'] ?? '';
+        $group = explode(':', $group);
+
+        $type = $group[0] ?? null;
+        $id = $group[1] ?? null;
+
+        if (empty($type) || empty($id)) {
+            return;
+        }
+
+        $isExisting = $record->taskUserGroups()->where('user_group_type', $type)->where('user_group_id', $id)->exists();
+        if ($isExisting) {
+            return;
+        }
+
+        $record->taskUserGroups()->create([
+            'user_group_type' => $type,
+            'user_group_id' => $id,
+        ]);
     }
 
     protected function unassignMe(Task $record, array $data): void
@@ -85,8 +110,24 @@ class AssignActions extends ActionGroup
 
     protected function assignGroupSchema(): array
     {
-        //toDo
-        return [];
+        $options = [];
+        foreach (FfhsTasks::userGroups() as $userGroupClass) {
+            /** @var TaskUserGroup $userGroup */
+            $userGroup = app($userGroupClass);
+
+            $options[$userGroup::groupDisplayname()] = $userGroup::getGroupsQuery()
+                ->get()
+                ->mapWithKeys(function (TaskUserGroup|Model $userGroupModel) use ($userGroupClass) {
+                    return [$userGroupClass . ':' . $userGroupModel->id => $userGroupModel->getGroupModelTitle()];
+                })->toArray();
+        }
+
+        return [
+            Select::make('group')
+                ->required()
+                ->hiddenLabel()
+                ->options($options)
+        ];
     }
 
     protected function assignPersonSchema(): array

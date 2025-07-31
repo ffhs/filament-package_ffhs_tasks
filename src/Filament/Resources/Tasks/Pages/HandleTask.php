@@ -34,6 +34,7 @@ class HandleTask extends EditRecord
         ];
     }
 
+
     protected function authorizeAccess(): void
     {
         parent::authorizeAccess();
@@ -110,8 +111,8 @@ class HandleTask extends EditRecord
         return Action::make('cancel')
             ->visible(fn() => $this->getRecord()->can_cancel)
             ->label(Task::__('actions.cancel.label'))
-            ->submit('cancel')
-            ->action('cancel')
+//            ->submit('cancel')
+            ->action($this->cancel(...))
             ->color('danger');
     }
 
