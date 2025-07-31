@@ -15,8 +15,13 @@ trait IsFfhsTaskModel
 
     abstract public static function configKey(): string;
 
-    public function getTable()
+    public static function getConfigTable(): string
     {
-        return FfhsTasks::config('table_names.' . $this::configKey()) ?: parent::getTable();
+        return FfhsTasks::config('table_names.' . static::configKey()) ?: app(static::class)->getTable();
+    }
+
+    public function getTable(): string
+    {
+        return static::getConfigTable();
     }
 }

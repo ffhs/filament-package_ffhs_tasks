@@ -6,7 +6,7 @@ use Ffhs\FfhsTasks\Facades\FfhsTasks;
 use Ffhs\FfhsTasks\Models\Task;
 use Ffhs\FfhsUtils\Contracts\Type;
 use Ffhs\FfhsUtils\Traits\IsType;
-use Ffhs\FfhsWorkflows\Filament\Components\FlowEditor;
+use Ffhs\FfhsWorkflows\Filament\Components\PathSelector;
 use Illuminate\Contracts\Translation\Translator;
 
 abstract class TaskType implements Type
@@ -54,6 +54,28 @@ abstract class TaskType implements Type
 
     public function getHandleSchema(): array
     {
-        return [];
+        return [
+            PathSelector::make('test')
+                ->types([
+                    'user' => [
+                        'email' => 'email',
+                        'name' => 'string',
+                        'product' => 'product',
+                    ],
+                    'product' => [
+                        'name' => 'string',
+                        'responsibility' => 'user',
+                    ]
+                ])
+                ->items([
+                    'item1' => 'string',
+                    'item2' => [
+                        'subitem1' => 'user',
+                        'subitem2' => 'string',
+                    ],
+                    'item3' => 'product',
+                    'item4' => 'bool',
+                ])
+        ];
     }
 }

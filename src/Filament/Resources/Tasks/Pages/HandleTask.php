@@ -34,6 +34,7 @@ class HandleTask extends EditRecord
         ];
     }
 
+
     protected function authorizeAccess(): void
     {
         parent::authorizeAccess();
