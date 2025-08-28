@@ -4,11 +4,8 @@ namespace Ffhs\FfhsTasks;
 
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\TaskResource;
 use Ffhs\FfhsTasks\Filament\Resources\TaskServers\TaskServerResource;
-use Ffhs\FfhsTasks\Models\Task;
-use Ffhs\FfhsTasks\Models\TaskServer;
 use Filament\Contracts\Plugin;
 use Filament\Navigation\NavigationGroup;
-use Filament\Navigation\NavigationItem;
 use Filament\Panel;
 
 class FfhsTasksPlugin implements Plugin
@@ -62,17 +59,17 @@ class FfhsTasksPlugin implements Plugin
         if ($this->hasTaskResource) {
             $panel->resources([TaskResource::class]);
 
-            if ($this->hasRemoteTasks) {
-
-                $navServers = \Ffhs\FfhsTasks\Facades\FfhsTasks::taskServers();
-                $navServers = $navServers
-                    ->map(fn(TaskServer $server) => NavigationItem::make($server->title)
-                        ->group(\Ffhs\FfhsTasks\Facades\FfhsTasks::__('navigation.group'))
-                        ->url($panel->getUrl() . '/tasks/remote/' . $server->id)
-                        ->parentItem(Task::__('resource.navigation-label'))
-                    );
-                $panel->navigationItems($navServers->toArray());
-            }
+//            if ($this->hasRemoteTasks) {
+//
+//                $navServers = \Ffhs\FfhsTasks\Facades\FfhsTasks::taskServers();
+//                $navServers = $navServers
+//                    ->map(fn(TaskServer $server) => NavigationItem::make($server->title)
+//                        ->group(\Ffhs\FfhsTasks\Facades\FfhsTasks::__('navigation.group'))
+//                        ->url($panel->getUrl() . '/tasks/remote/' . $server->id)
+//                        ->parentItem(Task::__('resource.navigation-label'))
+//                    );
+//                $panel->navigationItems($navServers->toArray());
+//            }
         }
 
         $panel->navigationGroups([
