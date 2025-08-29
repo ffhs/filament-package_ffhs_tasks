@@ -6,7 +6,6 @@ use Ffhs\FfhsTasks\Facades\FfhsTasks;
 use Ffhs\FfhsTasks\Models\Task;
 use Ffhs\FfhsUtils\Contracts\Type;
 use Ffhs\FfhsUtils\Traits\IsType;
-use Filament\Forms\Components\TextInput;
 use Illuminate\Contracts\Translation\Translator;
 
 abstract class TaskType implements Type
@@ -52,10 +51,10 @@ abstract class TaskType implements Type
 
     }
 
-    public function getHandleSchema(): array
+    public function getHandleSchema(): array|\Closure
     {
         return [
-            TextInput::make('name')
+
         ];
     }
 }
