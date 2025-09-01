@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "65eac5f7283404417766db221690d635",
+    "content-hash": "f0f98aa7dc047e297c22398b0c45e069",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -991,11 +991,17 @@
         },
         {
             "name": "ffhs/filament-package_ffhs_utils",
-            "version": "0.1.0",
-            "dist": {
-                "type": "path",
-                "url": "../filament-package_ffhs_utils",
+            "version": "0.1.0-alpha.9057",
+            "source": {
+                "type": "git",
+                "url": "gitlab@internal-git.alpen.ffhs.ch:ffhs-it-services/laravel/filament-package_ffhs_utils.git",
                 "reference": "dc3eaca2c77bb12bb413c4caa791afb2e65a70c1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://internal-git.alpen.ffhs.ch/api/v4/projects/264/packages/composer/archives/ffhs/filament-package_ffhs_utils.zip?sha=dc3eaca2c77bb12bb413c4caa791afb2e65a70c1",
+                "reference": "dc3eaca2c77bb12bb413c4caa791afb2e65a70c1",
+                "shasum": ""
             },
             "require": {
                 "filament/filament": "^4.0",
@@ -1014,12 +1020,12 @@
             "type": "library",
             "extra": {
                 "laravel": {
-                    "providers": [
-                        "Ffhs\\FfhsUtils\\FfhsUtilsServiceProvider"
-                    ],
                     "aliases": {
                         "FfhsUtils": "Ffhs\\FfhsUtils\\Facades\\FfhsUtils"
-                    }
+                    },
+                    "providers": [
+                        "Ffhs\\FfhsUtils\\FfhsUtilsServiceProvider"
+                    ]
                 }
             },
             "autoload": {
@@ -1034,23 +1040,23 @@
                 }
             },
             "scripts": {
-                "post-autoload-dump": [
-                    "@php ./vendor/bin/testbench package:discover --ansi"
-                ],
                 "lint": [
                     "pint"
                 ],
-                "refactor": [
-                    "rector"
-                ],
                 "test": [
                     "pest"
+                ],
+                "refactor": [
+                    "rector"
                 ],
                 "test:lint": [
                     "pint --test"
                 ],
                 "test:refactor": [
                     "rector --dry-run"
+                ],
+                "post-autoload-dump": [
+                    "@php ./vendor/bin/testbench package:discover --ansi"
                 ]
             },
             "license": [
@@ -1059,8 +1065,8 @@
             "authors": [
                 {
                     "name": "Luc Kromer",
-                    "email": "luc.kromer@ffhs.ch",
-                    "role": "Developer"
+                    "role": "Developer",
+                    "email": "luc.kromer@ffhs.ch"
                 }
             ],
             "homepage": "https://github.com/ffhs/filament-package_ffhs_utils",
@@ -1073,9 +1079,6 @@
             "support": {
                 "issues": "https://github.com/ffhs/filament-package_ffhs_utils/issues",
                 "source": "https://github.com/ffhs/filament-package_ffhs_utils"
-            },
-            "transport-options": {
-                "relative": true
             }
         },
         {
