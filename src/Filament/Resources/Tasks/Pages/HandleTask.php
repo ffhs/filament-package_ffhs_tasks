@@ -92,7 +92,7 @@ class HandleTask extends EditRecord
         if ($this->finished) {
             return $taskType->mutateDataBeforeFinish($record, $data);
         }
-        
+
         return $taskType->mutateDataBeforeSave($record, $data);
     }
 
@@ -100,8 +100,8 @@ class HandleTask extends EditRecord
     {
         return [
             $this->getFinishFormAction(),
-            $this->getSaveFormAction(),
             $this->getCancelTaskFormAction(),
+            $this->getSaveFormAction(),
             $this->getCancelFormAction(),
         ];
     }
@@ -116,8 +116,7 @@ class HandleTask extends EditRecord
     {
         return Action::make('finish')
             ->label(Task::__('actions.finish.label'))
-            ->submit('finish')
-            ->action('finish')
+            ->action($this->finish(...))
             ->color(Color::Green);
     }
 
