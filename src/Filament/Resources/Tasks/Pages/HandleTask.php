@@ -16,6 +16,7 @@ class HandleTask extends EditRecord
 {
     protected static string $resource = TaskResource::class;
     protected bool $cancelled = false;
+    protected bool $finished = false;
 
     public function form(Schema $schema): Schema
     {
@@ -70,6 +71,7 @@ class HandleTask extends EditRecord
         $record = $this->getRecord();
         $taskType = $this->getTaskType();
 
+        $this->finished = true;
         $this->save();
 
         $taskType->afterFinish($record, $this->form->getState());
@@ -82,36 +84,47 @@ class HandleTask extends EditRecord
         $taskType = $this->getTaskType();
 
         $data['cancelled'] = $this->cancelled;
-        $data['finished'] = !$this->cancelled;
-        return $this->cancelled
-            ? $taskType->mutateDataBeforeCancel($record, $data)
-            : $taskType->mutateDataBeforeFinish($record, $data);
+        $data['finished'] = $this->finished;
+
+        if ($this->cancelled) {
+            return $taskType->mutateDataBeforeCancel($record, $data);
+        }
+        if ($this->finished) {
+            return $taskType->mutateDataBeforeFinish($record, $data);
+        }
+
+        return $taskType->mutateDataBeforeSave($record, $data);
     }
 
     protected function getFormActions(): array
     {
         return [
+            $this->getFinishFormAction(),
+            $this->getCancelTaskFormAction(),
             $this->getSaveFormAction(),
-            $this->getCanceleFormAction(),
             $this->getCancelFormAction(),
         ];
     }
 
     protected function getSaveFormAction(): Action
     {
+        return parent::getSaveFormAction()
+            ->visible(fn() => $this->getTaskType()->canBeSavedWithoutFinish());
+    }
+
+    protected function getFinishFormAction(): Action
+    {
         return Action::make('finish')
             ->label(Task::__('actions.finish.label'))
-            ->submit('finish')
-            ->action('finish')
+            ->action($this->finish(...))
             ->color(Color::Green);
     }
 
-    protected function getCanceleFormAction(): Action
+    protected function getCancelTaskFormAction(): Action
     {
         return Action::make('cancel')
             ->visible(fn() => $this->getRecord()->can_cancel)
             ->label(Task::__('actions.cancel.label'))
-//            ->submit('cancel')
             ->action($this->cancel(...))
             ->color('danger');
     }

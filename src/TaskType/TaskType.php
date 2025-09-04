@@ -3,7 +3,7 @@
 namespace Ffhs\FfhsTasks\TaskType;
 
 use Ffhs\FfhsTasks\Facades\FfhsTasks;
-use Ffhs\FfhsTasks\Models\Task;
+use Ffhs\FfhsTasks\Traits\HasTaskLifeCycle;
 use Ffhs\FfhsUtils\Contracts\Type;
 use Ffhs\FfhsUtils\Traits\IsType;
 use Illuminate\Contracts\Translation\Translator;
@@ -11,6 +11,10 @@ use Illuminate\Contracts\Translation\Translator;
 abstract class TaskType implements Type
 {
     use IsType;
+    use HasTaskLifeCycle;
+
+    protected bool $canBeDoneRemotely = false;
+    protected bool $canBeSavedWithoutFinish = true;
 
     public static function getTypeListConfig(): array
     {
@@ -27,34 +31,23 @@ abstract class TaskType implements Type
         return static::__('label');
     }
 
-    abstract public function getSettingSchema(): array;
-
-    abstract function canBeDoneRemote(): bool;
-
-    public function mutateDataBeforeCancel(Task $record, $data): array
+    public function getSettingSchema(): array|\Closure
     {
-        return $data;
-    }
-
-    public function mutateDataBeforeFinish(Task $record, array $data): array
-    {
-        return $data;
-    }
-
-    public function afterCancel(Task $record, array $getState): void
-    {
-
-    }
-
-    public function afterFinish(Task $record, array $getState): void
-    {
-
+        return [];
     }
 
     public function getHandleSchema(): array|\Closure
     {
-        return [
+        return [];
+    }
 
-        ];
+    public function canBeDoneRemote(): bool
+    {
+        return $this->canBeDoneRemotely;
+    }
+
+    public function canBeSavedWithoutFinish(): bool
+    {
+        return $this->canBeSavedWithoutFinish;
     }
 }
