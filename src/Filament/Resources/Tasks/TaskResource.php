@@ -70,6 +70,7 @@ class TaskResource extends Resource
     {
         /**@var User $user */
         $user = auth()->user();
+        /**@phpstan-ignore-next-line */
         return FfhsTasks::modifyQueryActiveTask($user->tasks())->count() > 0;
     }
 }

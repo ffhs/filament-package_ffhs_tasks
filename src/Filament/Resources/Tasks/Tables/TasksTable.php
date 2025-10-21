@@ -23,7 +23,6 @@ class TasksTable
     {
         return $table
             ->modifyQueryUsing(fn(Builder $query) => $query->with(['users', 'creator']))
-            ->reorderable(false)
             ->columns(components: [
                 Split::make([
                     self::getIconColumn()->grow(false),

@@ -1,0 +1,36 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+    - vendor/nesbot/carbon/extension.neon
+
+parameters:
+    paths:
+        - src/Contracts
+        - src/Facades
+        - src/Models
+        - src/TaskType
+        - src/Testing
+        - src/Traits
+        - src/FfhsTasks.php
+        - src/FfhsTasksPlugin.php
+        - src/FfhsTasksServiceProvider.php
+        - resources/views/
+
+        - src/Filament/Component
+        - src/Filament/Resources/TaskServers
+        - src/Filament/Resources/Tasks/Schemas
+        - src/Filament/Resources/Tasks/Tables
+        - src/Filament/Resources/Tasks/Actions
+        - src/Filament/Resources/Tasks/Pages/CreateTask.php
+        - src/Filament/Resources/Tasks/Pages/ListAdminTasks.php
+        - src/Filament/Resources/Tasks/Pages/ListRemoteTasks.php
+        - src/Filament/Resources/Tasks/Pages/ListTasks.php
+        - src/Filament/Resources/Tasks/Pages/HandleTask.php
+
+
+    # Level 10 is the highest level
+    level: 5
+
+#    ignoreErrors:
+#        - '#PHPDoc tag @var#'
+#
+#    excludePaths:

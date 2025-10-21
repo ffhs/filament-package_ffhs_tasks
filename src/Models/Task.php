@@ -2,7 +2,7 @@
 
 namespace Ffhs\FfhsTasks\Models;
 
-use App\Models\User;
+use Carbon\Carbon;
 use Ffhs\FfhsTasks\Contracts\TaskCreator;
 use Ffhs\FfhsTasks\Facades\FfhsTasks;
 use Ffhs\FfhsTasks\TaskType\TaskType;
@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Collection;
 
 /**
@@ -20,14 +21,19 @@ use Illuminate\Support\Collection;
  * @property Collection $users
  * @property bool $finished
  * @property bool $cancelled
+ * @property ?Carbon $deadline_at
  * @property int $id
+ * @property string $title
+ * @property bool $can_cancel
+ *
  */
 class Task extends Model
 {
-    use IsFfhsTaskModel, SoftDeletes, HasType;
+    use IsFfhsTaskModel, SoftDeletes, HasType {
+        HasType::getType as protected getTypeTrait;
+    }
 
     protected static string $parentTypeClass = TaskType::class;
-
     protected $fillable = [
         'title',
         'description',
@@ -46,6 +52,12 @@ class Task extends Model
     protected static function configKey(): string
     {
         return 'tasks';
+    }
+
+    public function getType(): ?TaskType
+    {
+        /**@phpstan-ignore-next-line */
+        return $this->getTypeTrait();
     }
 
     public function users(): BelongsToMany
@@ -70,7 +82,10 @@ class Task extends Model
 
     public function isArchived(): bool
     {
-        return $this->finished || $this->cancelled || !is_null($this->deleted_at);
+        if ($this->finished || $this->cancelled) {
+            return true;
+        }
+        return !is_null($this->deadline_at);
     }
 
     protected function casts(): array

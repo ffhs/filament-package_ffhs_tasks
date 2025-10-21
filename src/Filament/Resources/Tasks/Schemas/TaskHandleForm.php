@@ -39,7 +39,7 @@ class TaskHandleForm
                     ->statePath('data')
                     ->columnSpanFull()
                     ->hiddenWhenAllChildComponentsHidden()
-                    ->schema(fn(Task $record) => once(fn() => [Group::make($record->getType()->getHandleSchema())]))
+                    ->schema(fn(Task $record) => once(fn() => [Group::make($record->getType()?->getHandleSchema())]))
             ]);
     }
 

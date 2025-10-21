@@ -3,11 +3,11 @@
 namespace Ffhs\FfhsTasks\Contracts;
 
 
-use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Foundation\Auth\User;
 
-interface TaskUserGroup
+interface TaskUserGroupInterface
 {
     public static function getGroupsQuery(?string $search = null): Builder;
 

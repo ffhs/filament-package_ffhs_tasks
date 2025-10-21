@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
- * @property \Ffhs\FfhsTasks\Contracts\TaskUserGroup|Model $userGroup
+ * @property \Ffhs\FfhsTasks\Contracts\TaskUserGroupInterface|Model|null $userGroup
  */
 class TaskUserGroup extends Model
 {

@@ -2,7 +2,7 @@
 
 namespace Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages;
 
-use Ffhs\FfhsTasks\Contracts\TaskUserGroup;
+use Ffhs\FfhsTasks\Contracts\TaskUserGroupInterface;
 use Ffhs\FfhsTasks\Facades\FfhsTasks;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\TaskResource;
 use Ffhs\FfhsTasks\Models\Task;
@@ -73,7 +73,7 @@ class ListTasks extends ListRecords
         return $query->whereHas('taskUserGroups', function (Builder $query) {
             $groups = FfhsTasks::userGroups();
             foreach ($groups as $groupClass) {
-                /**@var  Model|TaskUserGroup $group */
+                /**@var  Model|TaskUserGroupInterface $group */
                 $group = app($groupClass);
                 $query->where('user_group_type', $groupClass)
                     ->whereIn('user_group_id',

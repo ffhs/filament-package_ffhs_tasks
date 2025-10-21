@@ -2,8 +2,7 @@
 
 namespace Ffhs\FfhsTasks\Filament\Resources\Tasks\Actions;
 
-use App\Models\User;
-use Ffhs\FfhsTasks\Contracts\TaskUserGroup;
+use Ffhs\FfhsTasks\Contracts\TaskUserGroupInterface;
 use Ffhs\FfhsTasks\Facades\FfhsTasks;
 use Ffhs\FfhsTasks\Models\Task;
 use Filament\Actions\Action;
@@ -13,6 +12,7 @@ use Filament\Forms\Components\Select;
 use Filament\Support\Colors\Color;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\HtmlString;
 
 class AssignActions extends ActionGroup
@@ -24,7 +24,6 @@ class AssignActions extends ActionGroup
 
     protected function setUp(): void
     {
-        /**@var \App\Models\User $user */
         $user = auth()->user();
         $user = $user->withoutRelations();
 
@@ -76,7 +75,7 @@ class AssignActions extends ActionGroup
         $group = $data['group'] ?? '';
         $group = explode(':', $group);
 
-        $type = $group[0] ?? null;
+        $type = $group[0];
         $id = $group[1] ?? null;
 
         if (empty($type) || empty($id)) {
@@ -112,12 +111,13 @@ class AssignActions extends ActionGroup
     {
         $options = [];
         foreach (FfhsTasks::userGroups() as $userGroupClass) {
-            /** @var TaskUserGroup $userGroup */
+            /** @var TaskUserGroupInterface $userGroup */
             $userGroup = app($userGroupClass);
 
             $options[$userGroup::groupDisplayname()] = $userGroup::getGroupsQuery()
                 ->get()
-                ->mapWithKeys(function (TaskUserGroup|Model $userGroupModel) use ($userGroupClass) {
+                ->mapWithKeys(function (TaskUserGroupInterface|Model $userGroupModel) use ($userGroupClass) {
+                    /**@phpstan-ignore-next-line */
                     return [$userGroupClass . ':' . $userGroupModel->id => $userGroupModel->getGroupModelTitle()];
                 })->toArray();
         }

@@ -42,10 +42,13 @@ class FfhsTasks
             });
     }
 
-    public function modifyQueryArchiveTasks(Builder|Relation &$baseQuery): Builder|Relation
+    public function modifyQueryArchiveTasks(Builder|Relation $baseQuery): Builder|Relation
     {
+        if (method_exists($baseQuery, 'withTrashed')) {
+            $baseQuery = $baseQuery->withTrashed();
+        }
+
         return $baseQuery
-            ->withTrashed()
             ->where(function (Builder|Relation $query) {
                 return $query
                     ->whereNotNull('deleted_at')

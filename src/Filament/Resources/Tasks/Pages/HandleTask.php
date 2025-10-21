@@ -12,6 +12,10 @@ use Filament\Schemas\Schema;
 use Filament\Support\Colors\Color;
 use Illuminate\Contracts\Support\Htmlable;
 
+
+/**
+ * @method Task getRecord()
+ */
 class HandleTask extends EditRecord
 {
     protected static string $resource = TaskResource::class;
@@ -30,11 +34,8 @@ class HandleTask extends EditRecord
 
     protected function getHeaderActions(): array
     {
-        return [
-
-        ];
+        return [];
     }
-
 
     protected function authorizeAccess(): void
     {
@@ -79,7 +80,6 @@ class HandleTask extends EditRecord
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
-        /**@var Task $record */
         $record = $this->getRecord();
         $taskType = $this->getTaskType();
 
@@ -128,6 +128,4 @@ class HandleTask extends EditRecord
             ->action($this->cancel(...))
             ->color('danger');
     }
-
-
 }
