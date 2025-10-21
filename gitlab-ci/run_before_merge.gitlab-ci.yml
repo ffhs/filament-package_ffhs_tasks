@@ -85,3 +85,4 @@ stan:
   extends: .base_job
   script:
     - ./vendor/bin/phpstan analyse --error-format=gitlab --memory-limit=2G
+
