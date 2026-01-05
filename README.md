@@ -1,9 +1,9 @@
-# This is my package filament-package-ffhs-tasks
+# This is my package filament-package_ffhs_tasks
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/ffhs/filament-package-ffhs-tasks.svg?style=flat-square)](https://packagist.org/packages/ffhs/filament-package-ffhs-tasks)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/ffhs/filament-package-ffhs-tasks/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/ffhs/filament-package-ffhs-tasks/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/ffhs/filament-package-ffhs-tasks/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/ffhs/filament-package-ffhs-tasks/actions?query=workflow%3A"Fix+PHP+code+styling"+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/ffhs/filament-package-ffhs-tasks.svg?style=flat-square)](https://packagist.org/packages/ffhs/filament-package-ffhs-tasks)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/ffhs/filament-package_ffhs_tasks.svg?style=flat-square)](https://packagist.org/packages/ffhs/filament-package_ffhs_tasks)
+[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/ffhs/filament-package_ffhs_tasks/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/ffhs/filament-package_ffhs_tasks/actions?query=workflow%3Arun-tests+branch%3Amain)
+[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/ffhs/filament-package_ffhs_tasks/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/ffhs/filament-package_ffhs_tasks/actions?query=workflow%3A"Fix+PHP+code+styling"+branch%3Amain)
+[![Total Downloads](https://img.shields.io/packagist/dt/ffhs/filament-package_ffhs_tasks.svg?style=flat-square)](https://packagist.org/packages/ffhs/filament-package_ffhs_tasks)
 
 
 
@@ -14,7 +14,7 @@ This is where your description should go. Limit it to a paragraph or two. Consid
 You can install the package via composer:
 
 ```bash
-composer require ffhs/filament-package-ffhs-tasks
+composer require ffhs/filament-package_ffhs_tasks
 ```
 
 > [!IMPORTANT]
@@ -23,26 +23,26 @@ composer require ffhs/filament-package-ffhs-tasks
 After setting up a custom theme add the plugin's views to your theme css file or your app's css file if using the standalone packages.
 
 ```css
-@source '../../../../vendor/ffhs/filament-package-ffhs-tasks/resources/**/*.blade.php';
+@source '../../../../vendor/ffhs/filament-package_ffhs_tasks/resources/**/*.blade.php';
 ```
 
 You can publish and run the migrations with:
 
 ```bash
-php artisan vendor:publish --tag="filament-package-ffhs-tasks-migrations"
+php artisan vendor:publish --tag="filament-package_ffhs_tasks-migrations"
 php artisan migrate
 ```
 
 You can publish the config file with:
 
 ```bash
-php artisan vendor:publish --tag="filament-package-ffhs-tasks-config"
+php artisan vendor:publish --tag="filament-package_ffhs_tasks-config"
 ```
 
 Optionally, you can publish the views using
 
 ```bash
-php artisan vendor:publish --tag="filament-package-ffhs-tasks-views"
+php artisan vendor:publish --tag="filament-package_ffhs_tasks-views"
 ```
 
 This is the contents of the published config file:

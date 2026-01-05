@@ -1,5 +1,5 @@
 {
-    "version": "0.0.1",
+    "version": "0.1.0",
     "name": "ffhs/filament-package_ffhs_tasks",
     "description": "",
     "keywords": [
@@ -25,11 +25,14 @@
     "require": {
         "php": "^8.2",
         "filament/filament": "^4.0",
-        "spatie/laravel-package-tools": "^1.15.0"
+        "ffhs/filament-package_ffhs_utils": "~0.1",
+        "spatie/laravel-package-tools": "^1.15.0",
+        "spatie/laravel-permission": "^6.20"
     },
     "require-dev": {
+        "larastan/larastan": "^3.0",
         "nunomaduro/collision": "^8.0",
-        "orchestra/testbench": "^9.0|^10.0",
+        "orchestra/testbench": "^10.6",
         "pestphp/pest": "^3.8",
         "pestphp/pest-plugin-arch": "^3.0",
         "pestphp/pest-plugin-laravel": "^3.0",
@@ -74,5 +77,11 @@
         }
     },
     "minimum-stability": "dev",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "repositories": {
+        "internal-git.alpen.ffhs.ch/36": {
+            "type": "composer",
+            "url": "https://internal-git.alpen.ffhs.ch/api/v4/group/36/-/packages/composer/packages.json"
+        }
+    }
 }
