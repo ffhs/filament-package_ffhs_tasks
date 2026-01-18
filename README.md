@@ -24,7 +24,28 @@ You can install the package via composer:
 composer require ffhs/filament-package_ffhs_tasks
 ```
 
-## Usage
+Then publish and run the migrations with:
+
+```bash
+php artisan vendor:publish --tag="filament-package_ffhs_tasks-migrations"
+php artisan migrate
+```
+
+You can publish the config file with:
+
+```bash
+php artisan vendor:publish --tag="filament-package_ffhs_tasks-config"
+```
+
+Optionally, you can publish the views using
+
+```bash
+php artisan vendor:publish --tag="filament-package_ffhs_tasks-views"
+```
+
+## Setup
+
+Add the plugin to your Filament panel:
 
 ```php
 // In your Panel Service Provider
@@ -39,6 +60,17 @@ public function panel(Panel $panel): Panel
         );
 }
 ```
+
+Implement the `IsTaskUser` trait on your `User` model:
+
+```php
+class User extends Authenticatable
+{
+    use IsTaskUser;
+}
+```
+
+
 
 ## License
 
