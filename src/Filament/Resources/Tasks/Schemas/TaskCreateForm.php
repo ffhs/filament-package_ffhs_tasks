@@ -36,11 +36,11 @@ class TaskCreateForm
         return Section::make()
             ->columnSpanFull()
             ->statePath('settings')
-            ->visible(fn(Get $get) => once(function () use ($get) {
+            ->visible(fn (Get $get) => once(function () use ($get) {
                 return $get('type') && TaskType::getTypeFromIdentifier($get('type'));
             }))
-            ->hidden(fn(Section $component) => !$component->getChildComponents())
-            ->schema(fn(Get $get) => once(function () use ($get) {
+            ->hidden(fn (Section $component) => !$component->getChildComponents())
+            ->schema(fn (Get $get) => once(function () use ($get) {
                 $typeOptionIdentifier = $get('type');
 
                 if (is_null($typeOptionIdentifier)) {

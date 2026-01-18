@@ -2,7 +2,6 @@
 
 namespace Ffhs\FfhsTasks\Contracts;
 
-
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Foundation\Auth\User;

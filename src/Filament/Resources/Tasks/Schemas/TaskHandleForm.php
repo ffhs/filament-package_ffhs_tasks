@@ -2,7 +2,6 @@
 
 namespace Ffhs\FfhsTasks\Filament\Resources\Tasks\Schemas;
 
-
 use Ffhs\FfhsTasks\Facades\FfhsTasks;
 use Ffhs\FfhsTasks\Models\Task;
 use Filament\Infolists\Components\TextEntry;
@@ -39,7 +38,7 @@ class TaskHandleForm
                     ->statePath('data')
                     ->columnSpanFull()
                     ->hiddenWhenAllChildComponentsHidden()
-                    ->schema(fn(Task $record) => once(fn() => [Group::make($record->getType()?->getHandleSchema())]))
+                    ->schema(fn (Task $record) => once(fn () => [Group::make($record->getType()?->getHandleSchema())]))
             ]);
     }
 

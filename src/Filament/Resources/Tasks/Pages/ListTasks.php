@@ -76,8 +76,10 @@ class ListTasks extends ListRecords
                 /**@var  Model|TaskUserGroupInterface $group */
                 $group = app($groupClass);
                 $query->where('user_group_type', $groupClass)
-                    ->whereIn('user_group_id',
-                        $group::getGroupsForUserQuery(auth()->user())->select($group->getTable() . '.id'));
+                    ->whereIn(
+                        'user_group_id',
+                        $group::getGroupsForUserQuery(auth()->user())->select($group->getTable() . '.id')
+                    );
             }
         });
     }

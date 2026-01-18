@@ -12,7 +12,6 @@ use Filament\Schemas\Schema;
 use Filament\Support\Colors\Color;
 use Illuminate\Contracts\Support\Htmlable;
 
-
 /**
  * @method Task getRecord()
  */
@@ -109,7 +108,7 @@ class HandleTask extends EditRecord
     protected function getSaveFormAction(): Action
     {
         return parent::getSaveFormAction()
-            ->visible(fn() => $this->getTaskType()->canBeSavedWithoutFinish());
+            ->visible(fn () => $this->getTaskType()->canBeSavedWithoutFinish());
     }
 
     protected function getFinishFormAction(): Action
@@ -123,7 +122,7 @@ class HandleTask extends EditRecord
     protected function getCancelTaskFormAction(): Action
     {
         return Action::make('cancel')
-            ->visible(fn() => $this->getRecord()->can_cancel)
+            ->visible(fn () => $this->getRecord()->can_cancel)
             ->label(Task::__('actions.cancel.label'))
             ->action($this->cancel(...))
             ->color('danger');

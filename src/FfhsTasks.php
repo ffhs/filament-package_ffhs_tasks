@@ -59,7 +59,7 @@ class FfhsTasks
 
     public function taskServers(): Collection
     {
-        return once(fn() => TaskServer::all());
+        return once(fn () => TaskServer::all());
     }
 
     public function userGroups(): array

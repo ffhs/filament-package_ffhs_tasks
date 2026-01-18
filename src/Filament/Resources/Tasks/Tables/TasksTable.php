@@ -22,7 +22,7 @@ class TasksTable
     public static function configure(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(fn(Builder $query) => $query->with(['users', 'creator']))
+            ->modifyQueryUsing(fn (Builder $query) => $query->with(['users', 'creator']))
             ->columns(components: [
                 Split::make([
                     self::getIconColumn()->grow(false),
@@ -30,7 +30,8 @@ class TasksTable
                     Stack::make([
                         TextColumn::make('title')
                             ->searchable()
-                            ->formatStateUsing(fn($state
+                            ->formatStateUsing(fn (
+                                $state
                             ) => new HtmlString('<strong>' . htmlspecialchars($state) . '</strong>')),
                         TextColumn::make('description')->searchable(),
                     ])->grow(),
@@ -47,10 +48,10 @@ class TasksTable
                         ->sortable()
                         ->alignCenter()
                         ->grow()
-                        ->formatStateUsing(fn($state) => TaskType::getTypeIdentifierNameList()[$state] ?? null)
+                        ->formatStateUsing(fn ($state) => TaskType::getTypeIdentifierNameList()[$state] ?? null)
                         ->searchable(query: function (Builder $query, string $search) {
                             $matchingTypes = collect(TaskType::getTypeIdentifierNameList())
-                                ->filter(fn($label) => str_contains(strtolower($label), strtolower($search)))
+                                ->filter(fn ($label) => str_contains(strtolower($label), strtolower($search)))
                                 ->keys()
                                 ->toArray();
 
@@ -59,7 +60,8 @@ class TasksTable
 
                     Stack::make([
                         TextColumn::make('creator_type')
-                            ->state(fn(Task $record
+                            ->state(fn (
+                                Task $record
                             ) => new HtmlString('<strong>' . htmlspecialchars($record->creator?->displayCreatorName()) . '</strong>'))
                             ->label(Task::__('attributes.creator.label'))
                             ->sortable(),

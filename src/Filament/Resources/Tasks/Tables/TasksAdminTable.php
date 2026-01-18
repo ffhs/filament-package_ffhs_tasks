@@ -45,7 +45,7 @@ class TasksAdminTable
                     ->sortable()
                     ->boolean(),
                 TextColumn::make('creator')
-                    ->state(fn(Task $record) => $record->creator?->displayCreatorName())
+                    ->state(fn (Task $record) => $record->creator?->displayCreatorName())
                     ->label(Task::__('attributes.creator.label')),
                 TextColumn::make('users.' . FfhsTasks::config('user.name_attribute'))
                     ->label(Task::__('relations.users.label'))

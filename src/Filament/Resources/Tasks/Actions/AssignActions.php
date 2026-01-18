@@ -29,7 +29,7 @@ class AssignActions extends ActionGroup
 
         parent::setUp();
         $this->icon(Heroicon::User);
-        $this->color(fn(Task $record) => $record->users->count() > 0 ? Color::Gray : Color::Emerald);
+        $this->color(fn (Task $record) => $record->users->count() > 0 ? Color::Gray : Color::Emerald);
         $this->hidden(function (Task $record) {
             return $record->isArchived();
         });
@@ -39,13 +39,13 @@ class AssignActions extends ActionGroup
                 ->closeModalByClickingAway(false)
                 ->label(new HtmlString('<b>' . Task::__('actions.assign_me.label') . '</b>'))
                 ->tooltip(Task::__('actions.assign_me.tooltip'))
-                ->disabled(fn(Task $record) => once(fn() => $record->users->contains($user)))
+                ->disabled(fn (Task $record) => once(fn () => $record->users->contains($user)))
                 ->action($this->assignMe(...)),
             Action::make('unassign_me')
                 ->closeModalByClickingAway(false)
                 ->label(new HtmlString('<b>' . Task::__('actions.unassign_me.label') . '</b>'))
                 ->tooltip(Task::__('actions.unassign_me.tooltip'))
-                ->visible(fn(Task $record) => once(fn() => $record->users->contains($user)))
+                ->visible(fn (Task $record) => once(fn () => $record->users->contains($user)))
                 ->action($this->unassignMe(...)),
             Action::make('assign_group')
                 ->closeModalByClickingAway(false)
@@ -143,7 +143,7 @@ class AssignActions extends ActionGroup
                 ->disableOptionWhen(static function (Task $record, $value) {
                     return $record->users->pluck('id')->contains($value);
                 })
-                ->afterStateUpdated(fn($state, $set) => $set('userId', $state))
+                ->afterStateUpdated(fn ($state, $set) => $set('userId', $state))
                 ->saveRelationshipsUsing(function () {
 
                 })

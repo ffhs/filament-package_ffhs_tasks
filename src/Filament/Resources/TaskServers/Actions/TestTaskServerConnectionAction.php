@@ -21,7 +21,7 @@ class TestTaskServerConnectionAction extends Action
             ->tooltip(TaskServer::__('actions.test_connection.tool_tip'))
             ->label(TaskServer::__('actions.test_connection.label'))
             ->icon(Heroicon::ArrowDownCircle)
-            ->action(fn() => Log::info('ToDo')); //ToDo implement Action
+            ->action(fn () => Log::info('ToDo')); //ToDo implement Action
     }
 
 
