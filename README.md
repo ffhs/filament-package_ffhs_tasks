@@ -1,13 +1,20 @@
-# This is my package filament-package_ffhs_tasks
+# FFHS Tasks
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/ffhs/filament-package_ffhs_tasks.svg?style=flat-square)](https://packagist.org/packages/ffhs/filament-package_ffhs_tasks)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/ffhs/filament-package_ffhs_tasks/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/ffhs/filament-package_ffhs_tasks/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/ffhs/filament-package_ffhs_tasks/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/ffhs/filament-package_ffhs_tasks/actions?query=workflow%3A"Fix+PHP+code+styling"+branch%3Amain)
+[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/ffhs/filament-package_ffhs_tasks/test.yml?branch=main&label=tests&style=flat-square)](https://github.com/ffhs/filament-package_ffhs_tasks/actions?query=workflow%3Atest+branch%3Amain)
+[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/ffhs/filament-package_ffhs_tasks/format.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/ffhs/filament-package_ffhs_tasks/actions?query=workflow%3Aformat+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/ffhs/filament-package_ffhs_tasks.svg?style=flat-square)](https://packagist.org/packages/ffhs/filament-package_ffhs_tasks)
 
 
+FFHS Tasks is a task management plugin for FilamentPHP.
 
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
+
+## Development
+
+The package is using `orchestral/testbench` for testing against a Laravel app.
+
+`composer serve` will start the application as `http://127.0.0.1:8000`.
+
 
 ## Installation
 
@@ -17,70 +24,21 @@ You can install the package via composer:
 composer require ffhs/filament-package_ffhs_tasks
 ```
 
-> [!IMPORTANT]
-> If you have not set up a custom theme and are using Filament Panels follow the instructions in the [Filament Docs](https://filamentphp.com/docs/4.x/styling/overview#creating-a-custom-theme) first.
-
-After setting up a custom theme add the plugin's views to your theme css file or your app's css file if using the standalone packages.
-
-```css
-@source '../../../../vendor/ffhs/filament-package_ffhs_tasks/resources/**/*.blade.php';
-```
-
-You can publish and run the migrations with:
-
-```bash
-php artisan vendor:publish --tag="filament-package_ffhs_tasks-migrations"
-php artisan migrate
-```
-
-You can publish the config file with:
-
-```bash
-php artisan vendor:publish --tag="filament-package_ffhs_tasks-config"
-```
-
-Optionally, you can publish the views using
-
-```bash
-php artisan vendor:publish --tag="filament-package_ffhs_tasks-views"
-```
-
-This is the contents of the published config file:
-
-```php
-return [
-];
-```
-
 ## Usage
 
 ```php
-$ffhsTasks = new Ffhs\FfhsTasks();
-echo $ffhsTasks->echoPhrase('Hello, Ffhs!');
+// In your Panel Service Provider
+use Ffhs\FfhsTasks\FfhsTasksPlugin;
+
+public function panel(Panel $panel): Panel
+{
+    return $panel
+        ->id('admin')
+        ->plugin(
+            FfhsTasksPlugin::make()                
+        );
+}
 ```
-
-## Testing
-
-```bash
-composer test
-```
-
-## Changelog
-
-Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
-
-## Contributing
-
-Please see [CONTRIBUTING](.github/CONTRIBUTING.md) for details.
-
-## Security Vulnerabilities
-
-Please review [our security policy](.github/SECURITY.md) on how to report security vulnerabilities.
-
-## Credits
-
-- [Luc Kromer](https://github.com/-)
-- [All Contributors](../../contributors)
 
 ## License
 
