@@ -29,7 +29,7 @@ class TaskServersTable
                     ->label(TaskServer::__('attributes.url.label')),
 
                 TextColumn::make('created_at')
-                    ->label(TaskServer::__('attributes.created_at.label'))
+                    ->label(TaskServer::__('attributes.created_at.label')),
             ])
             ->filters([
                 //

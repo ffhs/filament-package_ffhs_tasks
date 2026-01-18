@@ -21,8 +21,7 @@ class CreateTask extends CreateRecord
         $user = auth()->user();
         $data['creator_id'] = $user->id;
         $data['creator_type'] = $user::class;
+
         return $data;
     }
-
-
 }

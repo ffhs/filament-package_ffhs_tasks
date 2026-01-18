@@ -19,10 +19,10 @@ class TaskServerResource extends Resource
     use IsTaskResource;
 
     protected static ?string $model = TaskServer::class;
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedServerStack;
 
     protected static ?string $recordTitleAttribute = 'title';
-
 
     public static function form(Schema $schema): Schema
     {

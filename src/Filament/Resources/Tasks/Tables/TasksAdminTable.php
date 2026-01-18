@@ -47,7 +47,7 @@ class TasksAdminTable
                 TextColumn::make('creator')
                     ->state(fn (Task $record) => $record->creator?->displayCreatorName())
                     ->label(Task::__('attributes.creator.label')),
-                TextColumn::make('users.' . FfhsTasks::config('user.name_attribute'))
+                TextColumn::make('users.'.FfhsTasks::config('user.name_attribute'))
                     ->label(Task::__('relations.users.label'))
                     ->listWithLineBreaks()
                     ->searchable()
@@ -58,7 +58,7 @@ class TasksAdminTable
                         return $state->userGroup?->getGroupModelTitle();
                     })
                     ->listWithLineBreaks()
-                    ->sortable()
+                    ->sortable(),
             ])
             ->modifyQueryUsing(function ($query) {
                 $query->with('creator', 'users', 'taskUserGroups.userGroup');
@@ -67,7 +67,7 @@ class TasksAdminTable
                 TrashedFilter::make(),
             ])
             ->recordActions([
-                AssignActions::make()
+                AssignActions::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

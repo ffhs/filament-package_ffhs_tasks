@@ -2,7 +2,7 @@
 
 arch()
     ->expect('Ffhs\FilamentPackageFfhsCustomForms')
-    //->toUseStrictTypes()
+    // ->toUseStrictTypes()
     ->not->toUse(['die', 'dd', 'dump', 'Debugbar']);
 
 arch()

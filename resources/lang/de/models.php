@@ -22,16 +22,16 @@ return [
                         'all' => 'Alle',
                         'created' => 'Erstellte Aufgaben',
                         'groups' => 'Gruppen Aufgaben',
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ],
         'relations' => [
             'users' => [
-                'label' => 'Zugewiesene Nutzer'
+                'label' => 'Zugewiesene Nutzer',
             ],
             'taskUserGroups' => [
-                'label' => 'Zugewiesene Gruppen'
+                'label' => 'Zugewiesene Gruppen',
             ],
         ],
         'attributes' => [
@@ -39,38 +39,38 @@ return [
                 'label' => 'Status',
             ],
             'can_cancel' => [
-                'label' => 'Kann Abgebrochen werden'
+                'label' => 'Kann Abgebrochen werden',
             ],
             'cancelled' => [
-                'label' => 'Abgebrochen'
+                'label' => 'Abgebrochen',
             ],
             'title' => [
                 'label' => 'Aufgaben Titel',
-                'helper_text' => ''
+                'helper_text' => '',
             ],
             'finished' => [
                 'label' => 'Erledigt',
-                'helper_text' => ''
+                'helper_text' => '',
             ],
             'creator' => [
                 'label' => 'Ersteller',
-                'helper_text' => ''
+                'helper_text' => '',
             ],
             'description' => [
                 'label' => 'Beschreibung',
-                'helper_text' => ''
+                'helper_text' => '',
             ],
             'type' => [
                 'label' => 'Aufgaben Type',
-                'helper_text' => ''
+                'helper_text' => '',
             ],
             'start_at' => [
                 'label' => 'Start',
-                'helper_text' => ''
+                'helper_text' => '',
             ],
             'deadline_at' => [
                 'label' => 'Deadline',
-                'helper_text' => ''
+                'helper_text' => '',
             ],
         ],
         'actions' => [
@@ -93,8 +93,8 @@ return [
                     'users' => [
                         'label' => 'Personen',
                         'helper_text' => '',
-                    ]
-                ]
+                    ],
+                ],
             ],
             'assign_user_admin' => [
                 'label' => 'Person zuweisen',
@@ -109,7 +109,7 @@ return [
             ],
             'finish' => [
                 'label' => 'Abschliessen',
-            ]
+            ],
         ],
     ],
 
@@ -124,15 +124,15 @@ return [
         'attributes' => [
             'title' => [
                 'label' => 'App Name',
-                'helper_text' => ''
+                'helper_text' => '',
             ],
             'token' => [
                 'label' => 'Token',
-                'helper_text' => ''
+                'helper_text' => '',
             ],
             'url' => [
                 'label' => 'URL',
-                'helper_text' => ''
+                'helper_text' => '',
             ],
             'created_at' => [
                 'label' => 'Hinzugefügt am',
@@ -143,11 +143,11 @@ return [
                 'label' => 'Verbindung Testen',
                 'short_label' => 'Test',
                 'tooltip' => '',
-            ]
-        ]
+            ],
+        ],
     ],
 
     'task_user_group' => [
 
-    ]
+    ],
 ];

@@ -67,8 +67,9 @@ class TaskResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        /**@var User $user */
+        /** @var User $user */
         $user = auth()->user();
+
         /**@phpstan-ignore-next-line */
         return FfhsTasks::modifyQueryActiveTask($user->tasks())->count() > 0;
     }

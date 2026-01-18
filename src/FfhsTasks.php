@@ -8,8 +8,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
 
-/**
- */
 class FfhsTasks
 {
     public function config(string ...$key)
@@ -18,15 +16,15 @@ class FfhsTasks
             return config('ffhs-tasks');
         }
 
-        return config('ffhs-tasks.' . implode('.', $key));
+        return config('ffhs-tasks.'.implode('.', $key));
     }
 
     public function __(string ...$keys): array|string|Translator|null
     {
         $key = implode('.', $keys);
-        return __('filament-package_ffhs_tasks::' . $key);
-    }
 
+        return __('filament-package_ffhs_tasks::'.$key);
+    }
 
     public function modifyQueryActiveTask(Builder|Relation &$baseQuery): Builder|Relation
     {

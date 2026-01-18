@@ -15,8 +15,9 @@ trait IsTaskResource
 
     public static function getNavigationLabel(): string
     {
-        /**@var Task $modelClass */
+        /** @var Task $modelClass */
         $modelClass = static::getModel();
+
         return $modelClass::__('resource.navigation-label');
     }
 
@@ -26,22 +27,23 @@ trait IsTaskResource
     public static function getModel(): string
     {
         $modelClass = static::$model;
-        /** @phpstan-ignore-next-line */
-        return FfhsTasks::config('models.' . $modelClass::configKey()) ?: $modelClass;
-    }
 
+        /** @phpstan-ignore-next-line */
+        return FfhsTasks::config('models.'.$modelClass::configKey()) ?: $modelClass;
+    }
 
     public static function getTitleCaseModelLabel(): string
     {
-        /**@var Task $modelClass */
+        /** @var Task $modelClass */
         $modelClass = static::getModel();
+
         return $modelClass::__('label.singular');
     }
 
     public static function getTitleCasePluralModelLabel(): string
     {
         $modelClass = static::getModel();
+
         return $modelClass::__('label.plural');
     }
-
 }

@@ -17,7 +17,7 @@ class TaskUserGroup extends Model
     protected $fillable = [
         'task_id',
         'user_group_id',
-        'user_group_type'
+        'user_group_type',
     ];
 
     protected static function configKey(): string

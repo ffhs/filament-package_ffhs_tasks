@@ -4,6 +4,6 @@
 
 return [
     'confirm' => [
-        'label' => 'Bestätigen'
-    ]
+        'label' => 'Bestätigen',
+    ],
 ];

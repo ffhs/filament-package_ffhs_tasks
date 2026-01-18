@@ -31,7 +31,6 @@ class ListAdminTasks extends ListTasks
         return [];
     }
 
-
     protected function getHeaderActions(): array
     {
         return [
