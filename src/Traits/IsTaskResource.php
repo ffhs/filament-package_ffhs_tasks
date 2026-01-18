@@ -10,7 +10,7 @@ trait IsTaskResource
 {
     public static function getNavigationGroup(): string|UnitEnum|null
     {
-        return FfhsTasks::__('nav.group');
+        return FfhsTasks::__('navigation.group');
     }
 
     public static function getNavigationLabel(): string

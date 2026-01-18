@@ -60,6 +60,7 @@ class FfhsTasksPlugin implements Plugin
         if ($this->hasTaskServerResource) {
             $panel->resources([TaskServerResource::class]);
         }
+
         if ($this->hasTaskResource) {
             $panel->resources([TaskResource::class]);
 
@@ -76,14 +77,15 @@ class FfhsTasksPlugin implements Plugin
             //            }
         }
 
+
+    }
+
+    public function boot(Panel $panel): void
+    {
         $panel->navigationGroups([
             NavigationGroup::make()
                 ->label(\Ffhs\FfhsTasks\Facades\FfhsTasks::__('navigation.group'))
                 ->collapsible(false),
         ]);
-    }
-
-    public function boot(Panel $panel): void
-    {
     }
 }
