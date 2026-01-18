@@ -25,7 +25,7 @@
     "require": {
         "php": "^8.2",
         "filament/filament": "^4.0 || ^5.0",
-        "ffhs/filament-package_ffhs_utils": "~0.1",
+        "ffhs/filament-package_ffhs_utils": "dev-main",
         "spatie/laravel-package-tools": "^1.15.0",
         "spatie/laravel-permission": "^6.20"
     },
@@ -61,7 +61,7 @@
             "@php ./vendor/bin/testbench package:discover --ansi"
         ],
         "format": "vendor/bin/pint",
-        "analyse": "vendor/bin/phpstan analyse",
+        "analyse": "vendor/bin/phpstan analyse --memory-limit=1G",
         "test": "vendor/bin/pest",
         "refactor": "vendor/bin/rector",
 
@@ -92,6 +92,6 @@
             "phpstan/extension-installer": true
         }
     },
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "prefer-stable": true
 }

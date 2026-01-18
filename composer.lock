@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9ff69074dd770122e87b43749714ce68",
+    "content-hash": "cc44ca21a06e2be4a1ac6ade6aa8e77d",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -990,16 +990,16 @@
         },
         {
             "name": "ffhs/filament-package_ffhs_utils",
-            "version": "0.1.0",
+            "version": "dev-main",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ffhs/filament-package_ffhs_utils.git",
-                "reference": "652388e2f677d72b85d18cd3f10c47dd63f1d38b"
+                "reference": "6a060cf1884ebde79408ac7ca24abcc40cc1482b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ffhs/filament-package_ffhs_utils/zipball/652388e2f677d72b85d18cd3f10c47dd63f1d38b",
-                "reference": "652388e2f677d72b85d18cd3f10c47dd63f1d38b",
+                "url": "https://api.github.com/repos/ffhs/filament-package_ffhs_utils/zipball/6a060cf1884ebde79408ac7ca24abcc40cc1482b",
+                "reference": "6a060cf1884ebde79408ac7ca24abcc40cc1482b",
                 "shasum": ""
             },
             "require": {
@@ -1008,14 +1008,16 @@
                 "spatie/laravel-package-tools": "^1.15.0"
             },
             "require-dev": {
+                "larastan/larastan": "^3.0",
                 "nunomaduro/collision": "^8.0",
-                "orchestra/testbench": "^9.0|^10.0",
+                "orchestra/testbench": "^10.6",
                 "pestphp/pest": "^3.8",
                 "pestphp/pest-plugin-arch": "^3.0",
                 "pestphp/pest-plugin-laravel": "^3.0",
                 "pestphp/pest-plugin-livewire": "^3.0",
                 "rector/rector": "^2.0"
             },
+            "default-branch": true,
             "type": "library",
             "extra": {
                 "laravel": {
@@ -1030,6 +1032,7 @@
             "autoload": {
                 "psr-4": {
                     "Ffhs\\FfhsUtils\\": "src/",
+                    "Ffhs\\FfhsUtils\\Workbench\\": "workbench/app/",
                     "Ffhs\\FfhsUtils\\Database\\Factories\\": "database/factories/"
                 }
             },
@@ -1055,7 +1058,7 @@
                 "issues": "https://github.com/ffhs/filament-package_ffhs_utils/issues",
                 "source": "https://github.com/ffhs/filament-package_ffhs_utils"
             },
-            "time": "2025-12-30T10:34:24+00:00"
+            "time": "2025-12-30T10:30:34+00:00"
         },
         {
             "name": "filament/actions",
@@ -12443,8 +12446,10 @@
         }
     ],
     "aliases": [],
-    "minimum-stability": "stable",
-    "stability-flags": {},
+    "minimum-stability": "dev",
+    "stability-flags": {
+        "ffhs/filament-package_ffhs_utils": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
