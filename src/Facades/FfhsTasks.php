@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Facade;
 
 /**
  * @see \Ffhs\FfhsTasks\FfhsTasks
+ *
  * @method static mixed config(string ...$keys)
  * @method static array|string|Translator|null __(string $string)
  * @method static Builder|Relation modifyQueryActiveTask($baseQuery)

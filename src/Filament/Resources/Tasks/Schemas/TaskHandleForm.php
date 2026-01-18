@@ -2,7 +2,6 @@
 
 namespace Ffhs\FfhsTasks\Filament\Resources\Tasks\Schemas;
 
-
 use Ffhs\FfhsTasks\Facades\FfhsTasks;
 use Ffhs\FfhsTasks\Models\Task;
 use Filament\Infolists\Components\TextEntry;
@@ -21,7 +20,7 @@ class TaskHandleForm
                     ->columnSpan(2)
                     ->schema([
                         TextEntry::make('description')
-                            ->hiddenLabel()
+                            ->hiddenLabel(),
                     ]),
                 Section::make(Task::__('relations.users.label'))
                     ->columnSpan(1)
@@ -29,18 +28,18 @@ class TaskHandleForm
                         TextEntry::make('users')
                             ->state(function ($record) {
                                 $name = FfhsTasks::config('user.name_attribute');
+
                                 return $record->users->pluck($name);
                             })
                             ->bulleted()
-                            ->hiddenLabel()
+                            ->hiddenLabel(),
                     ]),
 
                 Section::make()
                     ->statePath('data')
                     ->columnSpanFull()
                     ->hiddenWhenAllChildComponentsHidden()
-                    ->schema(fn(Task $record) => once(fn() => [Group::make($record->getType()?->getHandleSchema())]))
+                    ->schema(fn (Task $record) => once(fn () => [Group::make($record->getType()?->getHandleSchema())])),
             ]);
     }
-
 }

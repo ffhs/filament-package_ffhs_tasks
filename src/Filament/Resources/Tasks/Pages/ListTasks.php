@@ -73,11 +73,11 @@ class ListTasks extends ListRecords
         return $query->whereHas('taskUserGroups', function (Builder $query) {
             $groups = FfhsTasks::userGroups();
             foreach ($groups as $groupClass) {
-                /**@var  Model|TaskUserGroupInterface $group */
+                /** @var Model|TaskUserGroupInterface $group */
                 $group = app($groupClass);
                 $query->where('user_group_type', $groupClass)
                     ->whereIn('user_group_id',
-                        $group::getGroupsForUserQuery(auth()->user())->select($group->getTable() . '.id'));
+                        $group::getGroupsForUserQuery(auth()->user())->select($group->getTable().'.id'));
             }
         });
     }

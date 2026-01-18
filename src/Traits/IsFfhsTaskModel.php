@@ -10,14 +10,15 @@ trait IsFfhsTaskModel
     public static function __(string ...$keys): array|string|Translator|null
     {
         $key = implode('.', $keys);
-        return FfhsTasks::__('models.' . static::configKey() . '.' . $key);
+
+        return FfhsTasks::__('models.'.static::configKey().'.'.$key);
     }
 
     abstract public static function configKey(): string;
 
     public static function getConfigTable(): string
     {
-        return FfhsTasks::config('table_names.' . static::configKey()) ?: app(static::class)->getTable();
+        return FfhsTasks::config('table_names.'.static::configKey()) ?: app(static::class)->getTable();
     }
 
     public function getTable(): string

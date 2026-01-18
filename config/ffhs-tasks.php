@@ -27,10 +27,10 @@ return [
     ],
 
     'types' => [
-        ConfirmTaskType::class
+        ConfirmTaskType::class,
     ],
 
     'user_creatable_types' => [
-        ConfirmTaskType::class
-    ]
+        ConfirmTaskType::class,
+    ],
 ];

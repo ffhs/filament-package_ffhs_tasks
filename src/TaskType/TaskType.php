@@ -10,10 +10,11 @@ use Illuminate\Contracts\Translation\Translator;
 
 abstract class TaskType implements Type
 {
-    use IsType;
     use HasTaskLifeCycle;
+    use IsType;
 
     protected bool $canBeDoneRemotely = false;
+
     protected bool $canBeSavedWithoutFinish = true;
 
     public static function getTypeListConfig(): array
@@ -23,7 +24,7 @@ abstract class TaskType implements Type
 
     public static function __(string $key): Translator|string|array|null
     {
-        return FfhsTasks::__('task_types.' . static::identifier() . '.' . $key);
+        return FfhsTasks::__('task_types.'.static::identifier().'.'.$key);
     }
 
     public static function displayname(): string

@@ -2,6 +2,7 @@
 
 namespace Ffhs\FfhsTasks;
 
+use Ffhs\FfhsTasks\Testing\TestsFfhsTasks;
 use Filament\Support\Assets\AlpineComponent;
 use Filament\Support\Assets\Asset;
 use Filament\Support\Assets\Css;
@@ -13,8 +14,6 @@ use Livewire\Features\SupportTesting\Testable;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Ffhs\FfhsTasks\Commands\FfhsTasksCommand;
-use Ffhs\FfhsTasks\Testing\TestsFfhsTasks;
 
 class FfhsTasksServiceProvider extends PackageServiceProvider
 {
@@ -78,7 +77,7 @@ class FfhsTasksServiceProvider extends PackageServiceProvider
 
         // Handle Stubs
         if (app()->runningInConsole()) {
-            foreach (app(Filesystem::class)->files(__DIR__ . '/../stubs/') as $file) {
+            foreach (app(Filesystem::class)->files(__DIR__.'/../stubs/') as $file) {
                 $this->publishes([
                     $file->getRealPath() => base_path("stubs/filament-package_ffhs_tasks/{$file->getFilename()}"),
                 ], 'filament-package_ffhs_tasks-stubs');

@@ -6,7 +6,6 @@ use Ffhs\FfhsTasks\Facades\FfhsTasks;
 use Ffhs\FfhsTasks\Models\Task;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-
 /* @phpstan-ignore-next-line */
 trait IsTaskUser
 {

@@ -22,7 +22,7 @@ class TasksTable
     public static function configure(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(fn(Builder $query) => $query->with(['users', 'creator']))
+            ->modifyQueryUsing(fn (Builder $query) => $query->with(['users', 'creator']))
             ->columns(components: [
                 Split::make([
                     self::getIconColumn()->grow(false),
@@ -30,8 +30,8 @@ class TasksTable
                     Stack::make([
                         TextColumn::make('title')
                             ->searchable()
-                            ->formatStateUsing(fn($state
-                            ) => new HtmlString('<strong>' . htmlspecialchars($state) . '</strong>')),
+                            ->formatStateUsing(fn ($state
+                            ) => new HtmlString('<strong>'.htmlspecialchars($state).'</strong>')),
                         TextColumn::make('description')->searchable(),
                     ])->grow(),
 
@@ -47,10 +47,10 @@ class TasksTable
                         ->sortable()
                         ->alignCenter()
                         ->grow()
-                        ->formatStateUsing(fn($state) => TaskType::getTypeIdentifierNameList()[$state] ?? null)
+                        ->formatStateUsing(fn ($state) => TaskType::getTypeIdentifierNameList()[$state] ?? null)
                         ->searchable(query: function (Builder $query, string $search) {
                             $matchingTypes = collect(TaskType::getTypeIdentifierNameList())
-                                ->filter(fn($label) => str_contains(strtolower($label), strtolower($search)))
+                                ->filter(fn ($label) => str_contains(strtolower($label), strtolower($search)))
                                 ->keys()
                                 ->toArray();
 
@@ -59,22 +59,22 @@ class TasksTable
 
                     Stack::make([
                         TextColumn::make('creator_type')
-                            ->state(fn(Task $record
-                            ) => new HtmlString('<strong>' . htmlspecialchars($record->creator?->displayCreatorName()) . '</strong>'))
+                            ->state(fn (Task $record
+                            ) => new HtmlString('<strong>'.htmlspecialchars($record->creator?->displayCreatorName()).'</strong>'))
                             ->label(Task::__('attributes.creator.label'))
                             ->sortable(),
-                        TextColumn::make('users.' . FfhsTasks::config('user.name_attribute'))
+                        TextColumn::make('users.'.FfhsTasks::config('user.name_attribute'))
                             ->label(Task::__('relations.users.label'))
                             ->sortable(),
-                        //ToDo add groups
+                        // ToDo add groups
                     ])->grow()->alignEnd(),
-                ])
+                ]),
             ])
             ->recordUrl(function (Task $record) {
                 return $record->isArchived() ? null : TaskResource::getUrl('handle', ['record' => $record]);
             })
             ->recordActions([
-                AssignActions::make()
+                AssignActions::make(),
                 // ViewAction::make(),
                 // EditAction::make(),
             ])
@@ -97,6 +97,7 @@ class TasksTable
                 if ($record->cancelled) {
                     return Heroicon::XCircle;
                 }
+
                 return Heroicon::Ticket;
             })
             ->color(function (Task $record) {
@@ -106,6 +107,7 @@ class TasksTable
                 if ($record->cancelled) {
                     return Color::Red;
                 }
+
                 return Color::Amber;
             })
             ->tooltip(function (Task $record) {
@@ -115,6 +117,7 @@ class TasksTable
                 if ($record->cancelled) {
                     return Task::__('attributes.cancelled.label');
                 }
+
                 return '';
             });
     }

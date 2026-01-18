@@ -4,7 +4,6 @@ namespace Ffhs\FfhsTasks\Filament\Resources\TaskServers;
 
 use BackedEnum;
 use Ffhs\FfhsTasks\Filament\Resources\TaskServers\Pages\CreateTaskServer;
-use Ffhs\FfhsTasks\Filament\Resources\TaskServers\Pages\EditTaskServer;
 use Ffhs\FfhsTasks\Filament\Resources\TaskServers\Pages\ListTaskServers;
 use Ffhs\FfhsTasks\Filament\Resources\TaskServers\Schemas\TaskServerForm;
 use Ffhs\FfhsTasks\Filament\Resources\TaskServers\Tables\TaskServersTable;
@@ -20,10 +19,10 @@ class TaskServerResource extends Resource
     use IsTaskResource;
 
     protected static ?string $model = TaskServer::class;
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedServerStack;
 
     protected static ?string $recordTitleAttribute = 'title';
-
 
     public static function form(Schema $schema): Schema
     {

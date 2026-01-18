@@ -12,14 +12,15 @@ use Filament\Schemas\Schema;
 use Filament\Support\Colors\Color;
 use Illuminate\Contracts\Support\Htmlable;
 
-
 /**
  * @method Task getRecord()
  */
 class HandleTask extends EditRecord
 {
     protected static string $resource = TaskResource::class;
+
     protected bool $cancelled = false;
+
     protected bool $finished = false;
 
     public function form(Schema $schema): Schema
@@ -29,7 +30,7 @@ class HandleTask extends EditRecord
 
     public function getTitle(): string|Htmlable
     {
-        return $this->getRecordTitle() . ': ' . $this->getRecord()->title;
+        return $this->getRecordTitle().': '.$this->getRecord()->title;
     }
 
     protected function getHeaderActions(): array
@@ -40,7 +41,7 @@ class HandleTask extends EditRecord
     protected function authorizeAccess(): void
     {
         parent::authorizeAccess();
-        /**@var Task $record */
+        /** @var Task $record */
         $record = $this->getRecord();
         if ($record->isArchived()) {
             $this->redirect($this::$resource::getUrl());
@@ -49,14 +50,15 @@ class HandleTask extends EditRecord
 
     protected function getTaskType(): TaskType
     {
-        /**@var Task $record */
+        /** @var Task $record */
         $record = $this->getRecord();
+
         return $record->getType();
     }
 
     protected function cancel(): void
     {
-        /**@var Task $record */
+        /** @var Task $record */
         $record = $this->getRecord();
         $taskType = $this->getTaskType();
 
@@ -68,7 +70,7 @@ class HandleTask extends EditRecord
 
     protected function finish(): void
     {
-        /**@var Task $record */
+        /** @var Task $record */
         $record = $this->getRecord();
         $taskType = $this->getTaskType();
 
@@ -109,7 +111,7 @@ class HandleTask extends EditRecord
     protected function getSaveFormAction(): Action
     {
         return parent::getSaveFormAction()
-            ->visible(fn() => $this->getTaskType()->canBeSavedWithoutFinish());
+            ->visible(fn () => $this->getTaskType()->canBeSavedWithoutFinish());
     }
 
     protected function getFinishFormAction(): Action
@@ -123,7 +125,7 @@ class HandleTask extends EditRecord
     protected function getCancelTaskFormAction(): Action
     {
         return Action::make('cancel')
-            ->visible(fn() => $this->getRecord()->can_cancel)
+            ->visible(fn () => $this->getRecord()->can_cancel)
             ->label(Task::__('actions.cancel.label'))
             ->action($this->cancel(...))
             ->color('danger');

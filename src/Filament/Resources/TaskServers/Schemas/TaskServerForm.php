@@ -42,9 +42,9 @@ class TaskServerForm
                                     ->password()
                                     ->required(),
 
-                                TestTaskServerConnectionAction::make()
-                            ])
-                    ])
+                                TestTaskServerConnectionAction::make(),
+                            ]),
+                    ]),
             ]);
     }
 }

@@ -29,7 +29,7 @@ class AssignActions extends ActionGroup
 
         parent::setUp();
         $this->icon(Heroicon::User);
-        $this->color(fn(Task $record) => $record->users->count() > 0 ? Color::Gray : Color::Emerald);
+        $this->color(fn (Task $record) => $record->users->count() > 0 ? Color::Gray : Color::Emerald);
         $this->hidden(function (Task $record) {
             return $record->isArchived();
         });
@@ -37,15 +37,15 @@ class AssignActions extends ActionGroup
         $this->actions([
             Action::make('assign_me')
                 ->closeModalByClickingAway(false)
-                ->label(new HtmlString('<b>' . Task::__('actions.assign_me.label') . '</b>'))
+                ->label(new HtmlString('<b>'.Task::__('actions.assign_me.label').'</b>'))
                 ->tooltip(Task::__('actions.assign_me.tooltip'))
-                ->disabled(fn(Task $record) => once(fn() => $record->users->contains($user)))
+                ->disabled(fn (Task $record) => once(fn () => $record->users->contains($user)))
                 ->action($this->assignMe(...)),
             Action::make('unassign_me')
                 ->closeModalByClickingAway(false)
-                ->label(new HtmlString('<b>' . Task::__('actions.unassign_me.label') . '</b>'))
+                ->label(new HtmlString('<b>'.Task::__('actions.unassign_me.label').'</b>'))
                 ->tooltip(Task::__('actions.unassign_me.tooltip'))
-                ->visible(fn(Task $record) => once(fn() => $record->users->contains($user)))
+                ->visible(fn (Task $record) => once(fn () => $record->users->contains($user)))
                 ->action($this->unassignMe(...)),
             Action::make('assign_group')
                 ->closeModalByClickingAway(false)
@@ -65,7 +65,7 @@ class AssignActions extends ActionGroup
     protected function assignMe(Task $record): void
     {
         $user = auth()->user();
-        if (!$record->users->contains($user)) {
+        if (! $record->users->contains($user)) {
             $record->users()->attach($user);
         }
     }
@@ -118,7 +118,7 @@ class AssignActions extends ActionGroup
                 ->get()
                 ->mapWithKeys(function (TaskUserGroupInterface|Model $userGroupModel) use ($userGroupClass) {
                     /**@phpstan-ignore-next-line */
-                    return [$userGroupClass . ':' . $userGroupModel->id => $userGroupModel->getGroupModelTitle()];
+                    return [$userGroupClass.':'.$userGroupModel->id => $userGroupModel->getGroupModelTitle()];
                 })->toArray();
         }
 
@@ -126,7 +126,7 @@ class AssignActions extends ActionGroup
             Select::make('group')
                 ->required()
                 ->hiddenLabel()
-                ->options($options)
+                ->options($options),
         ];
     }
 
@@ -143,10 +143,8 @@ class AssignActions extends ActionGroup
                 ->disableOptionWhen(static function (Task $record, $value) {
                     return $record->users->pluck('id')->contains($value);
                 })
-                ->afterStateUpdated(fn($state, $set) => $set('userId', $state))
-                ->saveRelationshipsUsing(function () {
-
-                })
+                ->afterStateUpdated(fn ($state, $set) => $set('userId', $state))
+                ->saveRelationshipsUsing(function () {}),
         ];
     }
 }

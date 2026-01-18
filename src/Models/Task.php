@@ -25,15 +25,15 @@ use Illuminate\Support\Collection;
  * @property int $id
  * @property string $title
  * @property bool $can_cancel
- *
  */
 class Task extends Model
 {
-    use IsFfhsTaskModel, SoftDeletes, HasType {
+    use HasType, IsFfhsTaskModel, SoftDeletes {
         HasType::getType as protected getTypeTrait;
     }
 
     protected static string $parentTypeClass = TaskType::class;
+
     protected $fillable = [
         'title',
         'description',
@@ -46,7 +46,7 @@ class Task extends Model
         'creator_type',
         'creator_id',
         'can_cancel',
-        'cancelled'
+        'cancelled',
     ];
 
     protected static function configKey(): string
@@ -85,7 +85,8 @@ class Task extends Model
         if ($this->finished || $this->cancelled) {
             return true;
         }
-        return !is_null($this->deadline_at);
+
+        return ! is_null($this->deadline_at);
     }
 
     protected function casts(): array
@@ -93,7 +94,7 @@ class Task extends Model
         return [
             'deadline_at' => 'datetime',
             'start_at' => 'datetime',
-            'settings' => 'array'
+            'settings' => 'array',
         ];
     }
 }

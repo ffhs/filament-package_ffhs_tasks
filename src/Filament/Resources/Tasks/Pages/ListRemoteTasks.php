@@ -13,10 +13,10 @@ class ListRemoteTasks extends ListRecords
 {
     protected static string $resource = TaskResource::class;
 
-//    public function getTitle(): string|Htmlable
-//    {
-//        return Task::__('resource.pages.index.title');
-//    }
+    //    public function getTitle(): string|Htmlable
+    //    {
+    //        return Task::__('resource.pages.index.title');
+    //    }
 
     public function getMaxContentWidth(): Width|string|null
     {

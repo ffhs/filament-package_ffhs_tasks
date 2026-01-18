@@ -24,31 +24,29 @@ class TaskCreateForm
             ->columns(1)
             ->components([
                 self::getDefaultSection(),
-                self::getSettingsSection()
+                self::getSettingsSection(),
             ]);
     }
 
-    /**
-     * @return Section
-     */
     public static function getSettingsSection(): Section
     {
         return Section::make()
             ->columnSpanFull()
             ->statePath('settings')
-            ->visible(fn(Get $get) => once(function () use ($get) {
+            ->visible(fn (Get $get) => once(function () use ($get) {
                 return $get('type') && TaskType::getTypeFromIdentifier($get('type'));
             }))
-            ->hidden(fn(Section $component) => !$component->getChildComponents())
-            ->schema(fn(Get $get) => once(function () use ($get) {
+            ->hidden(fn (Section $component) => ! $component->getChildComponents())
+            ->schema(fn (Get $get) => once(function () use ($get) {
                 $typeOptionIdentifier = $get('type');
 
                 if (is_null($typeOptionIdentifier)) {
                     return [];
                 }
 
-                /**@var TaskType $type */
+                /** @var TaskType $type */
                 $type = TaskType::getTypeFromIdentifier($typeOptionIdentifier);
+
                 return $type?->getSettingSchema() ?? [];
             }));
     }
@@ -77,13 +75,14 @@ class TaskCreateForm
                     ->afterStateUpdated(function (Set $set, ?string $state) {
                         if (is_null($state)) {
                             $set('settings', []);
+
                             return;
                         }
 
-                        /**@var TaskType $type */
+                        /** @var TaskType $type */
                         $type = TaskType::getTypeFromIdentifier($state);
                         foreach ($type->getSettingSchema() as $settingSchema) {
-                            $set('settings.' . $settingSchema->getStatePath(false), $settingSchema->getDefaultState());
+                            $set('settings.'.$settingSchema->getStatePath(false), $settingSchema->getDefaultState());
                         }
                     }),
                 Toggle::make('can_cancel')
@@ -108,7 +107,7 @@ class TaskCreateForm
                             ->label(Task::__('attributes.deadline_at.label'))
                             ->seconds(false)
                             ->nullable(),
-                    ])
+                    ]),
             ]);
     }
 }
