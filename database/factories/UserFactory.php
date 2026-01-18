@@ -2,18 +2,17 @@
 
 namespace Ffhs\FfhsTasks\Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/*
-class ModelFactory extends Factory
+class UserFactory extends Factory
 {
-    protected $model = YourModel::class;
+    protected $model = User::class;
 
-    public function definition()
+    public function definition(): array
     {
         return [
 
         ];
     }
 }
-*/

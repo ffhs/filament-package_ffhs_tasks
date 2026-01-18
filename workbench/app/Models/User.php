@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Ffhs\FfhsTasks\Database\Factories\UserFactory;
 use Ffhs\FfhsTasks\Traits\IsTaskUser;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -31,6 +31,8 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+
+    protected static string $factory = UserFactory::class;
 
     /**
      * @return array<string, string>

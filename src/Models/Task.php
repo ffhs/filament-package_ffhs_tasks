@@ -4,10 +4,12 @@ namespace Ffhs\FfhsTasks\Models;
 
 use Carbon\Carbon;
 use Ffhs\FfhsTasks\Contracts\TaskCreator;
+use Ffhs\FfhsTasks\Database\Factories\TaskFactory;
 use Ffhs\FfhsTasks\Facades\FfhsTasks;
 use Ffhs\FfhsTasks\TaskType\TaskType;
 use Ffhs\FfhsTasks\Traits\IsFfhsTaskModel;
 use Ffhs\FfhsUtils\Traits\HasType;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -28,9 +30,15 @@ use Illuminate\Support\Collection;
  */
 class Task extends Model
 {
-    use HasType, IsFfhsTaskModel, SoftDeletes {
+    /** @use HasFactory<TaskFactory> */
+    use HasFactory;
+    use HasType {
         HasType::getType as protected getTypeTrait;
     }
+    use IsFfhsTaskModel;
+    use SoftDeletes;
+
+    protected static string $factory = TaskFactory::class;
 
     protected static string $parentTypeClass = TaskType::class;
 
