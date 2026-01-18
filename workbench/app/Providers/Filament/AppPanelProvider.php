@@ -56,9 +56,9 @@ class AppPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ]);
-        // ->plugin(
-        //     FfhsTasksPlugin::make()
-        // );
+            ])
+            ->plugin(
+                FfhsTasksPlugin::make()
+            );
     }
 }
