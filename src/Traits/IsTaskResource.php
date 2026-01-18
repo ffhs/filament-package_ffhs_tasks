@@ -15,7 +15,7 @@ trait IsTaskResource
 
     public static function getNavigationLabel(): string
     {
-        /** @var Task $modelClass */
+        /** @var class-string<Task> $modelClass */
         $modelClass = static::getModel();
 
         return $modelClass::__('resource.navigation-label');
@@ -34,7 +34,7 @@ trait IsTaskResource
 
     public static function getTitleCaseModelLabel(): string
     {
-        /** @var Task $modelClass */
+        /** @var class-string<Task> $modelClass */
         $modelClass = static::getModel();
 
         return $modelClass::__('label.singular');
@@ -42,6 +42,7 @@ trait IsTaskResource
 
     public static function getTitleCasePluralModelLabel(): string
     {
+        /** @var class-string<Task> $modelClass */
         $modelClass = static::getModel();
 
         return $modelClass::__('label.plural');
