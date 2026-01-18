@@ -19,7 +19,7 @@ jobs:
       fail-fast: true
       matrix:
         php: [8.4, 8.3]
-        filament: [4.*, 5.*]
+        filament: [4.*]
         laravel: [12.*]
         include:
           - laravel: 12.*
