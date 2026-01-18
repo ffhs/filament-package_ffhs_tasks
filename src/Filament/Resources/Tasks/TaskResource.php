@@ -27,7 +27,7 @@ class TaskResource extends Resource
 
     protected static ?string $model = Task::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::DocumentCheck;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedDocumentCheck;
 
     public static function infolist(Schema $schema): Schema
     {
@@ -69,8 +69,9 @@ class TaskResource extends Resource
     {
         /** @var User $user */
         $user = auth()->user();
+        $tasksQuery = $user->tasks();
 
         /**@phpstan-ignore-next-line */
-        return FfhsTasks::modifyQueryActiveTask($user->tasks())->count() > 0;
+        return FfhsTasks::modifyQueryActiveTask($tasksQuery)->count();
     }
 }
