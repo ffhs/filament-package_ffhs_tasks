@@ -2,21 +2,18 @@
 
 namespace App\Providers;
 
+use App\Console\DbOpenCommand;
 use Illuminate\Support\ServiceProvider;
 
 class WorkbenchServiceProvider extends ServiceProvider
 {
-    /**
-     * Register services.
-     */
     public function register(): void
     {
-        //
+        $this->commands([
+            DbOpenCommand::class,
+        ]);
     }
 
-    /**
-     * Bootstrap services.
-     */
     public function boot(): void
     {
         //
