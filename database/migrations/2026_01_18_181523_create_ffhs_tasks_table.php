@@ -5,7 +5,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class () extends Migration {
     public function up(): void
     {
         $taskTable = FfhsTasks::config('table_names.tasks');
@@ -19,15 +19,20 @@ return new class extends Migration {
             $table->string('title');
             $table->text('description');
             $table->string('type');
-            $table->json('settings')->nullable();
-            $table->json('data')->nullable();
-            $table->boolean('can_cancel')->default(false);
-            $table->boolean('cancelled')->default(false);
-            $table->boolean('finished')->default(false);
-            $table->dateTime('deadline_at')->nullable();
-            $table->dateTime('start_at')->nullable();
+            $table->string('status');
 
             $table->nullableMorphs('creator');
+
+            $table->boolean('can_be_cancelled')->default(false);
+
+            $table->dateTime('cancelled_at')->nullable();
+            $table->dateTime('finished_at')->nullable();
+
+            $table->dateTime('starts_at')->nullable();
+            $table->dateTime('deadline_at')->nullable();
+
+            $table->json('settings')->nullable();
+            $table->json('data')->nullable();
 
             $table->softDeletes();
             $table->timestamps();
