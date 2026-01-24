@@ -11,7 +11,6 @@ return new class () extends Migration {
         $taskTable = FfhsTasks::config('table_names.tasks');
         $userGroupTable = FfhsTasks::config('table_names.task_user_group');
         $taskUsers = FfhsTasks::config('table_names.task_user');
-        $taskServers = FfhsTasks::config('table_names.task_servers');
 
         Schema::create($taskTable, static function (Blueprint $table) {
             $table->id();
@@ -49,14 +48,6 @@ return new class () extends Migration {
             $table->id();
             $table->foreignId('task_id')->constrained($taskTable)->cascadeOnDelete();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->timestamps();
-        });
-
-        Schema::create($taskServers, static function (Blueprint $table) {
-            $table->id();
-            $table->string('title');
-            $table->string('url');
-            $table->text('token');
             $table->timestamps();
         });
     }
