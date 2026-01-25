@@ -23,11 +23,39 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class TaskResource extends Resource
 {
-    use IsTaskResource;
-
     protected static ?string $model = Task::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedDocumentCheck;
+
+    /**
+     * @return class-string<Task>
+     */
+    public static function getModel(): string
+    {
+        $modelClass = static::$model;
+
+        return config('ffhs-tasks.models.'.$modelClass) ?: $modelClass;
+    }
+
+    public static function getNavigationGroup(): string|UnitEnum|null
+    {
+        return __('ffhs-tasks::models.tasks.resource.group');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('ffhs-tasks::models.tasks.resource.navigation_label');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('ffhs-tasks::models.tasks.label.singular');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('ffhs-tasks::models.tasks.label.plural');
+    }
 
     public static function infolist(Schema $schema): Schema
     {

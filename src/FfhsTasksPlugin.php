@@ -29,14 +29,16 @@ class FfhsTasksPlugin implements Plugin
 
     public function register(Panel $panel): void
     {
-        $panel->resources([TaskResource::class]);
+        $panel->resources([
+            TaskResource::class,
+        ]);
     }
 
     public function boot(Panel $panel): void
     {
         $panel->navigationGroups([
             NavigationGroup::make()
-                ->label(\Ffhs\FfhsTasks\Facades\FfhsTasks::__('navigation.group'))
+                ->label(__('ffhs-tasks::models.tasks.resource.group'))
                 ->collapsible(false),
         ]);
     }

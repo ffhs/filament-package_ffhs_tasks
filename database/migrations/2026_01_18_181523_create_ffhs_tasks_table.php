@@ -1,6 +1,5 @@
 <?php
 
-use Ffhs\FfhsTasks\Facades\FfhsTasks;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -8,9 +7,9 @@ use Illuminate\Support\Facades\Schema;
 return new class () extends Migration {
     public function up(): void
     {
-        $taskTable = FfhsTasks::config('table_names.tasks');
-        $userGroupTable = FfhsTasks::config('table_names.task_user_group');
-        $taskUsers = FfhsTasks::config('table_names.task_user');
+        $taskTable = config('ffhs-tasks.tables.tasks');
+        $userGroupTable = config('ffhs-tasks.tables.task_user_group');
+        $taskUsers = config('ffhs-tasks.tables.task_user');
 
         Schema::create($taskTable, static function (Blueprint $table) {
             $table->id();

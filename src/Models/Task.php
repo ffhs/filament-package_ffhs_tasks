@@ -5,9 +5,8 @@ namespace Ffhs\FfhsTasks\Models;
 use Carbon\Carbon;
 use Ffhs\FfhsTasks\Contracts\TaskCreator;
 use Ffhs\FfhsTasks\Database\Factories\TaskFactory;
-use Ffhs\FfhsTasks\Facades\FfhsTasks;
+use Ffhs\FfhsTasks\Enums\TaskStatus;
 use Ffhs\FfhsTasks\TaskType\TaskType;
-use Ffhs\FfhsTasks\Traits\IsFfhsTaskModel;
 use Ffhs\FfhsUtils\Traits\HasType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -33,9 +32,8 @@ class Task extends Model
     /** @use HasFactory<TaskFactory> */
     use HasFactory;
     use HasType {
-        HasType::getType as protected getTypeTrait;
+        HasType::getType as protected getTaskType;
     }
-    use IsFfhsTaskModel;
     use SoftDeletes;
 
     protected static string $factory = TaskFactory::class;
@@ -57,22 +55,38 @@ class Task extends Model
         'cancelled',
     ];
 
-    protected static function configKey(): string
+    protected function casts(): array
     {
-        return 'tasks';
+        return [
+            'status' => TaskStatus::class,
+            'can_be_cancelled' => 'boolean',
+            'finished_at' => 'datetime',
+            'cancelled_at' => 'datetime',
+
+            'starts_at' => 'datetime',
+            'deadline_at' => 'datetime',
+
+            'data' => 'array',
+            'settings' => 'array',
+        ];
+    }
+
+    public function getTable(): string
+    {
+        return config('ffhs-tasks.tables.tasks');
     }
 
     public function getType(): ?TaskType
     {
         /**@phpstan-ignore-next-line */
-        return $this->getTypeTrait();
+        return $this->getTaskType();
     }
 
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(
             User::class,
-            FfhsTasks::config('table_names.task_user'),
+            config('ffhs-tasks.tables.task_user'),
             'task_id',
             'user_id'
         );

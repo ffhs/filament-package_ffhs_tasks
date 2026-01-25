@@ -5,14 +5,16 @@ use Ffhs\FfhsTasks\Models\Task;
 use Ffhs\FfhsTasks\TaskType\Types\ConfirmTaskType;
 
 return [
-    'table_names' => [
+    'run_migrations' => true,
+
+    'tables' => [
         'tasks' => 'ffhs_tasks',
         'task_user' => 'ffhs_task_user',
         'task_user_group' => 'ffhs_task_user_group',
     ],
 
     'models' => [
-        'tasks' => Task::class,
+        Task::class => Task::class,
     ],
 
     'user' => [
