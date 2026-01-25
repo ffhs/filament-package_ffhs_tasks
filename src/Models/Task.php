@@ -64,7 +64,7 @@ class Task extends Model
         return [
             'status' => TaskStatus::class,
             'can_be_cancelled' => 'boolean',
-            'finished_at' => 'datetime',
+            'completed_at' => 'datetime',
             'cancelled_at' => 'datetime',
 
             'starts_at' => 'datetime',
@@ -86,6 +86,8 @@ class Task extends Model
         return $this->getTaskType();
     }
 
+    /** Relations */
+
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(
@@ -106,13 +108,33 @@ class Task extends Model
         return $this->morphTo('creator');
     }
 
+    /** Methods */
+
     public function isArchived(): bool
     {
-        if ($this->finished_at !== null || $this->cancelled_at !== null) {
-            return true;
-        }
-
-        return ! is_null($this->deadline_at);
+        return $this->status !== TaskStatus::InProgress;
     }
 
+    public function cancel(): bool
+    {
+        return $this->update([
+            'status' => TaskStatus::Cancelled,
+            'cancelled_at' => now(),
+        ]);
+    }
+
+    public function expire(): bool
+    {
+        return $this->update([
+            'status' => TaskStatus::Expired,
+        ]);
+    }
+
+    public function complete(): bool
+    {
+        return $this->update([
+            'status' => TaskStatus::Completed,
+            'completed_at' => now(),
+        ]);
+    }
 }
