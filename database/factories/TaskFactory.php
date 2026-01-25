@@ -50,6 +50,17 @@ class TaskFactory extends Factory
         ]);
     }
 
+    public function expired(): self
+    {
+        return $this->state([
+            'cancelled_at' => $this->faker->dateTimeBetween(
+                startDate: Carbon::today()->subDays(30),
+                endDate: Carbon::yesterday(),
+            ),
+            'status' => TaskStatus::Expired,
+        ]);
+    }
+
     public function completed(): self
     {
         return $this->state([
