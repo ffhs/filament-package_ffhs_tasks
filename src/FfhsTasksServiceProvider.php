@@ -2,9 +2,11 @@
 
 namespace Ffhs\FfhsTasks;
 
+use Ffhs\FfhsTasks\Jobs\ExpireOverdueTasksJob;
 use Filament\Support\Assets\Asset;
 use Filament\Support\Assets\Css;
 use Filament\Support\Facades\FilamentAsset;
+use Illuminate\Console\Scheduling\Schedule;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
@@ -22,7 +24,6 @@ class FfhsTasksServiceProvider extends PackageServiceProvider
             ->hasTranslations()
             ->hasViews()
             ->discoversMigrations()
-            ->runsMigrations(config('ffhs-tasks.run_migrations', false))
             ->hasInstallCommand(function (InstallCommand $command) {
                 $command
                     ->publishConfigFile()
@@ -32,12 +33,24 @@ class FfhsTasksServiceProvider extends PackageServiceProvider
             });
     }
 
+    public function bootingPackage(): void
+    {
+        if (config('ffhs-tasks.run_migrations', true)) {
+            $this->package->runsMigrations();
+        }
+    }
+
     public function packageBooted(): void
     {
         FilamentAsset::register(
             $this->getAssets(),
             $this->getAssetPackageName()
         );
+
+        $this->app->booted(function () {
+            $schedule = $this->app->make(Schedule::class);
+            $schedule->job(new ExpireOverdueTasksJob())->everyMinute();
+        });
     }
 
     protected function getAssetPackageName(): ?string
