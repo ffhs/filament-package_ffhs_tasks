@@ -4,22 +4,23 @@ namespace Ffhs\FfhsTasks\Filament\Resources\Tasks;
 
 use App\Models\User;
 use BackedEnum;
-use Ffhs\FfhsTasks\Facades\FfhsTasks;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\CreateTask;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\HandleTask;
-use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\ListAdminTasks;
-use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\ListRemoteTasks;
+use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\ListAllTasks;
+use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\ListArchivedTasks;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\ListTasks;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Schemas\TaskInfolist;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Tables\TasksTable;
 use Ffhs\FfhsTasks\Models\Task;
-use Ffhs\FfhsTasks\Traits\IsTaskResource;
+use Ffhs\FfhsTasks\Scopes\IsActiveScope;
+use Filament\Navigation\NavigationItem;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use UnitEnum;
 
 class TaskResource extends Resource
 {
@@ -39,22 +40,22 @@ class TaskResource extends Resource
 
     public static function getNavigationGroup(): string|UnitEnum|null
     {
-        return __('ffhs-tasks::models.tasks.resource.group');
+        return __('ffhs-tasks::tasks.navigation_group');
     }
 
     public static function getNavigationLabel(): string
     {
-        return __('ffhs-tasks::models.tasks.resource.navigation_label');
+        return __('ffhs-tasks::tasks.navigation_label');
     }
 
     public static function getModelLabel(): string
     {
-        return __('ffhs-tasks::models.tasks.label.singular');
+        return __('ffhs-tasks::tasks.model_label');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('ffhs-tasks::models.tasks.label.plural');
+        return __('ffhs-tasks::tasks.plural_model_label');
     }
 
     public static function infolist(Schema $schema): Schema
@@ -78,10 +79,10 @@ class TaskResource extends Resource
     {
         return [
             'index' => ListTasks::route('/'),
-            'admin-index' => ListAdminTasks::route('/admin'),
+            'archive' => ListArchivedTasks::route('/archive'),
+            'all' => ListAllTasks::route('/all'),
             'create' => CreateTask::route('/create'),
             'handle' => HandleTask::route('/{record}'),
-            'index-remote' => ListRemoteTasks::route('/remote/{server}'),
         ];
     }
 
@@ -99,7 +100,20 @@ class TaskResource extends Resource
         $user = auth()->user();
         $tasksQuery = $user->tasks();
 
-        /**@phpstan-ignore-next-line */
-        return FfhsTasks::modifyQueryActiveTask($tasksQuery)->count();
+        return $tasksQuery
+            ->tap(new IsActiveScope())
+            ->count();
+    }
+
+    public static function getNavigationItems(): array
+    {
+        // Filament doesn't recognize the page as a child item itself.
+        return array_map(
+            fn (NavigationItem $item) => $item->childItems([
+                ...ListAllTasks::getNavigationItems(),
+                ...ListArchivedTasks::getNavigationItems(),
+            ]),
+            parent::getNavigationItems()
+        );
     }
 }

@@ -12,7 +12,7 @@ interface TaskUserGroupInterface
 
     public static function getGroupsForUserQuery(User $user): Builder;
 
-    public static function groupDisplayname(): string;
+    public static function groupDisplayName(): string;
 
     public function getGroupModelTitle(): string;
 

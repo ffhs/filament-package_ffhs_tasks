@@ -24,13 +24,35 @@ class DatabaseSeeder extends Seeder
         // Created tasks
         Task::factory()
             ->for($user, 'creator')
-            ->count(10)
+            ->count(5)
             ->create();
+
+        // Future tasks
+        Task::factory()
+            ->for($user, 'creator')
+            ->count(5)
+            ->create([
+                'starts_at' => now()->addDays(3),
+            ]);
 
         // My Tasks
         Task::factory()
             ->hasAttached($user)
-            ->count(10)
+            ->count(5)
+            ->create();
+
+        // Canceled Tasks
+        Task::factory()
+            ->hasAttached($user)
+            ->count(5)
+            ->cancelled()
+            ->create();
+
+        // Finished tasks
+        Task::factory()
+            ->hasAttached($user)
+            ->count(5)
+            ->completed()
             ->create();
         //
         // // Group tasks

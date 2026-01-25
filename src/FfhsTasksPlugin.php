@@ -4,7 +4,6 @@ namespace Ffhs\FfhsTasks;
 
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\TaskResource;
 use Filament\Contracts\Plugin;
-use Filament\Navigation\NavigationGroup;
 use Filament\Panel;
 
 class FfhsTasksPlugin implements Plugin
@@ -36,10 +35,6 @@ class FfhsTasksPlugin implements Plugin
 
     public function boot(Panel $panel): void
     {
-        $panel->navigationGroups([
-            NavigationGroup::make()
-                ->label(__('ffhs-tasks::models.tasks.resource.group'))
-                ->collapsible(false),
-        ]);
+
     }
 }

@@ -2,122 +2,101 @@
 
 namespace Ffhs\FfhsTasks\Filament\Resources\Tasks\Tables;
 
-use Ffhs\FfhsTasks\Facades\FfhsTasks;
-use Ffhs\FfhsTasks\Filament\Resources\Tasks\Actions\AssignActions;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\TaskResource;
 use Ffhs\FfhsTasks\Models\Task;
 use Ffhs\FfhsTasks\TaskType\TaskType;
-use Filament\Support\Colors\Color;
-use Filament\Support\Icons\Heroicon;
-use Filament\Tables\Columns\IconColumn;
-use Filament\Tables\Columns\Layout\Split;
-use Filament\Tables\Columns\Layout\Stack;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\HtmlString;
 
 class TasksTable
 {
     public static function configure(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(fn (Builder $query) => $query->with(['users', 'creator']))
-            ->columns(components: [
-                Split::make([
-                    self::getIconColumn()->grow(false),
+            ->modifyQueryUsing(
+                fn (Builder $query) => $query->with(['users', 'creator'])
+            )
+            ->defaultSort(
+                fn (Builder $query) => $query
+                    ->orderBy('deadline_at')
+                    ->orderByDesc('created_at')
+            )
+            ->searchable(['description'])
 
-                    Stack::make([
-                        TextColumn::make('title')
-                            ->searchable()
-                            ->formatStateUsing(fn (
-                                $state
-                            ) => new HtmlString('<strong>' . htmlspecialchars($state) . '</strong>')),
-                        TextColumn::make('description')->searchable(),
-                    ])->grow(),
+            ->columns([
+                TextColumn::make('id')
+                    ->label(__('ffhs-tasks::tasks.attributes.id'))
+                    ->badge()
+                    ->visible(app()->isLocal()),
 
-                    TextColumn::make('deadline_at')
-                        ->label(Task::__('attributes.deadline_at.label'))
-                        ->dateTime('d.m.Y H:i')
-                        ->sortable()
-                        ->alignRight()
-                        ->grow(),
+                TextColumn::make('status')
+                    ->label(__('ffhs-tasks::tasks.attributes.status'))
+                    ->badge()
+                    ->sortable(),
 
-                    TextColumn::make('type')
-                        ->label('Typ')
-                        ->sortable()
-                        ->alignCenter()
-                        ->grow()
-                        ->formatStateUsing(fn ($state) => TaskType::getTypeIdentifierNameList()[$state] ?? null)
-                        ->searchable(query: function (Builder $query, string $search) {
-                            $matchingTypes = collect(TaskType::getTypeIdentifierNameList())
-                                ->filter(fn ($label) => str_contains(strtolower($label), strtolower($search)))
-                                ->keys()
-                                ->toArray();
+                // TextColumn::make('type')
+                //     ->label(__('ffhs-tasks::tasks.attributes.type'))
+                //     ->sortable()
+                //     ->formatStateUsing(fn ($state) => TaskType::getTypeIdentifierNameList()[$state] ?? null)
+                //     ->searchable(query: function (Builder $query, string $search) {
+                //         $matchingTypes = collect(TaskType::getTypeIdentifierNameList())
+                //             ->filter(fn ($label) => str_contains(strtolower($label), strtolower($search)))
+                //             ->keys()
+                //             ->toArray();
+                //
+                //         $query->whereIn('type', $matchingTypes);
+                //     }),
 
-                            $query->whereIn('type', $matchingTypes);
-                        }),
+                TextColumn::make('title')
+                    ->label(__('ffhs-tasks::tasks.attributes.title'))
+                    ->searchable(),
 
-                    Stack::make([
-                        TextColumn::make('creator_type')
-                            ->state(fn (
-                                Task $record
-                            ) => new HtmlString('<strong>' . htmlspecialchars($record->creator?->displayCreatorName()) . '</strong>'))
-                            ->label(Task::__('attributes.creator.label'))
-                            ->sortable(),
-                        TextColumn::make('users.' . FfhsTasks::config('user.name_attribute'))
-                            ->label(Task::__('relations.users.label'))
-                            ->sortable(),
-                        //ToDo add groups
-                    ])->grow()->alignEnd(),
-                ])
+                TextColumn::make('users.name')
+                    ->label(__('ffhs-tasks::tasks.attributes.assignees'))
+                    ->toggleable(),
+
+                TextColumn::make('taskUserGroups.name')
+                    ->label(__('ffhs-tasks::tasks.attributes.groups'))
+                    ->toggleable()
+                    ->expandableLimitedList(),
+
+                TextColumn::make('creator.name')
+                    ->label(__('ffhs-tasks::tasks.attributes.creator'))
+                    ->toggleable()
+                    ->searchable(),
+
+                TextColumn::make('starts_at')
+                    ->label(__('ffhs-tasks::tasks.attributes.starts_at'))
+                    ->toggleable()
+                    ->dateTime('d.m.Y'),
+
+                TextColumn::make('deadline_at')
+                    ->label(__('ffhs-tasks::tasks.attributes.deadline_at'))
+                    ->toggleable()
+                    ->dateTime('d.m.Y'),
+            ])
+            ->recordClasses(fn (Task $record) => [
+                $record->starts_at?->isFuture() ? 'opacity-50' : ''
             ])
             ->recordUrl(function (Task $record) {
                 return $record->isArchived() ? null : TaskResource::getUrl('handle', ['record' => $record]);
             })
             ->recordActions([
-                AssignActions::make()
-                // ViewAction::make(),
-                // EditAction::make(),
+                ActionGroup::make([
+                    // Assign Self
+                    // AssignUser (in Group)
+                    // AssignGroup
+                ]),
+                // ViewAction::make()
+                //     ->iconButton(),
+                //
+                // EditAction::make()
+                //     ->iconButton(),
             ])
             ->toolbarActions([]);
-    }
-
-    protected static function getIconColumn(): IconColumn
-    {
-        return IconColumn::make('finished')
-            ->label(Task::__('attributes.state.label'))
-            ->grow(false)
-            ->sortable(query: function (Builder $query, string $direction) {
-                $query->orderBy('finished', $direction)
-                    ->orderBy('cancelled', $direction);
-            })
-            ->icon(function (Task $record) {
-                if ($record->finished) {
-                    return Heroicon::CheckBadge;
-                }
-                if ($record->cancelled) {
-                    return Heroicon::XCircle;
-                }
-                return Heroicon::Ticket;
-            })
-            ->color(function (Task $record) {
-                if ($record->finished) {
-                    return Color::Gray;
-                }
-                if ($record->cancelled) {
-                    return Color::Red;
-                }
-                return Color::Amber;
-            })
-            ->tooltip(function (Task $record) {
-                if ($record->finished) {
-                    return Task::__('attributes.finished.label');
-                }
-                if ($record->cancelled) {
-                    return Task::__('attributes.cancelled.label');
-                }
-                return '';
-            });
     }
 }

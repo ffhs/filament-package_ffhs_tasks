@@ -24,7 +24,7 @@ return new class () extends Migration {
             $table->boolean('can_be_cancelled')->default(false);
 
             $table->dateTime('cancelled_at')->nullable();
-            $table->dateTime('finished_at')->nullable();
+            $table->dateTime('completed_at')->nullable();
 
             $table->dateTime('starts_at')->nullable();
             $table->dateTime('deadline_at')->nullable();

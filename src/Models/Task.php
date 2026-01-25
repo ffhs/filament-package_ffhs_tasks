@@ -40,19 +40,11 @@ class Task extends Model
 
     protected static string $parentTypeClass = TaskType::class;
 
-    protected $fillable = [
-        'title',
-        'description',
-        'type',
-        'settings',
-        'data',
-        'finished',
-        'deadline_at',
-        'start_at',
-        'creator_type',
-        'creator_id',
-        'can_cancel',
-        'cancelled',
+    protected $guarded = [
+        'id',
+        'created_at',
+        'updated_at',
+        'deleted_at',
     ];
 
     protected function casts(): array
@@ -104,19 +96,11 @@ class Task extends Model
 
     public function isArchived(): bool
     {
-        if ($this->finished || $this->cancelled) {
+        if ($this->finished_at !== null || $this->cancelled_at !== null) {
             return true;
         }
 
         return ! is_null($this->deadline_at);
     }
 
-    protected function casts(): array
-    {
-        return [
-            'deadline_at' => 'datetime',
-            'start_at' => 'datetime',
-            'settings' => 'array',
-        ];
-    }
 }

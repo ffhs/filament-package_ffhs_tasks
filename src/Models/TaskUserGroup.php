@@ -3,7 +3,6 @@
 namespace Ffhs\FfhsTasks\Models;
 
 use Ffhs\FfhsTasks\Database\Factories\TaskUserGroupFactory;
-use Ffhs\FfhsTasks\Traits\IsFfhsTaskModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -16,7 +15,6 @@ class TaskUserGroup extends Model
 {
     /** @use HasFactory<TaskUserGroupFactory> */
     use HasFactory;
-    use IsFfhsTaskModel;
 
     protected $fillable = [
         'task_id',
@@ -26,9 +24,9 @@ class TaskUserGroup extends Model
 
     protected static string $factory = TaskUserGroupFactory::class;
 
-    protected static function configKey(): string
+    public function getTable(): string
     {
-        return 'task_user_group';
+        return config('ffhs-tasks.tables.task_user_group');
     }
 
     public function task(): BelongsTo
