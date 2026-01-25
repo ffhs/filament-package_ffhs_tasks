@@ -22,7 +22,7 @@ class FfhsTasksServiceProvider extends PackageServiceProvider
             ->hasTranslations()
             ->hasViews()
             ->discoversMigrations()
-            ->runsMigrations()
+            ->runsMigrations(config('ffhs-tasks.run_migrations', false))
             ->hasInstallCommand(function (InstallCommand $command) {
                 $command
                     ->publishConfigFile()
