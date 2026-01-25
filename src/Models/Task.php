@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Ffhs\FfhsTasks\Contracts\TaskCreator;
 use Ffhs\FfhsTasks\Database\Factories\TaskFactory;
 use Ffhs\FfhsTasks\Enums\TaskStatus;
+use Ffhs\FfhsTasks\Events\StatusChangedEvent;
 use Ffhs\FfhsTasks\TaskType\TaskType;
 use Ffhs\FfhsUtils\Traits\HasType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -46,6 +47,17 @@ class Task extends Model
         'updated_at',
         'deleted_at',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::updated(function (Task $task) {
+            if ($task->wasChanged('status')) {
+                event(new StatusChangedEvent($task));
+            }
+        });
+    }
 
     protected function casts(): array
     {
