@@ -1,6 +1,7 @@
 <?php
 
 // config for Ffhs/FfhsTasks
+use App\TaskTypes\ApprovalTaskType;
 use Ffhs\FfhsTasks\Models\Task;
 use Ffhs\FfhsTasks\TaskType\DefaultTaskType;
 
@@ -26,6 +27,7 @@ return [
     ],
 
     'types' => [
+        ApprovalTaskType::class,
         DefaultTaskType::class,
     ],
 ];

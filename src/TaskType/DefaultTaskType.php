@@ -1,9 +1,8 @@
 <?php
 
-namespace Ffhs\FfhsTasks\TaskType\Types;
+namespace Ffhs\FfhsTasks\TaskType;
 
 use Closure;
-use Ffhs\FfhsTasks\TaskType\TaskType;
 
 class DefaultTaskType extends TaskType
 {

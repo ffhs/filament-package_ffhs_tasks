@@ -71,6 +71,7 @@
         "build": "@php vendor/bin/testbench workbench:build --ansi",
         "serve": [
             "Composer\\Config::disableProcessTimeout",
+            "cp -r workbench/config/* vendor/orchestra/testbench-core/laravel/config/",
             "@build",
             "@php vendor/bin/testbench serve --ansi"
         ]},
