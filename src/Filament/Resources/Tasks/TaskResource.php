@@ -5,17 +5,16 @@ namespace Ffhs\FfhsTasks\Filament\Resources\Tasks;
 use App\Models\User;
 use BackedEnum;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\CreateTask;
+use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\EditTask;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\HandleTask;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\ListAllTasks;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\ListArchivedTasks;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\ListTasks;
-use Ffhs\FfhsTasks\Filament\Resources\Tasks\Schemas\TaskInfolist;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Tables\TasksTable;
 use Ffhs\FfhsTasks\Models\Task;
 use Ffhs\FfhsTasks\Scopes\IsActiveScope;
 use Filament\Navigation\NavigationItem;
 use Filament\Resources\Resource;
-use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -58,11 +57,6 @@ class TaskResource extends Resource
         return __('ffhs-tasks::tasks.plural_model_label');
     }
 
-    public static function infolist(Schema $schema): Schema
-    {
-        return TaskInfolist::configure($schema);
-    }
-
     public static function table(Table $table): Table
     {
         return TasksTable::configure($table);
@@ -81,8 +75,10 @@ class TaskResource extends Resource
             'index' => ListTasks::route('/'),
             'archive' => ListArchivedTasks::route('/archive'),
             'all' => ListAllTasks::route('/all'),
+
             'create' => CreateTask::route('/create'),
-            'handle' => HandleTask::route('/{record}'),
+            'edit' => EditTask::route('/{record}'),
+            'handle' => HandleTask::route('/{record}/handle'),
         ];
     }
 

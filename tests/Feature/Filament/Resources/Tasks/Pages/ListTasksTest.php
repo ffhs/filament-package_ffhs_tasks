@@ -3,6 +3,7 @@
 use App\Models\User;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\ListTasks;
 use Ffhs\FfhsTasks\Models\Task;
+use Ffhs\FfhsTasks\Policies\TaskPolicy;
 
 use function Pest\Livewire\livewire;
 
@@ -112,6 +113,162 @@ describe('row styling', function () {
         livewire(ListTasks::class)
             ->set('activeTab', 'my')
             ->assertDontSeeHtml('opacity-50');
+    });
+});
+
+describe('table actions', function () {
+    describe('view or edit action', function () {
+        test('is visible when user can view the task', function () {
+            // Arrange
+            $user = User::factory()->create();
+            $task = Task::factory()->create();
+            $task->users()->attach($user);
+
+            TaskPolicy::fake(['view' => true]);
+
+            // Act & Assert
+            $this->actingAs($user);
+
+            livewire(ListTasks::class)
+                ->set('activeTab', 'my')
+                ->assertTableActionVisible('view_or_edit', $task);
+        });
+
+        test('is hidden when user cannot view the task', function () {
+            // Arrange
+            $user = User::factory()->create();
+            $task = Task::factory()->create();
+            $task->users()->attach($user);
+
+            TaskPolicy::fake(['view' => false]);
+
+            // Act & Assert
+            $this->actingAs($user);
+
+            livewire(ListTasks::class)
+                ->set('activeTab', 'my')
+                ->assertTableActionHidden('view_or_edit', $task);
+        });
+
+        test('shows edit label when user can edit the task', function () {
+            // Arrange
+            $user = User::factory()->create();
+            $task = Task::factory()->create();
+            $task->users()->attach($user);
+
+            TaskPolicy::fake(['view' => true, 'update' => true]);
+
+            // Act & Assert
+            $this->actingAs($user);
+
+            livewire(ListTasks::class)
+                ->set('activeTab', 'my')
+                ->assertTableActionHasLabel('view_or_edit', __('filament-actions::edit.single.label'), $task);
+        });
+
+        test('shows view label when user cannot edit the task', function () {
+            // Arrange
+            $user = User::factory()->create();
+            $task = Task::factory()->create();
+            $task->users()->attach($user);
+
+            TaskPolicy::fake(['view' => true, 'update' => false]);
+
+            // Act & Assert
+            $this->actingAs($user);
+
+            livewire(ListTasks::class)
+                ->set('activeTab', 'my')
+                ->assertTableActionHasLabel('view_or_edit', __('filament-actions::view.single.label'), $task);
+        });
+    });
+
+    describe('handle action', function () {
+        test('is visible when user can handle the task', function () {
+            // Arrange
+            $user = User::factory()->create();
+            $task = Task::factory()->create();
+            $task->users()->attach($user);
+
+            TaskPolicy::fake(['handle' => true]);
+
+            // Act & Assert
+            $this->actingAs($user);
+
+            livewire(ListTasks::class)
+                ->set('activeTab', 'my')
+                ->assertTableActionVisible('handle', $task);
+        });
+
+        test('is hidden when user cannot handle the task', function () {
+            // Arrange
+            $user = User::factory()->create();
+            $task = Task::factory()->create();
+            $task->users()->attach($user);
+
+            TaskPolicy::fake(['handle' => false]);
+
+            // Act & Assert
+            $this->actingAs($user);
+
+            livewire(ListTasks::class)
+                ->set('activeTab', 'my')
+                ->assertTableActionHidden('handle', $task);
+        });
+
+        test('is hidden when task has not started yet', function () {
+            // Arrange
+            $user = User::factory()->create();
+            $task = Task::factory()->create([
+                'starts_at' => now()->addDays(5),
+            ]);
+            $task->users()->attach($user);
+
+            TaskPolicy::fake(['handle' => true]);
+
+            // Act & Assert
+            $this->actingAs($user);
+
+            livewire(ListTasks::class)
+                ->set('activeTab', 'my')
+                ->assertTableActionHidden('handle', $task);
+        });
+
+        test('is visible when task has already started', function () {
+            // Arrange
+            $user = User::factory()->create();
+            $task = Task::factory()->create([
+                'starts_at' => now()->subDays(1),
+            ]);
+            $task->users()->attach($user);
+
+            TaskPolicy::fake(['handle' => true]);
+
+            // Act & Assert
+            $this->actingAs($user);
+
+            livewire(ListTasks::class)
+                ->set('activeTab', 'my')
+                ->assertTableActionVisible('handle', $task);
+        });
+
+        test('is visible when task has no start date', function () {
+            // Arrange
+            $user = User::factory()->create();
+            $task = Task::factory()->create([
+                'starts_at' => null,
+            ]);
+            $task->users()->attach($user);
+
+            TaskPolicy::fake(['handle' => true]);
+
+            // Act & Assert
+            $this->actingAs($user);
+
+            livewire(ListTasks::class)
+                ->set('activeTab', 'my')
+                ->assertTableActionVisible('handle', $task);
+        });
     });
 });
 

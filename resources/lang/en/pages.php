@@ -21,4 +21,8 @@ return [
         'navigation_label' => 'Archived Tasks',
         'title' => 'Archived Tasks',
     ],
+
+    'handle' => [
+        'breadcrumb' => 'Handle',
+    ]
 ];

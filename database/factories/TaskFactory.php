@@ -4,6 +4,7 @@ namespace Ffhs\FfhsTasks\Database\Factories;
 
 use Ffhs\FfhsTasks\Enums\TaskStatus;
 use Ffhs\FfhsTasks\Models\Task;
+use Ffhs\FfhsTasks\TaskType\TaskType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
 
@@ -16,10 +17,12 @@ class TaskFactory extends Factory
         return [
             'title' => $this->faker->sentence(),
             'description' => $this->faker->paragraph(),
-            'type' => $this->faker->randomElement(['type']),
+            'type' => $this->faker->randomElement(
+                array_keys(TaskType::getAllTypes())
+            ),
             'status' => TaskStatus::InProgress,
 
-            'settings' => null,
+            'extra' => null,
             'data' => null,
 
             'can_be_cancelled' => $this->faker->boolean(),

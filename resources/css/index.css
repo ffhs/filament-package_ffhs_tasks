@@ -1,3 +1,8 @@
 .opacity-50 {
     opacity: 0.5;
 }
+
+.tiptap {
+    min-height: calc(var(--rows) * 1em);
+    min-height: calc(var(--rows) * 1lh);
+}

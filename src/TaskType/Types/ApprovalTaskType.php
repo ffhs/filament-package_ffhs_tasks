@@ -62,19 +62,13 @@ class ApprovalTaskType extends TaskType
 
     public function getHandleComponents(): array|Closure
     {
-        return function ($operation) {
-            if ($operation === 'create') {
-                return [
-                    Toggle::make('is_approved')
-                        ->label('Approval'),
-                ];
-            }
+        return [
+            Toggle::make('is_approved')
+                ->label('Approval'),
 
-            return [
-                IconEntry::make('requires_approval')
-                    ->label('Requires Approval')
-                    ->boolean(),
-            ];
-        };
+            Textarea::make('approval_comment')
+                ->label('Comment')
+                ->required(),
+        ];
     }
 }

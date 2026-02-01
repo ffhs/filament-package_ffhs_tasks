@@ -1,9 +1,14 @@
 <?php
 
-namespace Ffhs\FfhsTasks\Filament\Resources\Tasks\Schemas;
+namespace Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages;
 
-use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\CreateTask;
+use Ffhs\FfhsTasks\Filament\Resources\Tasks\Actions\HandleAction;
+use Ffhs\FfhsTasks\Filament\Resources\Tasks\TaskResource;
+use Ffhs\FfhsTasks\Models\Task;
 use Ffhs\FfhsTasks\TaskType\TaskType;
+use Filament\Resources\Pages\EditRecord;
+use Filament\Schemas\Schema;
+use Illuminate\Contracts\Support\Htmlable;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
@@ -11,14 +16,42 @@ use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
-use Filament\Schemas\Schema;
 
-class TaskCreateForm
+class EditTask extends EditRecord
 {
-    public static function configure(Schema $schema): Schema
+    protected static string $resource = TaskResource::class;
+
+    public string $type;
+
+    public function getTitle(): string|Htmlable
     {
+        return $this->getRecord()->title;
+    }
+
+    public function mount(string|int $record): void
+    {
+        $this->record = $this->resolveRecord($record);
+
+        $this->type = $this->record->type;
+
+        $this->authorizeAccess();
+
+        $this->fillForm();
+
+        $this->previousUrl = url()->previous();
+    }
+
+    public function form(Schema $schema): Schema
+    {
+        /** @var Task $record */
+        $record = $this->record;
+        $taskType = $record->getType();
+
+        $canEdit = $taskType->canEditTask($record);
+
         return $schema
             ->columns(1)
+            ->disabled(! $canEdit)
             ->components([
                 TextInput::make('title')
                     ->label(__('ffhs-tasks::tasks.attributes.title'))
@@ -32,8 +65,6 @@ class TaskCreateForm
                         ->components([
                             Section::make()
                                 ->compact()
-                                ->columnSpan(2)
-                                ->columns(1)
                                 ->components([
                                     RichEditor::make('description')
                                         ->label(__('ffhs-tasks::tasks.attributes.description'))
@@ -48,8 +79,9 @@ class TaskCreateForm
                                 Section::make()
                                     ->compact()
                                     ->key('type-main-components')
-                                    ->statePath('data.extra')
-                                    ->schema(function (CreateTask $livewire, Section $component) {
+                                    ->statePath('extra')
+                                    ->hiddenWhenAllChildComponentsHidden()
+                                    ->schema(function (EditTask $livewire, Section $component) {
                                         if ($type = $livewire->type) {
                                             $taskType = TaskType::getTypeFromIdentifier($type);
 
@@ -74,7 +106,7 @@ class TaskCreateForm
                                         ->label(__('ffhs-tasks::tasks.attributes.starts_at'))
                                         ->seconds(false)
                                         ->nullable()
-                                        ->visible(function (CreateTask $livewire) {
+                                        ->visible(function (EditTask $livewire) {
                                             if ($type = $livewire->type) {
                                                 $taskType = TaskType::getTypeFromIdentifier($type);
 
@@ -88,7 +120,7 @@ class TaskCreateForm
                                         ->label(__('ffhs-tasks::tasks.attributes.deadline_at'))
                                         ->seconds(false)
                                         ->nullable()
-                                        ->visible(function (CreateTask $livewire) {
+                                        ->visible(function (EditTask $livewire) {
                                             if ($type = $livewire->type) {
                                                 $taskType = TaskType::getTypeFromIdentifier($type);
 
@@ -107,8 +139,8 @@ class TaskCreateForm
                                 Section::make()
                                     ->compact()
                                     ->key('type-sidebar-components')
-                                    ->statePath('data.extra')
-                                    ->schema(function (CreateTask $livewire, Section $component) {
+                                    ->statePath('extra')
+                                    ->schema(function (EditTask $livewire, Section $component) {
                                         if ($type = $livewire->type) {
                                             $taskType = TaskType::getTypeFromIdentifier($type);
 
@@ -120,5 +152,51 @@ class TaskCreateForm
                         ])
                 ]),
             ]);
+    }
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            HandleAction::make(),
+        ];
+    }
+
+    protected function authorizeAccess(): void
+    {
+        abort_unless(static::getResource()::canView($this->getRecord()), 403);
+
+        /** @var Task $record */
+        $record = $this->getRecord();
+
+        if ($record->isArchived()) {
+            $this->redirect($this::$resource::getUrl());
+        }
+    }
+
+    // protected function mutateFormDataBeforeSave(array $data): array
+    // {
+    //     $record = $this->getRecord();
+    //     $taskType = $this->getTaskType();
+    //
+    //     $data['cancelled'] = $this->cancelled;
+    //     $data['finished'] = $this->finished;
+    //
+    //     if ($this->cancelled) {
+    //         return $taskType->mutateDataBeforeCancel($record, $data);
+    //     }
+    //     if ($this->finished) {
+    //         return $taskType->mutateDataBeforeFinish($record, $data);
+    //     }
+    //
+    //     return $taskType->mutateDataBeforeSave($record, $data);
+    // }
+
+    protected function getFormActions(): array
+    {
+        return [
+            $this->getCancelFormAction(),
+            $this->getSaveFormAction()
+                ->authorize('update'),
+        ];
     }
 }

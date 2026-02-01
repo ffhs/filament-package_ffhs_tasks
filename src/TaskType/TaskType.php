@@ -3,6 +3,7 @@
 namespace Ffhs\FfhsTasks\TaskType;
 
 use Closure;
+use Ffhs\FfhsTasks\Models\Task;
 use Ffhs\FfhsTasks\Traits\HasTaskLifeCycle;
 use Ffhs\FfhsUtils\Contracts\Type;
 use Ffhs\FfhsUtils\Traits\IsType;
@@ -35,6 +36,21 @@ abstract class TaskType implements Type
     public function shouldExpireAfterDeadline(): bool
     {
         return false;
+    }
+
+    public function canViewTask(Task $task): bool
+    {
+        return auth()->user()->can('view', $task);
+    }
+
+    public function canEditTask(Task $task): bool
+    {
+        return auth()->user()->can('update', $task);
+    }
+
+    public function canHandleTask(Task $task): bool
+    {
+        return auth()->user()->can('handle', $task) && ($task->starts_at === null || $task->starts_at->isPast());
     }
 
     public function getMainComponents(): array|Closure

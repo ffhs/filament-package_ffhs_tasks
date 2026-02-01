@@ -3,10 +3,13 @@
 namespace Ffhs\FfhsTasks;
 
 use Ffhs\FfhsTasks\Jobs\ExpireOverdueTasksJob;
+use Ffhs\FfhsTasks\Models\Task;
+use Ffhs\FfhsTasks\Policies\TaskPolicy;
 use Filament\Support\Assets\Asset;
 use Filament\Support\Assets\Css;
 use Filament\Support\Facades\FilamentAsset;
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Support\Facades\Gate;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
@@ -42,6 +45,8 @@ class FfhsTasksServiceProvider extends PackageServiceProvider
 
     public function packageBooted(): void
     {
+        Gate::policy(Task::class, TaskPolicy::class);
+
         FilamentAsset::register(
             $this->getAssets(),
             $this->getAssetPackageName()

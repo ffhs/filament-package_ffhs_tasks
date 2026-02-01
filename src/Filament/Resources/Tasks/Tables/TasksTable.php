@@ -2,11 +2,12 @@
 
 namespace Ffhs\FfhsTasks\Filament\Resources\Tasks\Tables;
 
+use Ffhs\FfhsTasks\Filament\Resources\Tasks\Actions\HandleAction;
+use Ffhs\FfhsTasks\Filament\Resources\Tasks\Actions\ViewOrEditAction;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\TaskResource;
 use Ffhs\FfhsTasks\Models\Task;
 use Ffhs\FfhsTasks\TaskType\TaskType;
 use Filament\Actions\ActionGroup;
-use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -94,8 +95,8 @@ class TasksTable
                 // ViewAction::make()
                 //     ->iconButton(),
                 //
-                // EditAction::make()
-                //     ->iconButton(),
+                HandleAction::make()->iconButton(),
+                ViewOrEditAction::make()->iconButton(),
             ])
             ->toolbarActions([]);
     }

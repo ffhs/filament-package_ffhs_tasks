@@ -44,15 +44,18 @@ class Task extends Model
         'starts_at' => 'datetime',
         'deadline_at' => 'datetime',
 
+        'extra' => 'array',
         'data' => 'array',
-        'settings' => 'array',
     ];
 
     protected static function booted(): void
     {
         static::creating(function (Task $task) {
-            $task->status = TaskStatus::InProgress;
-            $task->creator()->associate(auth()->user());
+            $task->status ??= TaskStatus::InProgress;
+
+            if (! $task->creator_id) {
+                $task->creator()->associate(auth()->user());
+            }
         });
 
         static::updated(function (Task $task) {

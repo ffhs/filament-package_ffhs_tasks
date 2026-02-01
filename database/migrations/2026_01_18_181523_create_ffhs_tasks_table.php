@@ -29,7 +29,7 @@ return new class () extends Migration {
             $table->dateTime('starts_at')->nullable();
             $table->dateTime('deadline_at')->nullable();
 
-            $table->json('settings')->nullable();
+            $table->json('extra')->nullable();
             $table->json('data')->nullable();
 
             $table->softDeletes();
