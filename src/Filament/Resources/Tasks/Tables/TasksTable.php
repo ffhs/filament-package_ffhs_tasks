@@ -56,7 +56,7 @@ class TasksTable
                     ->searchable(),
 
                 TextColumn::make('users.name')
-                    ->label(__('ffhs-tasks::tasks.attributes.assignees'))
+                    ->label(__('ffhs-tasks::tasks.attributes.users'))
                     ->toggleable(),
 
                 TextColumn::make('taskUserGroups.name')
