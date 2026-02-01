@@ -1,5 +1,8 @@
 ## Code Quality
 
+### PHP Commands
+- Prefix all PHP CLI calls with `XDEBUG_MODE=off`
+
 ### PHP
 
 - Use typed properties over docblocks
