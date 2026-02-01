@@ -26,7 +26,7 @@ trait HasTaskLifeCycle
         $this->afterSave($record, $getState);
     }
 
-    public function afterFinish(Task $record, array $getState): void
+    public function afterComplete(Task $record, array $getState): void
     {
         $this->afterSave($record, $getState);
     }

@@ -2,53 +2,53 @@
 
 namespace Ffhs\FfhsTasks\TaskType;
 
-use Ffhs\FfhsTasks\Facades\FfhsTasks;
+use Closure;
 use Ffhs\FfhsTasks\Traits\HasTaskLifeCycle;
 use Ffhs\FfhsUtils\Contracts\Type;
 use Ffhs\FfhsUtils\Traits\IsType;
-use Illuminate\Contracts\Translation\Translator;
 
 abstract class TaskType implements Type
 {
     use HasTaskLifeCycle;
     use IsType;
 
-    protected bool $canBeDoneRemotely = false;
-
-    protected bool $canBeSavedWithoutFinish = true;
-
     public static function getTypeListConfig(): array
     {
-        return FfhsTasks::config('types');
+        return config('ffhs-tasks.types');
     }
 
-    public static function __(string $key): Translator|string|array|null
+    public function canBeCancelled(): bool
     {
-        return FfhsTasks::__('task_types.'.static::identifier().'.'.$key);
+        return false;
     }
 
-    public static function displayname(): string
+    public function hasStartDate(): bool
     {
-        return static::__('label');
+        return false;
     }
 
-    public function getSettingSchema(): array|\Closure
+    public function hasDeadline(): bool
+    {
+        return false;
+    }
+
+    public function shouldExpireAfterDeadline(): bool
+    {
+        return false;
+    }
+
+    public function getMainComponents(): array|Closure
     {
         return [];
     }
 
-    public function getHandleSchema(): array|\Closure
+    public function getSidebarComponents(): array|Closure
     {
         return [];
     }
 
-    public function canBeDoneRemote(): bool
+    public function getHandleComponents(): array|Closure
     {
-        return $this->canBeDoneRemotely;
-    }
-
-    public function canBeSavedWithoutFinish(): bool
-    {
-        return $this->canBeSavedWithoutFinish;
+        return [];
     }
 }

@@ -2,8 +2,6 @@
 
 namespace Ffhs\FfhsTasks\Models;
 
-use Carbon\Carbon;
-use Ffhs\FfhsTasks\Contracts\TaskCreator;
 use Ffhs\FfhsTasks\Database\Factories\TaskFactory;
 use Ffhs\FfhsTasks\Enums\TaskStatus;
 use Ffhs\FfhsTasks\Events\StatusChangedEvent;
@@ -16,18 +14,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User;
-use Illuminate\Support\Collection;
 
-/**
- * @property ?TaskCreator $creator
- * @property Collection $users
- * @property bool $finished
- * @property bool $cancelled
- * @property ?Carbon $deadline_at
- * @property int $id
- * @property string $title
- * @property bool $can_cancel
- */
 class Task extends Model
 {
     /** @use HasFactory<TaskFactory> */
@@ -48,31 +35,31 @@ class Task extends Model
         'deleted_at',
     ];
 
-    protected static function boot()
+    protected $casts = [
+        'status' => TaskStatus::class,
+        'can_be_cancelled' => 'boolean',
+        'completed_at' => 'datetime',
+        'cancelled_at' => 'datetime',
+
+        'starts_at' => 'datetime',
+        'deadline_at' => 'datetime',
+
+        'data' => 'array',
+        'settings' => 'array',
+    ];
+
+    protected static function booted(): void
     {
-        parent::boot();
+        static::creating(function (Task $task) {
+            $task->status = TaskStatus::InProgress;
+            $task->creator()->associate(auth()->user());
+        });
 
         static::updated(function (Task $task) {
             if ($task->wasChanged('status')) {
                 event(new StatusChangedEvent($task));
             }
         });
-    }
-
-    protected function casts(): array
-    {
-        return [
-            'status' => TaskStatus::class,
-            'can_be_cancelled' => 'boolean',
-            'completed_at' => 'datetime',
-            'cancelled_at' => 'datetime',
-
-            'starts_at' => 'datetime',
-            'deadline_at' => 'datetime',
-
-            'data' => 'array',
-            'settings' => 'array',
-        ];
     }
 
     public function getTable(): string

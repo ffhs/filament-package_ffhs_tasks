@@ -2,7 +2,7 @@
 
 // config for Ffhs/FfhsTasks
 use Ffhs\FfhsTasks\Models\Task;
-use Ffhs\FfhsTasks\TaskType\Types\ConfirmTaskType;
+use Ffhs\FfhsTasks\TaskType\Types\ApprovalTaskType;
 
 return [
     'run_migrations' => true,
@@ -26,10 +26,10 @@ return [
     ],
 
     'types' => [
-        ConfirmTaskType::class,
+        ApprovalTaskType::class,
     ],
 
     'user_creatable_types' => [
-        ConfirmTaskType::class,
+        ApprovalTaskType::class,
     ],
 ];
