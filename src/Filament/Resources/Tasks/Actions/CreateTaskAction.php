@@ -12,9 +12,14 @@ final class CreateTaskAction
 {
     public static function make(): Action
     {
+        $creatableTypes = array_filter(
+            TaskType::getAllTypes(),
+            fn (string $type): bool => (new $type())->canBeCreatedViaUi()
+        );
+
         $options = array_map(
             fn ($type) => $type::displayname(),
-            TaskType::getAllTypes()
+            $creatableTypes
         );
 
         if (count($options) <= 1) {

@@ -18,6 +18,11 @@ abstract class TaskType implements Type
         return config('ffhs-tasks.types');
     }
 
+    public function canBeCreatedViaUi(): bool
+    {
+        return true;
+    }
+
     public function canBeCancelled(): bool
     {
         return false;
