@@ -6,10 +6,14 @@ use Ffhs\FfhsTasks\Filament\Resources\Tasks\Schemas\TaskCreateForm;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\TaskResource;
 use Filament\Resources\Pages\CreateRecord;
 use Filament\Schemas\Schema;
+use Livewire\Attributes\Url;
 
 class CreateTask extends CreateRecord
 {
     protected static string $resource = TaskResource::class;
+
+    #[Url]
+    public ?string $type = null;
 
     public function form(Schema $schema): Schema
     {
@@ -18,9 +22,7 @@ class CreateTask extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        $user = auth()->user();
-        $data['creator_id'] = $user->id;
-        $data['creator_type'] = $user::class;
+        $data['type'] = $this->type;
 
         return $data;
     }

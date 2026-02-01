@@ -4,11 +4,11 @@ namespace Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages;
 
 use Ffhs\FfhsTasks\Contracts\TaskUserGroupInterface;
 use Ffhs\FfhsTasks\Facades\FfhsTasks;
+use Ffhs\FfhsTasks\Filament\Resources\Tasks\Actions\CreateTaskAction;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Tables\TasksTable;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\TaskResource;
 use Ffhs\FfhsTasks\Scopes\IsActiveScope;
 use Ffhs\FfhsTasks\Scopes\TaskGroupScope;
-use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Support\Enums\Width;
@@ -83,7 +83,7 @@ class ListTasks extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make(),
+            CreateTaskAction::make(),
         ];
     }
 }
