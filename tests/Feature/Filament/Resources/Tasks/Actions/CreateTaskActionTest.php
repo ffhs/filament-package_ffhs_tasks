@@ -4,7 +4,6 @@ use App\Models\User;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\ListTasks;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\TaskResource;
 use Ffhs\FfhsTasks\TaskType\TaskType;
-use Ffhs\FfhsTasks\TaskType\Types\ApprovalTaskType;
 
 use function Pest\Livewire\livewire;
 
@@ -13,7 +12,7 @@ describe('single task type', function () {
         // Arrange
         $user = User::factory()->create();
 
-        config(['ffhs-tasks.types' => [ApprovalTaskType::class]]);
+        config(['ffhs-tasks.types' => [TestTaskType2::class]]);
 
         // Act & Assert
         $this->actingAs($user);
@@ -22,7 +21,7 @@ describe('single task type', function () {
             ->assertActionExists('create')
             ->assertActionHasUrl(
                 'create',
-                TaskResource::getUrl('create', ['type' => ApprovalTaskType::identifier()])
+                TaskResource::getUrl('create', ['type' => TestTaskType2::identifier()])
             );
     });
 });
@@ -33,7 +32,7 @@ describe('multiple task types', function () {
         $user = User::factory()->create();
 
         config(['ffhs-tasks.types' => [
-            ApprovalTaskType::class,
+            TestTaskType2::class,
             TestTaskType::class,
         ]]);
 
@@ -45,7 +44,7 @@ describe('multiple task types', function () {
             ->mountAction('create')
             ->assertActionMounted('create')
             ->assertMountedActionModalSee([
-                ApprovalTaskType::displayname(),
+                TestTaskType2::displayname(),
                 TestTaskType::displayname()
             ]);
     });
@@ -55,7 +54,7 @@ describe('multiple task types', function () {
         $user = User::factory()->create();
 
         config(['ffhs-tasks.types' => [
-            ApprovalTaskType::class,
+            TestTaskType2::class,
             TestTaskType::class,
         ]]);
 
@@ -63,8 +62,8 @@ describe('multiple task types', function () {
         $this->actingAs($user);
 
         livewire(ListTasks::class)
-            ->callAction('create', ['type' => ApprovalTaskType::identifier()])
-            ->assertRedirect(TaskResource::getUrl('create', ['type' => ApprovalTaskType::identifier()]));
+            ->callAction('create', ['type' => TestTaskType2::identifier()])
+            ->assertRedirect(TaskResource::getUrl('create', ['type' => TestTaskType2::identifier()]));
     });
 });
 
