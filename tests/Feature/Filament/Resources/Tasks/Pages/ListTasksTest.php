@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\ListAllTasks;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\ListTasks;
 use Ffhs\FfhsTasks\Models\Task;
 use Ffhs\FfhsTasks\Policies\TaskPolicy;
@@ -231,6 +232,21 @@ describe('table actions', function () {
 
             livewire(ListTasks::class)
                 ->set('activeTab', 'my')
+                ->assertTableActionHidden('handle', $task);
+        });
+
+        test('is hidden when task is archived', function () {
+            // Arrange
+            $user = User::factory()->create();
+            $task = Task::factory()->cancelled()->create();
+            $task->users()->attach($user);
+
+            TaskPolicy::fake(['handle' => true]);
+
+            // Act & Assert
+            $this->actingAs($user);
+
+            livewire(ListAllTasks::class)
                 ->assertTableActionHidden('handle', $task);
         });
 

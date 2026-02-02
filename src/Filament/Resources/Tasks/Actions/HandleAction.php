@@ -17,6 +17,7 @@ final class HandleAction
             ->color('gray')
             ->url(fn (Task $record) => TaskResource::getUrl('handle', ['record' => $record]))
             ->authorize(fn (Task $record) => $record->getType()->canHandleTask($record)
+                && ! $record->isArchived()
                 && ($record->starts_at === null || $record->starts_at->isPast()));
     }
 }

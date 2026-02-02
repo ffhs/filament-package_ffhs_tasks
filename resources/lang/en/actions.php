@@ -8,7 +8,7 @@ return [
     ],
 
     'complete' => [
-        'label' => 'Complete',
+        'label' => 'Complete Task',
 
         'notification' => [
             'title' => 'Completed',
@@ -17,7 +17,7 @@ return [
     ],
 
     'cancel' => [
-        'label' => 'Cancel',
+        'label' => 'Cancel Task',
 
         'notification' => [
             'title' => 'Cancelled',
