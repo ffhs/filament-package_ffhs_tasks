@@ -35,18 +35,34 @@ class Task extends Model
         'deleted_at',
     ];
 
-    protected $casts = [
-        'status' => TaskStatus::class,
-        'can_be_cancelled' => 'boolean',
-        'completed_at' => 'datetime',
-        'cancelled_at' => 'datetime',
+    /**
+     * @return array{
+     *     status: 'Ffhs\\FfhsTasks\\Enums\\TaskStatus',
+     *     can_be_cancelled: 'boolean',
+     *     completed_at: 'datetime',
+     *     cancelled_at: 'datetime',
+     *     starts_at: 'datetime',
+     *     deadline_at: 'datetime',
+     *     extra: 'array',
+     *     data: 'array'
+     * }
+     */
+    protected function casts(): array
+    {
+        return [
+            'status' => TaskStatus::class,
+            'can_be_cancelled' => 'boolean',
+            'completed_at' => 'datetime',
+            'cancelled_at' => 'datetime',
 
-        'starts_at' => 'datetime',
-        'deadline_at' => 'datetime',
+            'starts_at' => 'datetime',
+            'deadline_at' => 'datetime',
 
-        'extra' => 'array',
-        'data' => 'array',
-    ];
+            'extra' => 'array',
+            'data' => 'array',
+        ];
+    }
+
 
     protected static function booted(): void
     {

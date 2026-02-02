@@ -3,7 +3,6 @@
 namespace Ffhs\FfhsTasks\Filament\Resources\Tasks\Actions;
 
 use Ffhs\FfhsTasks\Contracts\TaskUserGroupInterface;
-use Ffhs\FfhsTasks\Facades\FfhsTasks;
 use Ffhs\FfhsTasks\Models\Task;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
@@ -37,26 +36,26 @@ class AssignActions extends ActionGroup
         $this->actions([
             Action::make('assign_me')
                 ->closeModalByClickingAway(false)
-                ->label(new HtmlString('<b>' . Task::__('actions.assign_me.label') . '</b>'))
-                ->tooltip(Task::__('actions.assign_me.tooltip'))
+                ->label(new HtmlString('<b>' . __('ffhs-tasks::actions.assign_me.label') . '</b>'))
+                ->tooltip(__('ffhs-tasks::actions.assign_me.tooltip'))
                 ->disabled(fn (Task $record) => once(fn () => $record->users->contains($user)))
                 ->action($this->assignMe(...)),
             Action::make('unassign_me')
                 ->closeModalByClickingAway(false)
-                ->label(new HtmlString('<b>' . Task::__('actions.unassign_me.label') . '</b>'))
-                ->tooltip(Task::__('actions.unassign_me.tooltip'))
+                ->label(new HtmlString('<b>' . __('ffhs-tasks::actions.unassign_me.label') . '</b>'))
+                ->tooltip(__('ffhs-tasks::actions.unassign_me.tooltip'))
                 ->visible(fn (Task $record) => once(fn () => $record->users->contains($user)))
                 ->action($this->unassignMe(...)),
             Action::make('assign_group')
                 ->closeModalByClickingAway(false)
-                ->label(Task::__('actions.assign_group.label'))
-                ->tooltip(Task::__('actions.assign_group.tooltip'))
+                ->label(__('ffhs-tasks::actions.assign_group.label'))
+                ->tooltip(__('ffhs-tasks::actions.assign_group.tooltip'))
                 ->schema($this->assignGroupSchema(...))
                 ->action($this->assignGroup(...)),
             Action::make('assign_user')
                 ->closeModalByClickingAway(false)
-                ->label(Task::__('actions.assign_user.label'))
-                ->tooltip(Task::__('actions.assign_user.tooltip'))
+                ->label(__('ffhs-tasks::actions.assign_user.label'))
+                ->tooltip(__('ffhs-tasks::actions.assign_user.tooltip'))
                 ->schema($this->assignPersonSchema())
                 ->action($this->assignPerson(...)),
         ]);
@@ -110,7 +109,7 @@ class AssignActions extends ActionGroup
     protected function assignGroupSchema(): array
     {
         $options = [];
-        foreach (FfhsTasks::userGroups() as $userGroupClass) {
+        foreach (config('ffhs-tasks.user_groups', []) as $userGroupClass) {
             /** @var TaskUserGroupInterface $userGroup */
             $userGroup = app($userGroupClass);
 
@@ -135,9 +134,9 @@ class AssignActions extends ActionGroup
         return [
             Hidden::make('userId'),
             Select::make('usersIdRaw')
-                ->label(Task::__('actions.assign_user.schema.users.label'))
-                ->helperText(Task::__('actions.assign_user.schema.users.helper_text'))
-                ->relationship('users', FfhsTasks::config('user.name_attribute'))
+                ->label(__('ffhs-tasks::actions.assign_user.schema.users.label'))
+                ->helperText(__('ffhs-tasks::actions.assign_user.schema.users.helper_text'))
+                ->relationship('users', config('ffhs-tasks.user.name_attribute'))
                 ->multiple()
                 ->required()
                 ->disableOptionWhen(static function (Task $record, $value) {

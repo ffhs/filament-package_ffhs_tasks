@@ -3,11 +3,20 @@ includes:
     - vendor/nesbot/carbon/extension.neon
 
 parameters:
+    level: 5
     paths:
         - src/
 
-    # Level 10 is the highest level
-    level: 5
+    checkOctaneCompatibility: true
+    checkModelProperties: true
+    universalObjectCratesClasses:
+        - Illuminate\Database\Eloquent\Model
+
+    databaseMigrationsPath:
+        - database/migrations
+
+    viewDirectories:
+        - resources/views
 
 #    ignoreErrors:
 #        - '#PHPDoc tag @var#'

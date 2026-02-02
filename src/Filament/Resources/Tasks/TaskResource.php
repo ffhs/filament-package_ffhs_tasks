@@ -96,7 +96,7 @@ class TaskResource extends Resource
         $user = auth()->user();
         $tasksQuery = $user->tasks();
 
-        return $tasksQuery
+        return (string) $tasksQuery
             ->tap(new IsActiveScope())
             ->count();
     }

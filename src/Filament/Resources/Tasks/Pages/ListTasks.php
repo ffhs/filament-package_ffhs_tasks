@@ -3,7 +3,6 @@
 namespace Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages;
 
 use Ffhs\FfhsTasks\Contracts\TaskUserGroupInterface;
-use Ffhs\FfhsTasks\Facades\FfhsTasks;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Actions\CreateTaskAction;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Tables\TasksTable;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\TaskResource;
@@ -67,7 +66,7 @@ class ListTasks extends ListRecords
     protected function modifyGroupTaskQuery(Builder $query): Builder
     {
         return $query->whereHas('taskUserGroups', function (Builder $query) {
-            $groups = FfhsTasks::userGroups();
+            $groups = config('ffhs-tasks.user_groups', []);
             foreach ($groups as $groupClass) {
                 /**@var  Model|TaskUserGroupInterface $group */
                 $group = app($groupClass);

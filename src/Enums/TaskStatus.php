@@ -8,7 +8,6 @@ use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasIcon;
 use Filament\Support\Contracts\HasLabel;
 use Filament\Support\Icons\Heroicon;
-use Illuminate\Contracts\Support\Htmlable;
 
 enum TaskStatus: string implements HasLabel, HasIcon, HasColor
 {
@@ -17,7 +16,7 @@ enum TaskStatus: string implements HasLabel, HasIcon, HasColor
     case Cancelled  = 'cancelled';
     case Expired   = 'expired';
 
-    public function getLabel(): string|Htmlable
+    public function getLabel(): string
     {
         return match ($this) {
             self::InProgress => __('In Progress'),
@@ -27,7 +26,7 @@ enum TaskStatus: string implements HasLabel, HasIcon, HasColor
         };
     }
 
-    public function getColor(): string|array
+    public function getColor(): array
     {
         return match ($this) {
             self::InProgress => Color::Blue,
@@ -37,7 +36,7 @@ enum TaskStatus: string implements HasLabel, HasIcon, HasColor
         };
     }
 
-    public function getIcon(): string|BackedEnum|Htmlable
+    public function getIcon(): BackedEnum
     {
         return match ($this) {
             self::InProgress => Heroicon::Clock,
