@@ -4,11 +4,13 @@ namespace Ffhs\FfhsTasks\Filament\Resources\Tasks\Tables;
 
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Actions\HandleAction;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Actions\ViewOrEditAction;
+use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\ListTasks;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\TaskResource;
 use Ffhs\FfhsTasks\Models\Task;
 use Ffhs\FfhsTasks\TaskType\TaskType;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\ViewAction;
+use Filament\Pages\Page;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -34,23 +36,26 @@ class TasksTable
                     ->badge()
                     ->visible(app()->isLocal()),
 
+                TextColumn::make('type')
+                    ->label(__('ffhs-tasks::tasks.attributes.type'))
+                    ->badge()
+                    ->sortable()
+                    ->formatStateUsing(fn ($state) => TaskType::getTypeIdentifierNameList()[$state] ?? null)
+                    ->searchable(query: function (Builder $query, string $search) {
+                        $matchingTypes = collect(TaskType::getTypeIdentifierNameList())
+                            ->filter(fn ($label) => str_contains(strtolower($label), strtolower($search)))
+                            ->keys()
+                            ->toArray();
+
+                        $query->whereIn('type', $matchingTypes);
+                    }),
+
                 TextColumn::make('status')
                     ->label(__('ffhs-tasks::tasks.attributes.status'))
                     ->badge()
-                    ->sortable(),
+                    ->sortable()
+                    ->visible(fn (Page $livewire) => ! $livewire instanceof ListTasks),
 
-                // TextColumn::make('type')
-                //     ->label(__('ffhs-tasks::tasks.attributes.type'))
-                //     ->sortable()
-                //     ->formatStateUsing(fn ($state) => TaskType::getTypeIdentifierNameList()[$state] ?? null)
-                //     ->searchable(query: function (Builder $query, string $search) {
-                //         $matchingTypes = collect(TaskType::getTypeIdentifierNameList())
-                //             ->filter(fn ($label) => str_contains(strtolower($label), strtolower($search)))
-                //             ->keys()
-                //             ->toArray();
-                //
-                //         $query->whereIn('type', $matchingTypes);
-                //     }),
 
                 TextColumn::make('title')
                     ->label(__('ffhs-tasks::tasks.attributes.title'))
