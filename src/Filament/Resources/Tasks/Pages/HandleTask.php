@@ -224,7 +224,7 @@ class HandleTask extends EditRecord
     protected function getFormActions(): array
     {
         return [
-            // CancelTaskAction::make(),
+            CancelTaskAction::make(),
             // CompleteTaskAction::make(),
 
             $this->getSaveFormAction(),

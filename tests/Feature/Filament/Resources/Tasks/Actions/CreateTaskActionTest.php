@@ -4,6 +4,7 @@ use App\Models\User;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\ListTasks;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\TaskResource;
 use Ffhs\FfhsTasks\TaskType\TaskType;
+use Ffhs\FfhsTasks\Tests\Fixtures\TaskTypes\TestTaskType;
 
 use function Pest\Livewire\livewire;
 
@@ -112,19 +113,6 @@ describe('canBeCreatedViaUi filtering', function () {
             ]);
     });
 });
-
-class TestTaskType extends TaskType
-{
-    public static function identifier(): string
-    {
-        return 'test';
-    }
-
-    public static function displayname(): string
-    {
-        return 'Test 1';
-    }
-}
 
 class TestTaskType2 extends TaskType
 {
