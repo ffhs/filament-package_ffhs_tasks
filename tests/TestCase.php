@@ -4,12 +4,15 @@ namespace Ffhs\FfhsTasks\Tests;
 
 use BladeUI\Heroicons\BladeHeroiconsServiceProvider;
 use BladeUI\Icons\BladeIconsServiceProvider;
+use Ffhs\FfhsTasks\FfhsTasksPlugin;
 use Ffhs\FfhsTasks\FfhsTasksServiceProvider;
 use Filament\Actions\ActionsServiceProvider;
+use Filament\Facades\Filament;
 use Filament\FilamentServiceProvider;
 use Filament\Forms\FormsServiceProvider;
 use Filament\Infolists\InfolistsServiceProvider;
 use Filament\Notifications\NotificationsServiceProvider;
+use Filament\Panel;
 use Filament\Schemas\SchemasServiceProvider;
 use Filament\Support\SupportServiceProvider;
 use Filament\Tables\TablesServiceProvider;
@@ -57,6 +60,21 @@ class TestCase extends Orchestra
         sort($providers);
 
         return $providers;
+    }
+
+
+    protected function defineEnvironment($app): void
+    {
+        $plugin = FfhsTasksPlugin::make();
+
+        $panel = Panel::make()
+            ->default()
+            ->id('test')
+            ->path('test')
+            ->plugin($plugin);
+
+        Filament::registerPanel($panel);
+        Filament::setCurrentPanel($panel);
     }
 
     public function getEnvironmentSetUp($app): void
