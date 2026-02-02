@@ -83,7 +83,7 @@ class Task extends Model
 
     public function getTable(): string
     {
-        return config('ffhs-tasks.tables.tasks');
+        return config('ffhs-tasks.tables.tasks', 'ffhs_tasks');
     }
 
     public function getType(): ?TaskType

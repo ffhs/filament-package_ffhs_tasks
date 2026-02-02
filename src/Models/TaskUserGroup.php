@@ -26,7 +26,7 @@ class TaskUserGroup extends Model
 
     public function getTable(): string
     {
-        return config('ffhs-tasks.tables.task_user_group');
+        return config('ffhs-tasks.tables.task_user_group', 'ffhs_task_user_group');
     }
 
     public function task(): BelongsTo
