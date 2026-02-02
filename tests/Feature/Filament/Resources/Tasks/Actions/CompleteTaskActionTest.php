@@ -104,3 +104,46 @@ describe('action', function () {
         expect(TestTaskType::$afterCompleteCalled)->toBeTrue();
     });
 });
+
+describe('validation', function () {
+    test('does not mount action when form has validation errors', function () {
+        // Arrange
+        config()->set('ffhs-tasks.types', [TestTaskType::class]);
+
+        $user = User::factory()->create();
+        $task = Task::factory()->create(['type' => TestTaskType::identifier()]);
+
+        // Act & Assert
+        $this->actingAs($user);
+
+        Livewire::test(HandleTask::class, ['record' => $task->id])
+            ->fillForm(['title' => ''])
+            ->callAction(
+                TestAction::make('complete')->schemaComponent('form-actions', schema: 'content')
+            )
+            ->assertActionNotMounted();
+    });
+
+    test('does not complete the task when validation fails', function () {
+        // Arrange
+        config()->set('ffhs-tasks.types', [TestTaskType::class]);
+
+        $user = User::factory()->create();
+        $task = Task::factory()->create(['type' => TestTaskType::identifier()]);
+
+        // Act
+        $this->actingAs($user);
+
+        Livewire::test(HandleTask::class, ['record' => $task->id])
+            ->fillForm(['title' => ''])
+            ->callAction(
+                TestAction::make('complete')->schemaComponent('form-actions', schema: 'content')
+            );
+
+        // Assert
+        $task->refresh();
+
+        expect($task->status)->toBe(TaskStatus::InProgress)
+            ->and($task->completed_at)->toBeNull();
+    });
+});

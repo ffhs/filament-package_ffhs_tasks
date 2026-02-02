@@ -8,6 +8,7 @@ use Ffhs\FfhsTasks\Models\Task;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Filament\Support\Icons\Heroicon;
+use Illuminate\Validation\ValidationException;
 
 final class CompleteTaskAction
 {
@@ -18,8 +19,19 @@ final class CompleteTaskAction
             ->requiresConfirmation()
             ->color('primary')
             ->icon(Heroicon::OutlinedCheckCircle)
-            ->action(function (Task $record, HandleTask $livewire): void {
-                $record->complete($livewire->form->getState());
+            ->mountUsing(function (HandleTask $livewire, Action $action) {
+                try {
+                    $livewire->form->validate();
+                } catch (ValidationException $e) {
+                    $errors = $e->validator->errors();
+                    $livewire->setErrorBag($errors);
+
+                    $action->cancel();
+                }
+            })
+            ->action(function (Task $record, Action $action, HandleTask $livewire): void {
+                $state = $livewire->form->getState();
+                $record->complete($state);
 
                 Notification::make()
                     ->title(__('ffhs-tasks::actions.complete.notification.title'))
