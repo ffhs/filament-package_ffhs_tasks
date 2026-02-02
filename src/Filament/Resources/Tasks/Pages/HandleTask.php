@@ -99,6 +99,7 @@ class HandleTask extends EditRecord
                                     ->compact()
                                     ->key('type-handle-components')
                                     ->statePath('data')
+                                    ->hiddenWhenAllChildComponentsHidden()
                                     ->schema(function (HandleTask $livewire, Section $component) {
                                         if ($type = $livewire->type) {
                                             $taskType = TaskType::getTypeFromIdentifier($type);
@@ -159,6 +160,7 @@ class HandleTask extends EditRecord
                                     ->compact()
                                     ->key('type-sidebar-components')
                                     ->statePath('extra')
+                                    ->hiddenWhenAllChildComponentsHidden()
                                     ->schema(function (HandleTask $livewire, Section $component) {
                                         if ($type = $livewire->type) {
                                             $taskType = TaskType::getTypeFromIdentifier($type);
