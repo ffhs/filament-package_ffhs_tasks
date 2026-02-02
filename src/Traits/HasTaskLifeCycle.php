@@ -6,14 +6,19 @@ use Ffhs\FfhsTasks\Models\Task;
 
 trait HasTaskLifeCycle
 {
-    public function mutateDataBeforeCancel(Task $record, $data): array
+    public function mutateDataBeforeCancel(Task $record, array $data): array
     {
-        return $this->mutateDataBeforeSave($record, $data);
+        return $data;
     }
 
-    public function mutateDataBeforeFinish(Task $record, array $data): array
+    public function mutateDataBeforeComplete(Task $record, array $data): array
     {
-        return $this->mutateDataBeforeSave($record, $data);
+        return $data;
+    }
+
+    public function mutateDataBeforeExpire(Task $record, array $data): array
+    {
+        return $data;
     }
 
     public function mutateDataBeforeSave(Task $record, array $data): array
@@ -21,17 +26,23 @@ trait HasTaskLifeCycle
         return $data;
     }
 
-    public function afterCancel(Task $record, array $getState): void
+    public function afterCancel(Task $record): void
     {
-        $this->afterSave($record, $getState);
+        //
     }
 
-    public function afterComplete(Task $record, array $getState): void
+    public function afterComplete(Task $record): void
     {
-        $this->afterSave($record, $getState);
+        //
     }
 
-    public function afterSave(Task $record, array $getState): void
+    public function afterExpire(Task $record): void
     {
+        //
+    }
+
+    public function afterSave(Task $record): void
+    {
+        //
     }
 }

@@ -121,26 +121,59 @@ class Task extends Model
         return $this->status !== TaskStatus::InProgress;
     }
 
-    public function cancel(): bool
+    public function cancel(array $data = []): void
     {
-        return $this->update([
+        $taskType = $this->getType();
+
+        $data = [
+            ...$data,
             'status' => TaskStatus::Cancelled,
             'cancelled_at' => now(),
-        ]);
+        ];
+
+        if ($taskType) {
+            $data = $taskType->mutateDataBeforeCancel($this, $data);
+        }
+
+        $this->update($data);
+
+        $taskType?->afterCancel($this);
     }
 
-    public function expire(): bool
+    public function expire(array $data = []): void
     {
-        return $this->update([
+        $taskType = $this->getType();
+
+        $data = [
+            ...$data,
             'status' => TaskStatus::Expired,
-        ]);
+        ];
+
+        if ($taskType) {
+            $data = $taskType->mutateDataBeforeExpire($this, $data);
+        }
+
+        $this->update($data);
+
+        $taskType?->afterExpire($this);
     }
 
-    public function complete(): bool
+    public function complete(array $data = []): void
     {
-        return $this->update([
+        $taskType = $this->getType();
+
+        $data = [
+            ...$data,
             'status' => TaskStatus::Completed,
             'completed_at' => now(),
-        ]);
+        ];
+
+        if ($taskType) {
+            $data = $taskType->mutateDataBeforeComplete($this, $data);
+        }
+
+        $this->update($data);
+
+        $taskType?->afterComplete($this);
     }
 }

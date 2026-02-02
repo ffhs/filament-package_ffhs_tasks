@@ -14,6 +14,8 @@ beforeEach(function () {
         ExpirableTaskType::class,
         NonExpirableTaskType::class,
     ]);
+
+    ExpirableTaskType::resetFlags();
 });
 
 describe('ExpireOverdueTasksJob', function () {
@@ -145,5 +147,35 @@ describe('ExpireOverdueTasksJob', function () {
 
         // Assert
         expect($taskWithoutDeadline->fresh()->status)->toBe(TaskStatus::InProgress);
+    });
+
+    it('calls mutateDataBeforeExpire lifecycle hook', function () {
+        // Arrange
+        Task::factory()->create([
+            'type' => ExpirableTaskType::identifier(),
+            'status' => TaskStatus::InProgress,
+            'deadline_at' => Carbon::now()->subDay(),
+        ]);
+
+        // Act
+        (new ExpireOverdueTasksJob())->handle();
+
+        // Assert
+        expect(ExpirableTaskType::$mutateDataBeforeExpireCalled)->toBeTrue();
+    });
+
+    it('calls afterExpire lifecycle hook', function () {
+        // Arrange
+        Task::factory()->create([
+            'type' => ExpirableTaskType::identifier(),
+            'status' => TaskStatus::InProgress,
+            'deadline_at' => Carbon::now()->subDay(),
+        ]);
+
+        // Act
+        (new ExpireOverdueTasksJob())->handle();
+
+        // Assert
+        expect(ExpirableTaskType::$afterExpireCalled)->toBeTrue();
     });
 });

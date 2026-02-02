@@ -8,7 +8,6 @@ use Ffhs\FfhsTasks\Models\Task;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Filament\Support\Icons\Heroicon;
-use Illuminate\Support\Facades\DB;
 
 final class CompleteTaskAction
 {
@@ -18,15 +17,9 @@ final class CompleteTaskAction
             ->label(__('ffhs-tasks::actions.complete.label'))
             ->requiresConfirmation()
             ->color('primary')
-            ->icon(Heroicon::CheckCircle)
-            ->action(function (Task $record, HandleTask $livewire, array $data) {
-                DB::beginTransaction();
-                $record->complete();
-                $record->update($livewire->form->getState());
-                DB::commit();
-
-                $type = $record->getType();
-                $type?->afterComplete($record, $data);
+            ->icon(Heroicon::OutlinedCheckCircle)
+            ->action(function (Task $record, HandleTask $livewire): void {
+                $record->complete($livewire->form->getState());
 
                 Notification::make()
                     ->title(__('ffhs-tasks::actions.complete.notification.title'))
@@ -34,7 +27,7 @@ final class CompleteTaskAction
                     ->success()
                     ->send();
 
-                return redirect()->to(TaskResource::getUrl('index'));
+                $livewire->redirect(TaskResource::getUrl('index'));
             });
     }
 }

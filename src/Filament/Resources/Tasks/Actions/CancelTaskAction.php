@@ -20,11 +20,8 @@ final class CancelTaskAction
             ->icon(Heroicon::OutlinedXCircle)
             ->outlined()
             ->visible(fn (Task $record) => $record->can_be_cancelled)
-            ->action(function (Task $record, array $data) {
+            ->action(function (Task $record) {
                 $record->cancel();
-
-                $type = $record->getType();
-                $type?->afterCancel($record, $data);
 
                 Notification::make()
                     ->title(__('ffhs-tasks::actions.cancel.notification.title'))

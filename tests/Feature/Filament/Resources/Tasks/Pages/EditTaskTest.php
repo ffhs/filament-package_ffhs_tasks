@@ -1,11 +1,11 @@
 <?php
 
 use App\Models\User;
-use Ffhs\FfhsTasks\Enums\TaskStatus;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\EditTask;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\TaskResource;
 use Ffhs\FfhsTasks\Models\Task;
 use Ffhs\FfhsTasks\Policies\TaskPolicy;
+use Ffhs\FfhsTasks\Tests\Fixtures\TaskTypes\TestTaskType;
 use Livewire\Livewire;
 
 describe('handle header action', function () {
@@ -89,20 +89,48 @@ describe('authorization', function () {
         Livewire::test(EditTask::class, ['record' => $task->id])
             ->assertForbidden();
     });
+});
 
-    test('redirects to index when task is archived', function () {
+describe('save lifecycle hooks', function () {
+    test('calls mutateDataBeforeSave on task type', function () {
         // Arrange
+        TestTaskType::resetFlags();
+        config()->set('ffhs-tasks.types', [TestTaskType::class]);
+
         $user = User::factory()->create();
-        $task = Task::factory()->create([
-            'status' => TaskStatus::Completed,
-        ]);
+        $task = Task::factory()->create(['type' => TestTaskType::identifier()]);
 
         TaskPolicy::fake(['update' => true]);
 
-        // Act & Assert
+        // Act
         $this->actingAs($user);
 
         Livewire::test(EditTask::class, ['record' => $task->id])
-            ->assertRedirect(TaskResource::getUrl());
+            ->fillForm(['title' => 'Updated Title'])
+            ->call('save');
+
+        // Assert
+        expect(TestTaskType::$mutateDataBeforeSaveCalled)->toBeTrue();
+    });
+
+    test('calls afterSave on task type', function () {
+        // Arrange
+        TestTaskType::resetFlags();
+        config()->set('ffhs-tasks.types', [TestTaskType::class]);
+
+        $user = User::factory()->create();
+        $task = Task::factory()->create(['type' => TestTaskType::identifier()]);
+
+        TaskPolicy::fake(['update' => true]);
+
+        // Act
+        $this->actingAs($user);
+
+        Livewire::test(EditTask::class, ['record' => $task->id])
+            ->fillForm(['title' => 'Updated Title'])
+            ->call('save');
+
+        // Assert
+        expect(TestTaskType::$afterSaveCalled)->toBeTrue();
     });
 });

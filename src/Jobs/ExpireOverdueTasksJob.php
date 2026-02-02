@@ -22,7 +22,7 @@ class ExpireOverdueTasksJob implements ShouldQueue
                     $taskType = $task->getType();
 
                     if ($taskType->shouldExpireAfterDeadline()) {
-                        $task->update(['status' => TaskStatus::Expired]);
+                        $task->expire();
                     }
                 }
             });

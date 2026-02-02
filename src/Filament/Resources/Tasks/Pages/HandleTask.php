@@ -8,7 +8,6 @@ use Ffhs\FfhsTasks\Filament\Resources\Tasks\Actions\ViewOrEditAction;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Schemas\TaskForm;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\TaskResource;
 use Ffhs\FfhsTasks\Models\Task;
-use Ffhs\FfhsTasks\TaskType\TaskType;
 use Filament\Actions\ActionGroup;
 use Filament\Resources\Pages\EditRecord;
 use Filament\Schemas\Schema;
@@ -43,18 +42,6 @@ class HandleTask extends EditRecord
         $this->previousUrl = url()->previous();
     }
 
-    public function form(Schema $schema): Schema
-    {
-        return TaskForm::configure($schema, $this);
-    }
-
-    protected function getHeaderActions(): array
-    {
-        return [
-            ViewOrEditAction::make(),
-        ];
-    }
-
     protected function authorizeAccess(): void
     {
         abort_unless(auth()->user()?->can('handle', $this->getRecord()), 403);
@@ -71,31 +58,37 @@ class HandleTask extends EditRecord
         }
     }
 
-    protected function getTaskType(): TaskType
+    public function form(Schema $schema): Schema
     {
-        /** @var Task $record */
-        $record = $this->getRecord();
-
-        return $record->getType();
+        return TaskForm::configure($schema, $this);
     }
 
-    // protected function mutateFormDataBeforeSave(array $data): array
-    // {
-    //     $record = $this->getRecord();
-    //     $taskType = $this->getTaskType();
-    //
-    //     $data['cancelled'] = $this->cancelled;
-    //     $data['finished'] = $this->finished;
-    //
-    //     if ($this->cancelled) {
-    //         return $taskType->mutateDataBeforeCancel($record, $data);
-    //     }
-    //     if ($this->finished) {
-    //         return $taskType->mutateDataBeforeFinish($record, $data);
-    //     }
-    //
-    //     return $taskType->mutateDataBeforeSave($record, $data);
-    // }
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        /** @var Task $task */
+        $task = $this->getRecord();
+        $taskType = $task->getType();
+
+        if ($taskType) {
+            return $taskType->mutateDataBeforeSave($task, $data);
+        }
+
+        return $data;
+    }
+
+    public function afterSave(): void
+    {
+        /** @var Task $task */
+        $task = $this->getRecord();
+        $task->getType()?->afterSave($task);
+    }
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            ViewOrEditAction::make(),
+        ];
+    }
 
     protected function getFormActions(): array
     {
@@ -105,8 +98,8 @@ class HandleTask extends EditRecord
 
             ActionGroup::make([
                 CompleteTaskAction::make(),
-                $this->getSaveFormAction(),
-            ])->buttonGroup()
+                $this->getSaveFormAction()
+            ])->buttonGroup(),
         ];
     }
 }

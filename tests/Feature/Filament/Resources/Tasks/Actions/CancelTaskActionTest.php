@@ -89,13 +89,39 @@ describe('action', function () {
             ->assertRedirect();
     });
 
-    test('calls afterCancel on task type', function () {
+    test('calls mutateDataBeforeCancel on task type', function () {
         // Arrange
-        TestTaskType::$afterCancelCalled = false;
+        TestTaskType::resetFlags();
         config(['ffhs-tasks.types' => [TestTaskType::class]]);
 
         $user = User::factory()->create();
-        $task = Task::factory()->create(['type' => TestTaskType::identifier()]);
+        $task = Task::factory()->create([
+            'can_be_cancelled' => true,
+            'type' => TestTaskType::identifier(),
+        ]);
+
+        // Act
+        $this->actingAs($user);
+
+        Livewire::test(HandleTask::class, ['record' => $task->id])
+            ->callAction(
+                TestAction::make('cancel')->schemaComponent('form-actions', schema: 'content')
+            );
+
+        // Assert
+        expect(TestTaskType::$mutateDataBeforeCancelCalled)->toBeTrue();
+    });
+
+    test('calls afterCancel on task type', function () {
+        // Arrange
+        TestTaskType::resetFlags();
+        config(['ffhs-tasks.types' => [TestTaskType::class]]);
+
+        $user = User::factory()->create();
+        $task = Task::factory()->create([
+            'can_be_cancelled' => true,
+            'type' => TestTaskType::identifier(),
+        ]);
 
         // Act
         $this->actingAs($user);

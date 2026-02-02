@@ -7,6 +7,7 @@ use Ffhs\FfhsTasks\Filament\Resources\Tasks\TaskResource;
 use Ffhs\FfhsTasks\Models\Task;
 use Ffhs\FfhsTasks\Policies\TaskPolicy;
 use Ffhs\FfhsTasks\Tests\Fixtures\TaskTypes\HandleableTaskType;
+use Ffhs\FfhsTasks\Tests\Fixtures\TaskTypes\TestTaskType;
 use Livewire\Livewire;
 
 describe('view or edit header action', function () {
@@ -136,5 +137,45 @@ describe('form field state', function () {
                 'data.handled' => true,
                 'data.notes' => 'Test notes',
             ]);
+    });
+});
+
+describe('save lifecycle hooks', function () {
+    test('calls mutateDataBeforeSave on task type', function () {
+        // Arrange
+        TestTaskType::resetFlags();
+        config()->set('ffhs-tasks.types', [TestTaskType::class]);
+
+        $user = User::factory()->create();
+        $task = Task::factory()->create(['type' => TestTaskType::identifier()]);
+
+        // Act
+        $this->actingAs($user);
+
+        Livewire::test(HandleTask::class, ['record' => $task->id])
+            ->fillForm(['title' => 'Updated Title'])
+            ->call('save');
+
+        // Assert
+        expect(TestTaskType::$mutateDataBeforeSaveCalled)->toBeTrue();
+    });
+
+    test('calls afterSave on task type', function () {
+        // Arrange
+        TestTaskType::resetFlags();
+        config()->set('ffhs-tasks.types', [TestTaskType::class]);
+
+        $user = User::factory()->create();
+        $task = Task::factory()->create(['type' => TestTaskType::identifier()]);
+
+        // Act
+        $this->actingAs($user);
+
+        Livewire::test(HandleTask::class, ['record' => $task->id])
+            ->fillForm(['title' => 'Updated Title'])
+            ->call('save');
+
+        // Assert
+        expect(TestTaskType::$afterSaveCalled)->toBeTrue();
     });
 });

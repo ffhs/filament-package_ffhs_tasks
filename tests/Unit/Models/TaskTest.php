@@ -3,7 +3,16 @@
 use Ffhs\FfhsTasks\Enums\TaskStatus;
 use Ffhs\FfhsTasks\Events\StatusChangedEvent;
 use Ffhs\FfhsTasks\Models\Task;
+use Ffhs\FfhsTasks\Tests\Fixtures\TaskTypes\TestTaskType;
 use Illuminate\Support\Facades\Event;
+
+beforeEach(function () {
+    config()->set('ffhs-tasks.types', [
+        TestTaskType::class,
+    ]);
+
+    TestTaskType::resetFlags();
+});
 
 describe('cancel()', function () {
     it('sets status to Cancelled', function () {
@@ -37,6 +46,34 @@ describe('cancel()', function () {
             return $event->task->id === $task->id;
         });
     });
+
+    it('calls mutateDataBeforeCancel lifecycle hook', function () {
+        // Arrange
+        $task = Task::factory()->create([
+            'type' => TestTaskType::identifier(),
+            'status' => TaskStatus::InProgress,
+        ]);
+
+        // Act
+        $task->cancel();
+
+        // Assert
+        expect(TestTaskType::$mutateDataBeforeCancelCalled)->toBeTrue();
+    });
+
+    it('calls afterCancel lifecycle hook', function () {
+        // Arrange
+        $task = Task::factory()->create([
+            'type' => TestTaskType::identifier(),
+            'status' => TaskStatus::InProgress,
+        ]);
+
+        // Act
+        $task->cancel();
+
+        // Assert
+        expect(TestTaskType::$afterCancelCalled)->toBeTrue();
+    });
 });
 
 describe('expire()', function () {
@@ -68,6 +105,34 @@ describe('expire()', function () {
         Event::assertDispatched(StatusChangedEvent::class, function ($event) use ($task) {
             return $event->task->id === $task->id;
         });
+    });
+
+    it('calls mutateDataBeforeExpire lifecycle hook', function () {
+        // Arrange
+        $task = Task::factory()->create([
+            'type' => TestTaskType::identifier(),
+            'status' => TaskStatus::InProgress,
+        ]);
+
+        // Act
+        $task->expire();
+
+        // Assert
+        expect(TestTaskType::$mutateDataBeforeExpireCalled)->toBeTrue();
+    });
+
+    it('calls afterExpire lifecycle hook', function () {
+        // Arrange
+        $task = Task::factory()->create([
+            'type' => TestTaskType::identifier(),
+            'status' => TaskStatus::InProgress,
+        ]);
+
+        // Act
+        $task->expire();
+
+        // Assert
+        expect(TestTaskType::$afterExpireCalled)->toBeTrue();
     });
 });
 
@@ -104,16 +169,31 @@ describe('complete()', function () {
         });
     });
 
-    it('returns true on success', function () {
+    it('calls mutateDataBeforeComplete lifecycle hook', function () {
         // Arrange
         $task = Task::factory()->create([
+            'type' => TestTaskType::identifier(),
             'status' => TaskStatus::InProgress,
         ]);
 
         // Act
-        $result = $task->complete();
+        $task->complete();
 
         // Assert
-        expect($result)->toBeTrue();
+        expect(TestTaskType::$mutateDataBeforeCompleteCalled)->toBeTrue();
+    });
+
+    it('calls afterComplete lifecycle hook', function () {
+        // Arrange
+        $task = Task::factory()->create([
+            'type' => TestTaskType::identifier(),
+            'status' => TaskStatus::InProgress,
+        ]);
+
+        // Act
+        $task->complete();
+
+        // Assert
+        expect(TestTaskType::$afterCompleteCalled)->toBeTrue();
     });
 });
