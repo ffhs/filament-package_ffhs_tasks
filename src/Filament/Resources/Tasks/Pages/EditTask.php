@@ -140,6 +140,7 @@ class EditTask extends EditRecord
                                     ->compact()
                                     ->key('type-sidebar-components')
                                     ->statePath('extra')
+                                    ->hiddenWhenAllChildComponentsHidden()
                                     ->schema(function (EditTask $livewire, Section $component) {
                                         if ($type = $livewire->type) {
                                             $taskType = TaskType::getTypeFromIdentifier($type);
@@ -164,13 +165,6 @@ class EditTask extends EditRecord
     protected function authorizeAccess(): void
     {
         abort_unless(static::getResource()::canView($this->getRecord()), 403);
-
-        /** @var Task $record */
-        $record = $this->getRecord();
-
-        if ($record->isArchived()) {
-            $this->redirect($this::$resource::getUrl());
-        }
     }
 
     // protected function mutateFormDataBeforeSave(array $data): array
