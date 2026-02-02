@@ -17,6 +17,11 @@
     "license": "MIT",
     "authors": [
         {
+            "name": "Dennis Koch",
+            "email": "info@pixelarbeit.de",
+            "role": "Developer"
+        },
+        {
             "name": "Luc Kromer",
             "email": "luc.kromer@ffhs.ch",
             "role": "Developer"
@@ -63,7 +68,7 @@
         ],
         "format": "vendor/bin/pint",
         "analyse": "vendor/bin/phpstan analyse --memory-limit=1G",
-        "test": "vendor/bin/pest",
+        "test": "vendor/bin/pest --parallel",
         "refactor": "vendor/bin/rector",
 
         "clear": "@php vendor/bin/testbench package:purge-skeleton --ansi",
