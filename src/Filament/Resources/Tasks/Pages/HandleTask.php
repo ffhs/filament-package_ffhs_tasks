@@ -8,6 +8,7 @@ use Ffhs\FfhsTasks\Filament\Resources\Tasks\Actions\ViewOrEditAction;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\TaskResource;
 use Ffhs\FfhsTasks\Models\Task;
 use Ffhs\FfhsTasks\TaskType\TaskType;
+use Filament\Actions\ActionGroup;
 use Filament\Resources\Pages\EditRecord;
 use Filament\Schemas\Schema;
 use Illuminate\Contracts\Support\Htmlable;
@@ -224,10 +225,13 @@ class HandleTask extends EditRecord
     protected function getFormActions(): array
     {
         return [
-            CancelTaskAction::make(),
-            // CompleteTaskAction::make(),
+            CancelTaskAction::make()
+                ->extraAttributes(['style' => 'margin-right: auto']),
 
-            $this->getSaveFormAction(),
+            ActionGroup::make([
+                CompleteTaskAction::make(),
+                $this->getSaveFormAction(),
+            ])->buttonGroup()
         ];
     }
 }
