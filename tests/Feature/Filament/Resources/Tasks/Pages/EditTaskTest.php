@@ -76,12 +76,12 @@ describe('authorization', function () {
             ->assertSuccessful();
     });
 
-    test('denies access when user cannot update the task', function () {
+    test('denies access when user cannot view the task', function () {
         // Arrange
         $user = User::factory()->create();
         $task = Task::factory()->create();
 
-        TaskPolicy::fake(['update' => false]);
+        TaskPolicy::fake(['view' => false]);
 
         // Act & Assert
         $this->actingAs($user);
