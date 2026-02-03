@@ -12,11 +12,8 @@ final class CreateTaskAction
 {
     public static function make(): Action
     {
-        /** @var array<string, class-string<TaskType>> $types */
-        $types = TaskType::getAllTypes();
-
         $creatableTypes = array_filter(
-            $types,
+            TaskType::getAllTypes(),
             fn (string $type): bool => (new $type())->canBeCreatedViaUi()
         );
 
