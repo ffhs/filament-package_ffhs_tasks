@@ -120,6 +120,8 @@ describe('form field state', function () {
             'type' => 'handleable',
         ]);
 
+        TaskPolicy::fake(['update' => true]);
+
         // Act & Assert
         $this->actingAs($user);
 
@@ -137,6 +139,20 @@ describe('form field state', function () {
                 'data.handled' => true,
                 'data.notes' => 'Test notes',
             ]);
+    });
+});
+
+describe('form configuration', function () {
+    test('form has novalidate attribute', function () {
+        // Arrange
+        $user = User::factory()->create();
+        $task = Task::factory()->create();
+
+        // Act & Assert
+        $this->actingAs($user);
+
+        Livewire::test(HandleTask::class, ['record' => $task->id])
+            ->assertSee('novalidate');
     });
 });
 

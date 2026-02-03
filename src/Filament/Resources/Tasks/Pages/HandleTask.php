@@ -4,14 +4,20 @@ namespace Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages;
 
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Actions\CancelTaskAction;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Actions\CompleteTaskAction;
+use Ffhs\FfhsTasks\Filament\Resources\Tasks\Actions\SaveWithoutValidationAction;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Actions\ViewOrEditAction;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Schemas\TaskForm;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\TaskResource;
 use Ffhs\FfhsTasks\Models\Task;
 use Filament\Actions\ActionGroup;
 use Filament\Resources\Pages\EditRecord;
+use Filament\Schemas\Components\Component;
+use Filament\Schemas\Components\EmbeddedSchema;
+use Filament\Schemas\Components\Form;
+use Filament\Schemas\Components\Group;
 use Filament\Schemas\Schema;
 use Illuminate\Contracts\Support\Htmlable;
+use Override;
 
 class HandleTask extends EditRecord
 {
@@ -63,6 +69,49 @@ class HandleTask extends EditRecord
         return TaskForm::configure($schema, $this);
     }
 
+    /**
+     * Overridden to add "novalidate" attribute
+     */
+    #[Override]
+    public function getFormContentComponent(): Component
+    {
+        if (! $this->hasFormWrapper()) {
+            return Group::make([
+                EmbeddedSchema::make('form'),
+                $this->getFormActionsContentComponent(),
+            ]);
+        }
+
+        return Form::make([EmbeddedSchema::make('form')])
+            ->id('form')
+            ->extraAttributes(['novalidate' => 'true'])
+            ->livewireSubmitHandler($this->getSubmitFormLivewireMethodName())
+            ->footer([
+                $this->getFormActionsContentComponent(),
+            ]);
+    }
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            ViewOrEditAction::make(),
+        ];
+    }
+
+    protected function getFormActions(): array
+    {
+        return [
+            CancelTaskAction::make(),
+
+            ActionGroup::make([
+                CompleteTaskAction::make(),
+                SaveWithoutValidationAction::make(),
+            ])
+                ->extraAttributes(['style' => 'margin-left: auto'])
+                ->buttonGroup(),
+        ];
+    }
+
     protected function mutateFormDataBeforeSave(array $data): array
     {
         /** @var Task $task */
@@ -81,25 +130,5 @@ class HandleTask extends EditRecord
         /** @var Task $task */
         $task = $this->getRecord();
         $task->getType()?->afterSave($task);
-    }
-
-    protected function getHeaderActions(): array
-    {
-        return [
-            ViewOrEditAction::make(),
-        ];
-    }
-
-    protected function getFormActions(): array
-    {
-        return [
-            CancelTaskAction::make()
-                ->extraAttributes(['style' => 'margin-right: auto']),
-
-            ActionGroup::make([
-                CompleteTaskAction::make(),
-                $this->getSaveFormAction()
-            ])->buttonGroup(),
-        ];
     }
 }

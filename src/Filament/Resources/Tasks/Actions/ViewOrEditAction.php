@@ -25,6 +25,10 @@ final class ViewOrEditAction
 
     public static function canEdit(Task $record): bool
     {
+        if ($record->isArchived()) {
+            return false;
+        }
+
         return $record->getType()->canEditTask($record);
     }
 }

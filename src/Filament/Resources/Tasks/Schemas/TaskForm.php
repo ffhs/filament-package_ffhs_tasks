@@ -23,7 +23,7 @@ class TaskForm
         $record = $livewire->record;
         $taskType = $record->getType();
 
-        $canEdit = $taskType->canEditTask($record);
+        $canEdit = $taskType->canEditTask($record) && ! $livewire instanceof HandleTask;
         $canEditHandle = $livewire instanceof HandleTask;
         $canViewHandle = $canEditHandle || $record->isArchived();
 

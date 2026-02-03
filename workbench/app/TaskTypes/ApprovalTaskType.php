@@ -4,6 +4,7 @@ namespace App\TaskTypes;
 
 use Closure;
 use Ffhs\FfhsTasks\TaskType\TaskType;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
 use Filament\Infolists\Components\IconEntry;
@@ -65,6 +66,10 @@ class ApprovalTaskType extends TaskType
         return [
             Toggle::make('is_approved')
                 ->label('Approval'),
+
+            FileUpload::make('approval_file')
+                ->disk('public')
+                ->required(),
 
             Textarea::make('approval_comment')
                 ->label('Comment')

@@ -19,6 +19,11 @@ final class CompleteTaskAction
             ->requiresConfirmation()
             ->color('primary')
             ->icon(Heroicon::OutlinedCheckCircle)
+            ->extraAttributes([
+                "x-data" => "filamentFormButton",
+                "x-bind:class" => "{ 'fi-processing': isProcessing }",
+                "x-bind:disabled" => "isProcessing"
+            ])
             ->mountUsing(function (HandleTask $livewire, Action $action) {
                 try {
                     $livewire->form->validate();

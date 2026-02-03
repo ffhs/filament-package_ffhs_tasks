@@ -219,6 +219,23 @@ describe('table actions', function () {
                 ->assertTableActionHasLabel('view_or_edit', __('filament-actions::edit.single.label'), $task);
         });
 
+        test('does not show edit label when task is archived', function () {
+            // Arrange
+            $user = User::factory()->create();
+            $task = Task::factory()->completed()->create();
+            $task->users()->attach($user);
+
+            TaskPolicy::fake(['view' => true, 'update' => true]);
+
+            // Act & Assert
+            $this->actingAs($user);
+
+            livewire(ListAllTasks::class)
+                ->set('activeTab', 'my')
+                ->assertTableActionDoesNotHaveLabel('view_or_edit', __('filament-actions::edit.single.label'), $task)
+                ->assertTableActionHasLabel('view_or_edit', __('filament-actions::view.single.label'), $task);
+        });
+
         test('shows view label when user cannot edit the task', function () {
             // Arrange
             $user = User::factory()->create();

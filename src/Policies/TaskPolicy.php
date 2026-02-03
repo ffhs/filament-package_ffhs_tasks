@@ -21,10 +21,7 @@ class TaskPolicy
                 /** @var Mockery\Expectation $expectation */
                 $expectation = $mock->shouldReceive($ability);
 
-                $expectation
-                    ->atLeast()
-                    ->once()
-                    ->andReturn($result);
+                $expectation->andReturn($result);
             }
 
             $mock->shouldIgnoreMissing();
