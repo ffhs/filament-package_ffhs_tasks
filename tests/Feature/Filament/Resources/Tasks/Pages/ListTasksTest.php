@@ -3,8 +3,10 @@
 use App\Models\User;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\ListAllTasks;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\ListTasks;
+use Ffhs\FfhsTasks\Filament\Resources\Tasks\TaskResource;
 use Ffhs\FfhsTasks\Models\Task;
 use Ffhs\FfhsTasks\Policies\TaskPolicy;
+use pxlrbt\LaravelAssertDom\Assertions\DomAssert;
 
 use function Pest\Livewire\livewire;
 
@@ -118,6 +120,56 @@ describe('row styling', function () {
 });
 
 describe('table actions', function () {
+    describe('record url', function () {
+        test('links to handle by default', function () {
+            // Arrange
+            $user = User::factory()->create();
+            $task = Task::factory()->create();
+            $task->users()->attach($user);
+
+            TaskPolicy::fake(['view' => true, 'update' => true]);
+
+            // Act & Assert
+            $this->actingAs($user);
+
+            livewire(ListTasks::class)
+                ->assertDom(
+                    '.fi-ta-cell > a',
+                    fn (DomAssert $el) => $el
+                        ->attribute('href')->toEqual(TaskResource::getUrl('handle', ['record' => $task]))
+                )
+                ->assertDomAll(
+                    '.fi-ta-cell > a',
+                    fn (DomAssert $el) => $el
+                        ->attribute('href')->not->toEqual(TaskResource::getUrl('edit', ['record' => $task]))
+                );
+        });
+
+        test('links to view/edit when archived', function () {
+            // Arrange
+            $user = User::factory()->create();
+            $task = Task::factory()->completed()->create();
+            $task->users()->attach($user);
+
+            TaskPolicy::fake(['view' => true]);
+
+            // Act & Assert
+            $this->actingAs($user);
+
+            livewire(ListAllTasks::class)
+                ->assertDom(
+                    '.fi-ta-cell > a',
+                    fn (DomAssert $el) => $el
+                        ->attribute('href')->toEqual(TaskResource::getUrl('edit', ['record' => $task]))
+                )
+                ->assertDomAll(
+                    '.fi-ta-cell > a',
+                    fn (DomAssert $el) => $el
+                        ->attribute('href')->not->toEqual(TaskResource::getUrl('handle', ['record' => $task]))
+                );
+        });
+    });
+
     describe('view or edit action', function () {
         test('is visible when user can view the task', function () {
             // Arrange

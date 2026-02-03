@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "58ae8e48c2bb402898f9730f1ab870b1",
+    "content-hash": "e78d2503f704e804bc95bec79febe70b",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -11313,6 +11313,76 @@
             "time": "2026-01-30T17:33:13+00:00"
         },
         {
+            "name": "pxlrbt/laravel-assert-dom",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/pxlrbt/laravel-assert-dom.git",
+                "reference": "beee2607a25815026ab747cb27b6c38fc5398a6b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/pxlrbt/laravel-assert-dom/zipball/beee2607a25815026ab747cb27b6c38fc5398a6b",
+                "reference": "beee2607a25815026ab747cb27b6c38fc5398a6b",
+                "shasum": ""
+            },
+            "require": {
+                "ext-dom": "*",
+                "illuminate/testing": "^11.0|^12.0",
+                "php": "^8.4"
+            },
+            "require-dev": {
+                "laravel/pint": "^1.0",
+                "pestphp/pest": "^3.0",
+                "phpstan/phpstan": "^2.1"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "pxlrbt\\LaravelAssertDom\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "pxlrbt\\LaravelAssertDom\\Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ],
+                "analyse": [
+                    "phpstan analyse"
+                ],
+                "format": [
+                    "pint"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Dennis Koch",
+                    "email": "hey@denniskoch.dev",
+                    "homepage": "https://denniskoch.dev"
+                }
+            ],
+            "description": "DOM assertions with Pest-like syntax for Laravel & Livewire",
+            "support": {
+                "source": "https://github.com/pxlrbt/laravel-assert-dom/tree/main",
+                "issues": "https://github.com/pxlrbt/laravel-assert-dom/issues"
+            },
+            "funding": [
+                {
+                    "type": "github",
+                    "url": "https://github.com/pxlrbt"
+                }
+            ],
+            "time": "2026-02-03T19:09:15+00:00"
+        },
+        {
             "name": "rector/rector",
             "version": "2.3.5",
             "source": {
@@ -12661,7 +12731,8 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "ffhs/filament-package_ffhs_utils": 20
+        "ffhs/filament-package_ffhs_utils": 20,
+        "pxlrbt/laravel-assert-dom": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,

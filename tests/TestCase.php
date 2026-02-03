@@ -19,9 +19,11 @@ use Filament\Tables\TablesServiceProvider;
 use Filament\Widgets\WidgetsServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+use Illuminate\Testing\TestResponse;
 use Livewire\LivewireServiceProvider;
 use Orchestra\Testbench\Concerns\WithWorkbench;
 use Orchestra\Testbench\TestCase as Orchestra;
+use pxlrbt\LaravelAssertDom\AssertDomMixin;
 use RyanChandler\BladeCaptureDirective\BladeCaptureDirectiveServiceProvider;
 
 class TestCase extends Orchestra
@@ -32,6 +34,8 @@ class TestCase extends Orchestra
     protected function setUp(): void
     {
         parent::setUp();
+
+        TestResponse::mixin(new AssertDomMixin());
 
         Factory::guessFactoryNamesUsing(
             fn (string $modelName) => 'Ffhs\\FfhsTasks\\Database\\Factories\\'.class_basename($modelName).'Factory'

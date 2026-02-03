@@ -29,8 +29,8 @@
     ],
     "require": {
         "php": "^8.2",
-        "filament/filament": "^4.0 || ^5.0",
         "ffhs/filament-package_ffhs_utils": "dev-main",
+        "filament/filament": "^4.0 || ^5.0",
         "spatie/laravel-package-tools": "^1.15.0",
         "spatie/laravel-permission": "^6.20"
     },
@@ -44,6 +44,7 @@
         "pestphp/pest-plugin-arch": "^3.0",
         "pestphp/pest-plugin-laravel": "^3.0",
         "pestphp/pest-plugin-livewire": "^3.0",
+        "pxlrbt/laravel-assert-dom": "dev-main",
         "rector/rector": "^2.0"
     },
     "autoload": {
@@ -97,6 +98,12 @@
             "phpstan/extension-installer": true
         }
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/pxlrbt/laravel-assert-dom.git"
+        }
+    ],
     "minimum-stability": "dev",
     "prefer-stable": true
 }

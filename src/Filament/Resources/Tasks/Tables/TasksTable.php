@@ -9,7 +9,6 @@ use Ffhs\FfhsTasks\Filament\Resources\Tasks\TaskResource;
 use Ffhs\FfhsTasks\Models\Task;
 use Ffhs\FfhsTasks\TaskType\TaskType;
 use Filament\Actions\ActionGroup;
-use Filament\Actions\ViewAction;
 use Filament\Pages\Page;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -56,7 +55,6 @@ class TasksTable
                     ->sortable()
                     ->visible(fn (Page $livewire) => ! $livewire instanceof ListTasks),
 
-
                 TextColumn::make('title')
                     ->label(__('ffhs-tasks::tasks.attributes.title'))
                     ->searchable(),
@@ -89,7 +87,9 @@ class TasksTable
                 $record->starts_at?->isFuture() ? 'opacity-50' : ''
             ])
             ->recordUrl(function (Task $record) {
-                return $record->isArchived() ? null : TaskResource::getUrl('handle', ['record' => $record]);
+                return $record->isArchived()
+                    ? TaskResource::getUrl('edit', ['record' => $record])
+                    : TaskResource::getUrl('handle', ['record' => $record]);
             })
             ->recordActions([
                 ActionGroup::make([
@@ -97,9 +97,6 @@ class TasksTable
                     // AssignUser (in Group)
                     // AssignGroup
                 ]),
-                // ViewAction::make()
-                //     ->iconButton(),
-                //
                 HandleAction::make()->iconButton(),
                 ViewOrEditAction::make()->iconButton(),
             ])
