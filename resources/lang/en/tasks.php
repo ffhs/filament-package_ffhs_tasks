@@ -18,5 +18,6 @@ return [
         'creator' => 'Creator',
         'starts_at' => 'Starts',
         'deadline_at' => 'Deadline',
+        'can_be_cancelled' => 'Can be cancelled',
     ],
 ];

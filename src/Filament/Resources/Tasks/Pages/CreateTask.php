@@ -4,6 +4,7 @@ namespace Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages;
 
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\TaskResource;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Resources\Pages\CreateRecord;
 use Filament\Schemas\Schema;
 use Livewire\Attributes\Url;
@@ -56,6 +57,7 @@ class CreateTask extends CreateRecord
                                     ->compact()
                                     ->key('type-main-components')
                                     ->statePath('extra')
+                                    ->hiddenWhenAllChildComponentsHidden()
                                     ->schema(function (CreateTask $livewire, Section $component) {
                                         if ($type = $livewire->type) {
                                             $taskType = TaskType::getTypeFromIdentifier($type);
@@ -105,6 +107,18 @@ class CreateTask extends CreateRecord
                                             return false;
                                         }),
 
+                                    Toggle::make('can_be_cancelled')
+                                        ->label(__('ffhs-tasks::tasks.attributes.can_be_cancelled'))
+                                        ->visible(function (CreateTask $livewire) {
+                                            if ($type = $livewire->type) {
+                                                $taskType = TaskType::getTypeFromIdentifier($type);
+
+                                                return $taskType->canBeCancelled();
+                                            }
+
+                                            return false;
+                                        }),
+
                                     Select::make('users')
                                         ->label(__('ffhs-tasks::tasks.attributes.users'))
                                         ->relationship('users', 'name')
@@ -115,6 +129,7 @@ class CreateTask extends CreateRecord
                                     ->compact()
                                     ->key('type-sidebar-components')
                                     ->statePath('extra')
+                                    ->hiddenWhenAllChildComponentsHidden()
                                     ->schema(function (CreateTask $livewire, Section $component) {
                                         if ($type = $livewire->type) {
                                             $taskType = TaskType::getTypeFromIdentifier($type);
