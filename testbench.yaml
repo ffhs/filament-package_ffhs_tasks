@@ -1,0 +1,49 @@
+laravel: '@testbench'
+
+providers:
+  - App\Providers\WorkbenchServiceProvider
+  - App\Providers\Filament\AppPanelProvider
+  - Ffhs\FfhsTasks\FfhsTasksServiceProvider
+
+migrations:
+  - workbench/database/migrations
+
+seeders:
+  - Database\Seeders\DatabaseSeeder
+
+env:
+  - APP_NAME="FFHS Tasks"
+  - APP_LOCALE=en
+  - APP_URL=http://127.0.0.1:8000
+  - CACHE_STORE=file
+  - MAIL_MAILER=smtp
+  - MAIL_PORT=1025
+
+workbench:
+  start: '/'
+  install: true
+  health: false
+  discovers:
+    web: true
+    api: false
+    config: true
+    commands: true
+    components: false
+    factories: true
+    views: false
+  build:
+    - asset-publish
+    - create-sqlite-db
+    - filament:assets
+    - db-wipe
+    - migrate:fresh
+    - storage:link
+  assets:
+    - laravel-assets
+  sync:
+    - from: public
+      to: workbench/public
+      reverse: true
+    - from: storage
+      to: workbench/storage
+      reverse: true
