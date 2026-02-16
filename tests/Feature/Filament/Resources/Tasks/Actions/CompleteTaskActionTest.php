@@ -8,11 +8,16 @@ use Ffhs\FfhsTasks\Tests\Fixtures\TaskTypes\TestTaskType;
 use Filament\Actions\Testing\TestAction;
 use Livewire\Livewire;
 
+beforeEach(function () {
+    TestTaskType::resetFlags();
+
+    config()->set('ffhs-tasks.types', [TestTaskType::class]);
+    config()->set('ffhs-tasks.user_groups', []);
+});
+
 describe('action', function () {
     test('completes the task', function () {
         // Arrange
-        config()->set('ffhs-tasks.types', [TestTaskType::class]);
-
         $user = User::factory()->create();
         $task = Task::factory()->create(['type' => TestTaskType::identifier()]);
 
@@ -33,8 +38,6 @@ describe('action', function () {
 
     test('shows success notification', function () {
         // Arrange
-        config()->set('ffhs-tasks.types', [TestTaskType::class]);
-
         $user = User::factory()->create();
         $task = Task::factory()->create(['type' => TestTaskType::identifier()]);
 
@@ -49,7 +52,6 @@ describe('action', function () {
     });
 
     test('redirects to task index', function () {
-        config()->set('ffhs-tasks.types', [TestTaskType::class]);
         // Arrange
         $user = User::factory()->create();
         $task = Task::factory()->create(['type' => 'test-1']);
@@ -66,9 +68,6 @@ describe('action', function () {
 
     test('calls mutateDataBeforeComplete on task type', function () {
         // Arrange
-        TestTaskType::resetFlags();
-        config(['ffhs-tasks.types' => [TestTaskType::class]]);
-
         $user = User::factory()->create();
         $task = Task::factory()->create(['type' => TestTaskType::identifier()]);
 
@@ -86,9 +85,6 @@ describe('action', function () {
 
     test('calls afterComplete on task type', function () {
         // Arrange
-        TestTaskType::resetFlags();
-        config(['ffhs-tasks.types' => [TestTaskType::class]]);
-
         $user = User::factory()->create();
         $task = Task::factory()->create(['type' => TestTaskType::identifier()]);
 

@@ -92,11 +92,16 @@ describe('authorization', function () {
 });
 
 describe('save lifecycle hooks', function () {
+
+    beforeEach(function () {
+        TestTaskType::resetFlags();
+
+        config()->set('ffhs-tasks.types', [TestTaskType::class]);
+        config()->set('ffhs-tasks.user_groups', []);
+    });
+
     test('calls mutateDataBeforeSave on task type', function () {
         // Arrange
-        TestTaskType::resetFlags();
-        config()->set('ffhs-tasks.types', [TestTaskType::class]);
-
         $user = User::factory()->create();
         $task = Task::factory()->create(['type' => TestTaskType::identifier()]);
 
@@ -115,9 +120,6 @@ describe('save lifecycle hooks', function () {
 
     test('calls afterSave on task type', function () {
         // Arrange
-        TestTaskType::resetFlags();
-        config()->set('ffhs-tasks.types', [TestTaskType::class]);
-
         $user = User::factory()->create();
         $task = Task::factory()->create(['type' => TestTaskType::identifier()]);
 

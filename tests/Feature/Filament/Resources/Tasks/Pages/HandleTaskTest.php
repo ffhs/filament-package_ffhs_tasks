@@ -161,6 +161,7 @@ describe('save lifecycle hooks', function () {
         // Arrange
         TestTaskType::resetFlags();
         config()->set('ffhs-tasks.types', [TestTaskType::class]);
+        config()->set('ffhs-tasks.user_groups', []);
 
         $user = User::factory()->create();
         $task = Task::factory()->create(['type' => TestTaskType::identifier()]);
@@ -170,7 +171,8 @@ describe('save lifecycle hooks', function () {
 
         Livewire::test(HandleTask::class, ['record' => $task->id])
             ->fillForm(['title' => 'Updated Title'])
-            ->call('save');
+            ->call('save')
+            ->assertHasNoErrors();
 
         // Assert
         expect(TestTaskType::$mutateDataBeforeSaveCalled)->toBeTrue();
@@ -179,7 +181,9 @@ describe('save lifecycle hooks', function () {
     test('calls afterSave on task type', function () {
         // Arrange
         TestTaskType::resetFlags();
+
         config()->set('ffhs-tasks.types', [TestTaskType::class]);
+        config()->set('ffhs-tasks.user_groups', []);
 
         $user = User::factory()->create();
         $task = Task::factory()->create(['type' => TestTaskType::identifier()]);
