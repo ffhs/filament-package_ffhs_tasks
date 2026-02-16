@@ -1,6 +1,7 @@
 <?php
 
-// config for Ffhs/FfhsTasks
+use App\Models\FirstUserGroup;
+use App\Models\SecondUserGroup;
 use App\TaskTypes\ApprovalTaskType;
 use Ffhs\FfhsTasks\Models\Task;
 use Ffhs\FfhsTasks\TaskType\DefaultTaskType;
@@ -23,7 +24,8 @@ return [
     ],
 
     'user_groups' => [
-
+        FirstUserGroup::class,
+        SecondUserGroup::class,
     ],
 
     'types' => [

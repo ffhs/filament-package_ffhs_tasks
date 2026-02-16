@@ -2,6 +2,8 @@
 
 namespace Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages;
 
+use Ffhs\FfhsTasks\Filament\Resources\Tasks\Components\UserGroupSelect;
+use Ffhs\FfhsTasks\Filament\Resources\Tasks\Components\UserSelect;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\TaskResource;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -11,7 +13,6 @@ use Livewire\Attributes\Url;
 use Ffhs\FfhsTasks\TaskType\TaskType;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\RichEditor;
-use Filament\Forms\Components\Select;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
@@ -119,10 +120,9 @@ class CreateTask extends CreateRecord
                                             return false;
                                         }),
 
-                                    Select::make('users')
-                                        ->label(__('ffhs-tasks::tasks.attributes.users'))
-                                        ->relationship('users', 'name')
-                                        ->multiple(),
+                                    UserGroupSelect::make('taskUserGroups'),
+
+                                    UserSelect::make('users'),
                                 ]),
 
                                 Section::make()

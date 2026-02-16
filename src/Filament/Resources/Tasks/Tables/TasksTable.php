@@ -7,6 +7,7 @@ use Ffhs\FfhsTasks\Filament\Resources\Tasks\Actions\ViewOrEditAction;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\ListTasks;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\TaskResource;
 use Ffhs\FfhsTasks\Models\Task;
+use Ffhs\FfhsTasks\Models\TaskUserGroup;
 use Ffhs\FfhsTasks\TaskType\TaskType;
 use Filament\Actions\ActionGroup;
 use Filament\Pages\Page;
@@ -57,16 +58,8 @@ class TasksTable
 
                 TextColumn::make('title')
                     ->label(__('ffhs-tasks::tasks.attributes.title'))
+                    ->limit(50)
                     ->searchable(),
-
-                TextColumn::make('users.name')
-                    ->label(__('ffhs-tasks::tasks.attributes.users'))
-                    ->toggleable(),
-
-                TextColumn::make('taskUserGroups.name')
-                    ->label(__('ffhs-tasks::tasks.attributes.groups'))
-                    ->toggleable()
-                    ->expandableLimitedList(),
 
                 TextColumn::make('creator.name')
                     ->label(__('ffhs-tasks::tasks.attributes.creator'))
@@ -82,6 +75,19 @@ class TasksTable
                     ->label(__('ffhs-tasks::tasks.attributes.deadline_at'))
                     ->toggleable()
                     ->dateTime('d.m.Y'),
+
+                TextColumn::make('users.'.config()->string('ffhs-tasks.user.name_attribute'))
+                    ->label(__('ffhs-tasks::tasks.attributes.users'))
+                    ->toggleable()
+                    ->listWithLineBreaks()
+                    ->limitList(2),
+
+                TextColumn::make('taskUserGroups')
+                    ->label(__('ffhs-tasks::tasks.attributes.groups'))
+                    ->toggleable()
+                    ->formatStateUsing(fn (TaskUserGroup $state) => $state->userGroup->displayName())
+                    ->listWithLineBreaks()
+                    ->limitList(2),
             ])
             ->recordClasses(fn (Task $record) => [
                 $record->starts_at?->isFuture() ? 'opacity-50' : ''

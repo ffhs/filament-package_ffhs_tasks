@@ -113,11 +113,11 @@ class AssignActions extends ActionGroup
             /** @var TaskUserGroupInterface $userGroup */
             $userGroup = app($userGroupClass);
 
-            $options[$userGroup::groupDisplayname()] = $userGroup::getGroupsQuery()
+            $options[$userGroup::label()] = $userGroup::searchQuery()
                 ->get()
                 ->mapWithKeys(function (TaskUserGroupInterface|Model $userGroupModel) use ($userGroupClass) {
                     /**@phpstan-ignore-next-line */
-                    return [$userGroupClass . ':' . $userGroupModel->id => $userGroupModel->getGroupModelTitle()];
+                    return [$userGroupClass . ':' . $userGroupModel->id => $userGroupModel->displayName()];
                 })->toArray();
         }
 

@@ -5,7 +5,10 @@ use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\ListAllTasks;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\ListTasks;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\TaskResource;
 use Ffhs\FfhsTasks\Models\Task;
+use Ffhs\FfhsTasks\Models\TaskUserGroup;
 use Ffhs\FfhsTasks\Policies\TaskPolicy;
+use Ffhs\FfhsTasks\Tests\Fixtures\UserGroups\AnotherTestUserGroup;
+use Ffhs\FfhsTasks\Tests\Fixtures\UserGroups\TestUserGroup;
 use pxlrbt\LaravelAssertDom\Assertions\DomAssert;
 
 use function Pest\Livewire\livewire;
@@ -417,5 +420,141 @@ describe('created tab', function () {
         livewire(ListTasks::class)
             ->set('activeTab', 'created')
             ->assertCanSeeTableRecords($tasks);
+    });
+});
+
+describe('group tab', function () {
+    test('is visible when user groups are configured', function () {
+        // Arrange
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        // Act & Assert
+        livewire(ListTasks::class)
+            ->assertSeeText(__('ffhs-tasks::pages.index.tabs.groups'));
+    });
+
+    test('is hidden when no user groups are configured', function () {
+        // Arrange
+        config()->set('ffhs-tasks.user_groups', []);
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        // Act & Assert
+        livewire(ListTasks::class)
+            ->assertDontSeeText(__('ffhs-tasks::pages.index.tabs.groups'));
+    });
+
+    test('shows tasks belonging to the user groups', function () {
+        // Arrange
+        config()->set('ffhs-tasks.user_groups', [TestUserGroup::class]);
+
+        $user = User::factory()->create();
+
+        $group = TestUserGroup::factory()->create();
+        $group->users()->attach($user);
+
+        $taskInGroup = Task::factory()->create();
+
+        TaskUserGroup::query()->create([
+            'task_id' => $taskInGroup->id,
+            'user_group_type' => TestUserGroup::class,
+            'user_group_id' => $group->id,
+        ]);
+
+        $taskOutsideGroup = Task::factory()->create();
+
+        $this->actingAs($user);
+
+        // Act & Assert
+        livewire(ListTasks::class)
+            ->set('activeTab', 'group')
+            ->assertCanSeeTableRecords([$taskInGroup])
+            ->assertCanNotSeeTableRecords([$taskOutsideGroup]);
+    });
+
+    test('shows tasks from multiple user group types', function () {
+        // Arrange
+        config()->set('ffhs-tasks.user_groups', [TestUserGroup::class, AnotherTestUserGroup::class]);
+
+        $user = User::factory()->create();
+
+        $firstGroup = TestUserGroup::factory()->create();
+        $firstGroup->users()->attach($user);
+
+        $secondGroup = AnotherTestUserGroup::factory()->create();
+        $secondGroup->users()->attach($user);
+
+        $taskA = Task::factory()->create();
+
+        TaskUserGroup::query()->create([
+            'task_id' => $taskA->id,
+            'user_group_type' => TestUserGroup::class,
+            'user_group_id' => $firstGroup->id,
+        ]);
+
+        $taskB = Task::factory()->create();
+
+        TaskUserGroup::query()->create([
+            'task_id' => $taskB->id,
+            'user_group_type' => AnotherTestUserGroup::class,
+            'user_group_id' => $secondGroup->id,
+        ]);
+
+        $this->actingAs($user);
+
+        // Act & Assert
+        livewire(ListTasks::class)
+            ->set('activeTab', 'group')
+            ->assertCanSeeTableRecords([$taskA, $taskB]);
+    });
+
+    test('does not show tasks from groups the user does not belong to', function () {
+        // Arrange
+        config()->set('ffhs-tasks.user_groups', [TestUserGroup::class]);
+
+        $user = User::factory()->create();
+        $otherUser = User::factory()->create();
+
+        $userGroup = TestUserGroup::factory()->create();
+        $userGroup->users()->attach($user);
+
+        $otherGroup = TestUserGroup::factory()->create();
+        $otherGroup->users()->attach($otherUser);
+
+        $userTask = Task::factory()->create();
+
+        TaskUserGroup::query()->create([
+            'task_id' => $userTask->id,
+            'user_group_type' => TestUserGroup::class,
+            'user_group_id' => $userGroup->id,
+        ]);
+
+        $otherTask = Task::factory()->create();
+
+        TaskUserGroup::query()->create([
+            'task_id' => $otherTask->id,
+            'user_group_type' => TestUserGroup::class,
+            'user_group_id' => $otherGroup->id,
+        ]);
+
+        $this->actingAs($user);
+
+        // Act & Assert
+        livewire(ListTasks::class)
+            ->set('activeTab', 'group')
+            ->assertCanSeeTableRecords([$userTask])
+            ->assertCanNotSeeTableRecords([$otherTask]);
+    });
+
+    test('shows empty table when user has no group tasks', function () {
+        // Arrange
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        // Act & Assert
+        livewire(ListTasks::class)
+            ->set('activeTab', 'group')
+            ->assertCountTableRecords(0);
     });
 });

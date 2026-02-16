@@ -8,13 +8,16 @@ use Illuminate\Foundation\Auth\User;
 
 interface TaskUserGroupInterface
 {
-    public static function getGroupsQuery(?string $search = null): Builder;
+    /**
+     * The label for this class
+     */
+    public static function label(): string;
 
-    public static function getGroupsForUserQuery(User $user): Builder;
+    public static function searchQuery(?string $search = null): Builder;
 
-    public static function groupDisplayName(): string;
+    public static function queryForUser(User $user): Builder;
 
-    public function getGroupModelTitle(): string;
+    public function displayName(): string;
 
-    public function groupUsersQuery(): Builder|Relation;
+    public function usersQuery(): Builder|Relation;
 }

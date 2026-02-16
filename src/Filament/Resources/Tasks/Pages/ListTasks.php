@@ -2,19 +2,20 @@
 
 namespace Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages;
 
-use Ffhs\FfhsTasks\Contracts\TaskUserGroupInterface;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Actions\CreateTaskAction;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Tables\TasksTable;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\TaskResource;
+use Ffhs\FfhsTasks\Scopes\AssigneeScope;
+use Ffhs\FfhsTasks\Scopes\CreatorScope;
 use Ffhs\FfhsTasks\Scopes\IsActiveScope;
-use Ffhs\FfhsTasks\Scopes\TaskGroupScope;
+use Ffhs\FfhsTasks\Scopes\TaskUserGroupScope;
+use Ffhs\FfhsTasks\Support\UserGroupsHelper;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Support\Enums\Width;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 
 class ListTasks extends ListRecords
 {
@@ -41,42 +42,17 @@ class ListTasks extends ListRecords
         return [
             'my' => Tab::make()
                 ->label(__('ffhs-tasks::pages.index.tabs.my'))
-                ->modifyQueryUsing(function ($query) {
-                    return $query->whereHas('users', function ($query) {
-                        $query->where('users.id', auth()->id());
-                    });
-                }),
+                ->modifyQueryUsing(fn (Builder $query) => $query->tap(new AssigneeScope())),
 
             'group' => Tab::make()
                 ->label(__('ffhs-tasks::pages.index.tabs.groups'))
-                ->modifyQueryUsing(function ($query) {
-                    return $query->tap(new TaskGroupScope());
-                }),
+                ->modifyQueryUsing(fn (Builder $query) => $query->tap(new TaskUserGroupScope()))
+                ->visible(UserGroupsHelper::hasModels()),
 
             'created' => Tab::make()
                 ->label(__('ffhs-tasks::pages.index.tabs.created'))
-                ->modifyQueryUsing(function ($query) {
-                    $query
-                        ->where('creator_type', auth()->user()::class)
-                        ->where('creator_id', auth()->id());
-                }),
+                ->modifyQueryUsing(fn (Builder $query) => $query->tap(new CreatorScope())),
         ];
-    }
-
-    protected function modifyGroupTaskQuery(Builder $query): Builder
-    {
-        return $query->whereHas('taskUserGroups', function (Builder $query) {
-            $groups = config('ffhs-tasks.user_groups', []);
-            foreach ($groups as $groupClass) {
-                /**@var  Model|TaskUserGroupInterface $group */
-                $group = app($groupClass);
-                $query->where('user_group_type', $groupClass)
-                    ->whereIn(
-                        'user_group_id',
-                        $group::getGroupsForUserQuery(auth()->user())->select($group->getTable() . '.id')
-                    );
-            }
-        });
     }
 
     protected function getHeaderActions(): array
