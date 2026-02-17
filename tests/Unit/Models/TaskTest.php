@@ -4,7 +4,7 @@ use Ffhs\FfhsTasks\Enums\TaskStatus;
 use Ffhs\FfhsTasks\Events\StatusChangedEvent;
 use Ffhs\FfhsTasks\Models\Task;
 use Ffhs\FfhsTasks\Tests\Fixtures\TaskTypes\TestTaskType;
-use Ffhs\FfhsTasks\Tests\Fixtures\UserGroups\TestUserGroup;
+use App\Models\FirstUserGroup;
 use Illuminate\Support\Facades\Event;
 
 beforeEach(function () {
@@ -202,7 +202,7 @@ describe('complete()', function () {
 describe('creator()', function () {
     it('allows a non-user model as creator', function () {
         // Arrange
-        $creator = TestUserGroup::factory()->create();
+        $creator = FirstUserGroup::factory()->create();
 
         // Act
         $task = Task::factory()->create([
@@ -212,7 +212,7 @@ describe('creator()', function () {
 
         // Assert
         expect($task->fresh()->creator)
-            ->toBeInstanceOf(TestUserGroup::class)
+            ->toBeInstanceOf(FirstUserGroup::class)
             ->getKey()->toBe($creator->getKey());
     });
 });

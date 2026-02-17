@@ -2,6 +2,7 @@
 
 use App\Models\FirstUserGroup;
 use App\Models\SecondUserGroup;
+use App\Models\User;
 use App\TaskTypes\ApprovalTaskType;
 use Ffhs\FfhsTasks\Models\Task;
 use Ffhs\FfhsTasks\TaskType\DefaultTaskType;
@@ -11,8 +12,7 @@ return [
 
     'tables' => [
         'tasks' => 'ffhs_tasks',
-        'task_user' => 'ffhs_task_user',
-        'task_user_group' => 'ffhs_task_user_group',
+        'task_assignables' => 'ffhs_task_assignables',
     ],
 
     'models' => [
@@ -20,10 +20,12 @@ return [
     ],
 
     'user' => [
+        'model' => User::class,
         'name_attribute' => 'name',
     ],
 
-    'user_groups' => [
+    'assignable_models' => [
+        User::class,
         FirstUserGroup::class,
         SecondUserGroup::class,
     ],

@@ -10,7 +10,11 @@ trait IsTaskUser
 {
     public function tasks(): BelongsToMany
     {
-        return $this->belongsToMany(Task::class, config('ffhs-tasks.tables.task_user'), 'user_id', 'task_id');
+        return $this->morphToMany(
+            Task::class,
+            'assignable',
+            config('ffhs-tasks.tables.task_assignables'),
+        );
     }
 
     public function displayCreatorName(): string

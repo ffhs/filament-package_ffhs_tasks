@@ -2,7 +2,7 @@
 
 namespace Ffhs\FfhsTasks\Filament\Resources\Tasks\Schemas;
 
-use Ffhs\FfhsTasks\Filament\Resources\Tasks\Components\UserGroupSelect;
+use Ffhs\FfhsTasks\Filament\Resources\Tasks\Components\AssignablesSelect;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\EditTask;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\HandleTask;
 use Ffhs\FfhsTasks\Models\Task;
@@ -128,7 +128,8 @@ class TaskForm
                                             return false;
                                         }),
 
-                                    UserGroupSelect::make('taskUserGroups')
+                                    AssignablesSelect::make('assignables')
+                                        ->required()
                                 ]),
 
                                 Section::make()

@@ -2,7 +2,7 @@
 
 namespace Ffhs\FfhsTasks\Filament\Resources\Tasks\Actions;
 
-use Ffhs\FfhsTasks\Contracts\TaskUserGroupInterface;
+use Ffhs\FfhsTasks\Contracts\AssignableInterface;
 use Ffhs\FfhsTasks\Models\Task;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
@@ -81,14 +81,14 @@ class AssignActions extends ActionGroup
             return;
         }
 
-        $isExisting = $record->taskUserGroups()->where('user_group_type', $type)->where('user_group_id', $id)->exists();
+        $isExisting = $record->assignables()->where('assignable_type', $type)->where('assignable_id', $id)->exists();
         if ($isExisting) {
             return;
         }
 
-        $record->taskUserGroups()->create([
-            'user_group_type' => $type,
-            'user_group_id' => $id,
+        $record->assignables()->create([
+            'assignable_type' => $type,
+            'assignable_id' => $id,
         ]);
     }
 
@@ -109,13 +109,13 @@ class AssignActions extends ActionGroup
     protected function assignGroupSchema(): array
     {
         $options = [];
-        foreach (config('ffhs-tasks.user_groups', []) as $userGroupClass) {
-            /** @var TaskUserGroupInterface $userGroup */
+        foreach (config('ffhs-tasks.assignable_models', []) as $userGroupClass) {
+            /** @var AssignableInterface $userGroup */
             $userGroup = app($userGroupClass);
 
             $options[$userGroup::label()] = $userGroup::searchQuery()
                 ->get()
-                ->mapWithKeys(function (TaskUserGroupInterface|Model $userGroupModel) use ($userGroupClass) {
+                ->mapWithKeys(function (AssignableInterface|Model $userGroupModel) use ($userGroupClass) {
                     /**@phpstan-ignore-next-line */
                     return [$userGroupClass . ':' . $userGroupModel->id => $userGroupModel->displayName()];
                 })->toArray();

@@ -5,10 +5,10 @@ use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\ListAllTasks;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\ListTasks;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\TaskResource;
 use Ffhs\FfhsTasks\Models\Task;
-use Ffhs\FfhsTasks\Models\TaskUserGroup;
+use Ffhs\FfhsTasks\Models\Assignable;
 use Ffhs\FfhsTasks\Policies\TaskPolicy;
-use Ffhs\FfhsTasks\Tests\Fixtures\UserGroups\AnotherTestUserGroup;
-use Ffhs\FfhsTasks\Tests\Fixtures\UserGroups\TestUserGroup;
+use App\Models\SecondUserGroup;
+use App\Models\FirstUserGroup;
 use pxlrbt\LaravelAssertDom\Assertions\DomAssert;
 
 use function Pest\Livewire\livewire;
@@ -423,43 +423,43 @@ describe('created tab', function () {
     });
 });
 
-describe('group tab', function () {
-    test('is visible when user groups are configured', function () {
+describe('assigned tab', function () {
+    test('is visible when assignable models are configured', function () {
         // Arrange
         $user = User::factory()->create();
         $this->actingAs($user);
 
         // Act & Assert
         livewire(ListTasks::class)
-            ->assertSeeText(__('ffhs-tasks::pages.index.tabs.groups'));
+            ->assertSeeText(__('ffhs-tasks::pages.index.tabs.assigned'));
     });
 
-    test('is hidden when no user groups are configured', function () {
+    test('is hidden when no assignable models are configured', function () {
         // Arrange
-        config()->set('ffhs-tasks.user_groups', []);
+        config()->set('ffhs-tasks.assignable_models', []);
         $user = User::factory()->create();
         $this->actingAs($user);
 
         // Act & Assert
         livewire(ListTasks::class)
-            ->assertDontSeeText(__('ffhs-tasks::pages.index.tabs.groups'));
+            ->assertDontSeeText(__('ffhs-tasks::pages.index.tabs.assigned'));
     });
 
-    test('shows tasks belonging to the user groups', function () {
+    test('shows tasks belonging to the assignables', function () {
         // Arrange
-        config()->set('ffhs-tasks.user_groups', [TestUserGroup::class]);
+        config()->set('ffhs-tasks.assignable_models', [FirstUserGroup::class]);
 
         $user = User::factory()->create();
 
-        $group = TestUserGroup::factory()->create();
+        $group = FirstUserGroup::factory()->create();
         $group->users()->attach($user);
 
         $taskInGroup = Task::factory()->create();
 
-        TaskUserGroup::query()->create([
+        Assignable::query()->create([
             'task_id' => $taskInGroup->id,
-            'user_group_type' => TestUserGroup::class,
-            'user_group_id' => $group->id,
+            'assignable_type' => FirstUserGroup::class,
+            'assignable_id' => $group->id,
         ]);
 
         $taskOutsideGroup = Task::factory()->create();
@@ -468,93 +468,93 @@ describe('group tab', function () {
 
         // Act & Assert
         livewire(ListTasks::class)
-            ->set('activeTab', 'group')
+            ->set('activeTab', 'assigned')
             ->assertCanSeeTableRecords([$taskInGroup])
             ->assertCanNotSeeTableRecords([$taskOutsideGroup]);
     });
 
-    test('shows tasks from multiple user group types', function () {
+    test('shows tasks from multiple assignable types', function () {
         // Arrange
-        config()->set('ffhs-tasks.user_groups', [TestUserGroup::class, AnotherTestUserGroup::class]);
+        config()->set('ffhs-tasks.assignable_models', [FirstUserGroup::class, SecondUserGroup::class]);
 
         $user = User::factory()->create();
 
-        $firstGroup = TestUserGroup::factory()->create();
+        $firstGroup = FirstUserGroup::factory()->create();
         $firstGroup->users()->attach($user);
 
-        $secondGroup = AnotherTestUserGroup::factory()->create();
+        $secondGroup = SecondUserGroup::factory()->create();
         $secondGroup->users()->attach($user);
 
         $taskA = Task::factory()->create();
 
-        TaskUserGroup::query()->create([
+        Assignable::query()->create([
             'task_id' => $taskA->id,
-            'user_group_type' => TestUserGroup::class,
-            'user_group_id' => $firstGroup->id,
+            'assignable_type' => FirstUserGroup::class,
+            'assignable_id' => $firstGroup->id,
         ]);
 
         $taskB = Task::factory()->create();
 
-        TaskUserGroup::query()->create([
+        Assignable::query()->create([
             'task_id' => $taskB->id,
-            'user_group_type' => AnotherTestUserGroup::class,
-            'user_group_id' => $secondGroup->id,
+            'assignable_type' => SecondUserGroup::class,
+            'assignable_id' => $secondGroup->id,
         ]);
 
         $this->actingAs($user);
 
         // Act & Assert
         livewire(ListTasks::class)
-            ->set('activeTab', 'group')
+            ->set('activeTab', 'assigned')
             ->assertCanSeeTableRecords([$taskA, $taskB]);
     });
 
-    test('does not show tasks from groups the user does not belong to', function () {
+    test('does not show tasks from assignables the user does not belong to', function () {
         // Arrange
-        config()->set('ffhs-tasks.user_groups', [TestUserGroup::class]);
+        config()->set('ffhs-tasks.assignable_models', [FirstUserGroup::class]);
 
         $user = User::factory()->create();
         $otherUser = User::factory()->create();
 
-        $userGroup = TestUserGroup::factory()->create();
+        $userGroup = FirstUserGroup::factory()->create();
         $userGroup->users()->attach($user);
 
-        $otherGroup = TestUserGroup::factory()->create();
+        $otherGroup = FirstUserGroup::factory()->create();
         $otherGroup->users()->attach($otherUser);
 
         $userTask = Task::factory()->create();
 
-        TaskUserGroup::query()->create([
+        Assignable::query()->create([
             'task_id' => $userTask->id,
-            'user_group_type' => TestUserGroup::class,
-            'user_group_id' => $userGroup->id,
+            'assignable_type' => FirstUserGroup::class,
+            'assignable_id' => $userGroup->id,
         ]);
 
         $otherTask = Task::factory()->create();
 
-        TaskUserGroup::query()->create([
+        Assignable::query()->create([
             'task_id' => $otherTask->id,
-            'user_group_type' => TestUserGroup::class,
-            'user_group_id' => $otherGroup->id,
+            'assignable_type' => FirstUserGroup::class,
+            'assignable_id' => $otherGroup->id,
         ]);
 
         $this->actingAs($user);
 
         // Act & Assert
         livewire(ListTasks::class)
-            ->set('activeTab', 'group')
+            ->set('activeTab', 'assigned')
             ->assertCanSeeTableRecords([$userTask])
             ->assertCanNotSeeTableRecords([$otherTask]);
     });
 
-    test('shows empty table when user has no group tasks', function () {
+    test('shows empty table when user has no assigned tasks', function () {
         // Arrange
         $user = User::factory()->create();
         $this->actingAs($user);
 
         // Act & Assert
         livewire(ListTasks::class)
-            ->set('activeTab', 'group')
+            ->set('activeTab', 'assigned')
             ->assertCountTableRecords(0);
     });
 });

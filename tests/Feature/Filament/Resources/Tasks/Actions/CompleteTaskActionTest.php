@@ -12,7 +12,7 @@ beforeEach(function () {
     TestTaskType::resetFlags();
 
     config()->set('ffhs-tasks.types', [TestTaskType::class]);
-    config()->set('ffhs-tasks.user_groups', []);
+    config()->set('ffhs-tasks.assignable_models', []);
 });
 
 describe('action', function () {

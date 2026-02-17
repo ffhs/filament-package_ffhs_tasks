@@ -9,11 +9,10 @@ use Ffhs\FfhsTasks\TaskType\TaskType;
 use Ffhs\FfhsUtils\Traits\HasType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Foundation\Auth\User;
 
 class Task extends Model
 {
@@ -94,21 +93,26 @@ class Task extends Model
 
     /** Relations */
 
-    public function users(): BelongsToMany
+    public function users(): MorphToMany
     {
-        return $this->belongsToMany(
-            User::class,
-            config('ffhs-tasks.tables.task_user'),
-            'task_id',
-            'user_id'
+        return $this->morphedByMany(
+            config('ffhs-tasks.user.model'),
+            'assignable',
+            config('ffhs-tasks.tables.task_assignables'),
         );
     }
 
-    public function taskUserGroups(): HasMany
+    /**
+     * @return HasMany<Assignable, $this>
+     */
+    public function assignables(): HasMany
     {
-        return $this->hasMany(TaskUserGroup::class, 'task_id');
+        return $this->hasMany(Assignable::class, 'task_id');
     }
 
+    /**
+     * @return MorphTo<Model, $this>
+     */
     public function creator(): MorphTo
     {
         return $this->morphTo('creator');

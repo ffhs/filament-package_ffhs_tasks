@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Foundation\Auth\User;
 
-interface TaskUserGroupInterface
+interface AssignableInterface
 {
     /**
      * The label for this class

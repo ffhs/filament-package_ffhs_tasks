@@ -2,12 +2,12 @@
 
 namespace Ffhs\FfhsTasks\Database\Factories;
 
-use Ffhs\FfhsTasks\Models\TaskUserGroup;
+use Ffhs\FfhsTasks\Models\Assignable;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class TaskUserGroupFactory extends Factory
+class AssignableFactory extends Factory
 {
-    protected $model = TaskUserGroup::class;
+    protected $model = Assignable::class;
 
     public function definition(): array
     {

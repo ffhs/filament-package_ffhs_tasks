@@ -8,8 +8,8 @@ use Ffhs\FfhsTasks\Filament\Resources\Tasks\TaskResource;
 use Ffhs\FfhsTasks\Scopes\AssigneeScope;
 use Ffhs\FfhsTasks\Scopes\CreatorScope;
 use Ffhs\FfhsTasks\Scopes\IsActiveScope;
-use Ffhs\FfhsTasks\Scopes\TaskUserGroupScope;
-use Ffhs\FfhsTasks\Support\UserGroupsHelper;
+use Ffhs\FfhsTasks\Scopes\AssignablesScope;
+use Ffhs\FfhsTasks\Support\AssignableHelper;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Support\Enums\Width;
@@ -44,10 +44,10 @@ class ListTasks extends ListRecords
                 ->label(__('ffhs-tasks::pages.index.tabs.my'))
                 ->modifyQueryUsing(fn (Builder $query) => $query->tap(new AssigneeScope())),
 
-            'group' => Tab::make()
-                ->label(__('ffhs-tasks::pages.index.tabs.groups'))
-                ->modifyQueryUsing(fn (Builder $query) => $query->tap(new TaskUserGroupScope()))
-                ->visible(UserGroupsHelper::hasModels()),
+            'assigned' => Tab::make()
+                ->label(__('ffhs-tasks::pages.index.tabs.assigned'))
+                ->modifyQueryUsing(fn (Builder $query) => $query->tap(new AssignablesScope()))
+                ->visible(AssignableHelper::hasModels()),
 
             'created' => Tab::make()
                 ->label(__('ffhs-tasks::pages.index.tabs.created'))

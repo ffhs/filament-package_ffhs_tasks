@@ -2,12 +2,13 @@
 
 namespace Ffhs\FfhsTasks\Filament\Resources\Tasks\Tables;
 
+use Ffhs\FfhsTasks\Contracts\AssignableInterface;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Actions\HandleAction;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Actions\ViewOrEditAction;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\ListTasks;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\TaskResource;
 use Ffhs\FfhsTasks\Models\Task;
-use Ffhs\FfhsTasks\Models\TaskUserGroup;
+use Ffhs\FfhsTasks\Models\Assignable;
 use Ffhs\FfhsTasks\TaskType\TaskType;
 use Filament\Actions\ActionGroup;
 use Filament\Pages\Page;
@@ -76,16 +77,16 @@ class TasksTable
                     ->toggleable()
                     ->dateTime('d.m.Y'),
 
-                TextColumn::make('users.'.config()->string('ffhs-tasks.user.name_attribute'))
-                    ->label(__('ffhs-tasks::tasks.attributes.users'))
+                TextColumn::make('assignables')
+                    ->label(__('ffhs-tasks::tasks.attributes.assignables'))
                     ->toggleable()
-                    ->listWithLineBreaks()
-                    ->limitList(2),
+                    ->formatStateUsing(function (Assignable $state) {
+                        $assignable = $state->assignable;
 
-                TextColumn::make('taskUserGroups')
-                    ->label(__('ffhs-tasks::tasks.attributes.groups'))
-                    ->toggleable()
-                    ->formatStateUsing(fn (TaskUserGroup $state) => $state->userGroup->displayName())
+                        return $assignable instanceof AssignableInterface
+                            ? $assignable->displayName()
+                            : null;
+                    })
                     ->listWithLineBreaks()
                     ->limitList(2),
             ])
