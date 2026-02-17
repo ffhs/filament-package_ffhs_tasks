@@ -3,7 +3,6 @@
 namespace Ffhs\FfhsTasks\Enums;
 
 use Filament\Support\Contracts\HasLabel;
-use Illuminate\Contracts\Support\Htmlable;
 
 enum TaskPrivacy: string implements HasLabel
 {
@@ -11,7 +10,7 @@ enum TaskPrivacy: string implements HasLabel
     case Private = 'private';
 
 
-    public function getLabel(): string|Htmlable|null
+    public function getLabel(): string
     {
         return match ($this) {
             static::Public => __('ffhs-tasks::enums.privacy.public'),

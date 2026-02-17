@@ -111,7 +111,7 @@ class Task extends Model
     }
 
     /**
-     * @return HasMany<Assignable, $this>
+     * @return HasMany<Watchable, $this>
      */
     public function watchables(): HasMany
     {
