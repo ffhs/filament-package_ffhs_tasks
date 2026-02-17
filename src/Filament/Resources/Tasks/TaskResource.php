@@ -13,6 +13,7 @@ use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\ListTasks;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Tables\TasksTable;
 use Ffhs\FfhsTasks\Models\Task;
 use Ffhs\FfhsTasks\Scopes\IsActiveScope;
+use Ffhs\FfhsTasks\Scopes\PrivacyScope;
 use Filament\Navigation\NavigationItem;
 use Filament\Resources\Resource;
 use Filament\Support\Icons\Heroicon;
@@ -85,6 +86,7 @@ class TaskResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
+            ->tap(new PrivacyScope())
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
             ]);

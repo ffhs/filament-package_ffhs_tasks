@@ -2,8 +2,10 @@
 
 namespace Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages;
 
+use Ffhs\FfhsTasks\Enums\TaskPrivacy;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Components\AssignablesSelect;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\TaskResource;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\Pages\CreateRecord;
@@ -107,6 +109,19 @@ class CreateTask extends CreateRecord
                                             return false;
                                         }),
 
+                                    Select::make('privacy')
+                                        ->label(__('ffhs-tasks::tasks.attributes.privacy'))
+                                        ->required()
+                                        ->selectablePlaceholder(false)
+                                        ->enum(TaskPrivacy::class)
+                                        ->options(TaskPrivacy::options()),
+
+                                    AssignablesSelect::make('assignables')
+                                        ->required(),
+
+                                    AssignablesSelect::make('watchables')
+                                        ->label(__('ffhs-tasks::tasks.attributes.watchables')),
+
                                     Toggle::make('can_be_cancelled')
                                         ->label(__('ffhs-tasks::tasks.attributes.can_be_cancelled'))
                                         ->visible(function (CreateTask $livewire) {
@@ -118,12 +133,6 @@ class CreateTask extends CreateRecord
 
                                             return false;
                                         }),
-
-                                    AssignablesSelect::make('assignables')
-                                        ->required(),
-
-                                    AssignablesSelect::make('watchables')
-                                        ->label(__('ffhs-tasks::tasks.attributes.watchables')),
                                 ]),
 
                                 Section::make()

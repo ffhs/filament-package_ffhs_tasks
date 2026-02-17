@@ -18,6 +18,7 @@ return new class () extends Migration {
             $table->text('description');
             $table->string('type');
             $table->string('status');
+            $table->string('privacy');
 
             $table->nullableMorphs('creator');
 

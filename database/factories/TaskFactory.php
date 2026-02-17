@@ -2,6 +2,7 @@
 
 namespace Ffhs\FfhsTasks\Database\Factories;
 
+use Ffhs\FfhsTasks\Enums\TaskPrivacy;
 use Ffhs\FfhsTasks\Enums\TaskStatus;
 use Ffhs\FfhsTasks\Models\Task;
 use Ffhs\FfhsTasks\TaskType\TaskType;
@@ -21,6 +22,7 @@ class TaskFactory extends Factory
                 array_keys(TaskType::getAllTypes())
             ),
             'status' => TaskStatus::InProgress,
+            'privacy' => TaskPrivacy::Public,
 
             'extra' => null,
             'data' => null,
@@ -39,6 +41,13 @@ class TaskFactory extends Factory
                 endDate: Carbon::yesterday(),
             ),
         ];
+    }
+
+    public function private(): self
+    {
+        return $this->state([
+            'privacy' => TaskPrivacy::Private,
+        ]);
     }
 
     public function cancelled(): self

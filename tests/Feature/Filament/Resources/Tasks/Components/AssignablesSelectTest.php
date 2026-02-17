@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use Ffhs\FfhsTasks\Enums\TaskPrivacy;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Components\AssignablesSelect;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\CreateTask;
 use Ffhs\FfhsTasks\Models\Task;
@@ -118,6 +119,7 @@ describe('save relationships', function () {
         // Arrange
         config()->set('ffhs-tasks.types', [TestTaskType::class]);
         config()->set('ffhs-tasks.assignable_models', [FirstUserGroup::class]);
+
         $user = User::factory()->create();
         $group = FirstUserGroup::factory()->create(['display_name' => 'Team Alpha']);
 
@@ -130,6 +132,7 @@ describe('save relationships', function () {
         Livewire::test(CreateTask::class, ['type' => TestTaskType::identifier()])
             ->fillForm([
                 'title' => 'Test Task',
+                'privacy' => TaskPrivacy::Public,
                 'assignables' => [$compositeValue],
             ])
             ->call('create')

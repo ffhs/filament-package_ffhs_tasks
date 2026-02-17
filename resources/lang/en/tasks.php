@@ -10,6 +10,7 @@ return [
     'attributes' => [
         'id' => 'ID',
         'status' => 'Status',
+        'privacy' => 'Privacy',
         'type' => 'Type',
         'title' => 'Title',
         'description' => 'Description',

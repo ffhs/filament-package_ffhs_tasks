@@ -2,11 +2,13 @@
 
 namespace Ffhs\FfhsTasks\Filament\Resources\Tasks\Schemas;
 
+use Ffhs\FfhsTasks\Enums\TaskPrivacy;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Components\AssignablesSelect;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\EditTask;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\HandleTask;
 use Ffhs\FfhsTasks\Models\Task;
 use Ffhs\FfhsTasks\TaskType\TaskType;
+use Filament\Forms\Components\Select;
 use Filament\Schemas\Schema;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\RichEditor;
@@ -127,6 +129,13 @@ class TaskForm
 
                                             return false;
                                         }),
+
+                                    Select::make('privacy')
+                                        ->label(__('ffhs-tasks::tasks.attributes.privacy'))
+                                        ->required()
+                                        ->selectablePlaceholder(false)
+                                        ->enum(TaskPrivacy::class)
+                                        ->options(TaskPrivacy::options()),
 
                                     AssignablesSelect::make('assignables')
                                         ->required(),
