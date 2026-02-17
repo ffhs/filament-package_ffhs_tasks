@@ -13,6 +13,7 @@ final class HandleAction
     {
         return Action::make('handle')
             ->label(__('ffhs-tasks::actions.handle.label'))
+            ->tooltip(__('ffhs-tasks::actions.handle.label'))
             ->icon(Heroicon::OutlinedCheckCircle)
             ->color('gray')
             ->url(fn (Task $record) => TaskResource::getUrl('handle', ['record' => $record]))

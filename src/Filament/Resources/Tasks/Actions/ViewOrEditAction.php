@@ -17,6 +17,11 @@ final class ViewOrEditAction
                 ? __('filament-actions::edit.single.label')
                 : __('filament-actions::view.single.label')
             )
+            ->tooltip(
+                fn (Task $record) => static::canEdit($record)
+                    ? __('filament-actions::edit.single.label')
+                    : __('filament-actions::view.single.label')
+            )
             ->color('gray')
             ->icon(fn (Task $record) => static::canEdit($record) ? Heroicon::OutlinedPencilSquare : Heroicon::OutlinedEye)
             ->url(fn (Task $record) => TaskResource::getUrl('edit', ['record' => $record]))
