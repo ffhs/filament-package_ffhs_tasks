@@ -25,24 +25,24 @@ return [
         ]
     ],
 
+    'group_assign' => [
+        'label' => 'Assign',
+    ],
+
     'assign_me' => [
         'label' => 'Assign me',
-        'tooltip' => 'Assign this task to yourself',
     ],
 
     'unassign_me' => [
         'label' => 'Unassign me',
-        'tooltip' => 'Remove yourself from this task',
     ],
 
     'assign_group' => [
         'label' => 'Assign group',
-        'tooltip' => 'Assign this task to a group',
     ],
 
     'assign_user' => [
         'label' => 'Assign user',
-        'tooltip' => 'Assign this task to a user',
 
         'schema' => [
             'users' => [
