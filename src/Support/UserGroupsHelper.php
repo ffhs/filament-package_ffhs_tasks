@@ -2,7 +2,9 @@
 
 namespace Ffhs\FfhsTasks\Support;
 
+use Exception;
 use Ffhs\FfhsTasks\Contracts\TaskUserGroupInterface;
+use Ffhs\FfhsTasks\Models\TaskUserGroup;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Collection;
@@ -43,5 +45,18 @@ class UserGroupsHelper
             /** @var class-string<TaskUserGroupInterface> $modelClass */
             return $modelClass::queryForUser($user)->get();
         });
+    }
+
+    public static function getMorphKey(TaskUserGroup|TaskUserGroupInterface $userGroup): string
+    {
+        if ($userGroup instanceof TaskUserGroup) {
+            return $userGroup->user_group_type.':::'.$userGroup->user_group_id;
+        }
+
+        if ($userGroup instanceof TaskUserGroupInterface) {
+            return $userGroup::class.':::'.$userGroup->getKey();
+        }
+
+        throw new Exception('Invalid user group type');
     }
 }

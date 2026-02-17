@@ -3,7 +3,6 @@
 namespace Ffhs\FfhsTasks\Filament\Resources\Tasks\Schemas;
 
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Components\UserGroupSelect;
-use Ffhs\FfhsTasks\Filament\Resources\Tasks\Components\UserSelect;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\EditTask;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\HandleTask;
 use Ffhs\FfhsTasks\Models\Task;
@@ -130,9 +129,6 @@ class TaskForm
                                         }),
 
                                     UserGroupSelect::make('taskUserGroups')
-                                        ->live(),
-
-                                    UserSelect::make('users'),
                                 ]),
 
                                 Section::make()

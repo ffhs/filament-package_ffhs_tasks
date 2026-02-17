@@ -5,6 +5,7 @@ namespace Ffhs\FfhsTasks\Filament\Resources\Tasks\Components;
 use Ffhs\FfhsTasks\Contracts\TaskUserGroupInterface;
 use Ffhs\FfhsTasks\Models\Task;
 use Ffhs\FfhsTasks\Models\TaskUserGroup;
+use Ffhs\FfhsTasks\Support\UserGroupsHelper;
 use Filament\Forms\Components\Select;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -20,7 +21,7 @@ class UserGroupSelect
             ->required()
             ->multiple()
             ->live()
-            ->visible(config()->collection('ffhs-tasks.user_groups')->isNotEmpty())
+            ->visible(UserGroupsHelper::hasModels())
             ->getSearchResultsUsing(fn (string $search): array => static::buildOptions($search)->all())
             ->getOptionLabelsUsing(fn (array $values): array => static::buildOptionLabels($values)->all())
             ->loadStateFromRelationshipsUsing(function (Select $component): void {
@@ -34,7 +35,7 @@ class UserGroupSelect
                 $pivots = $record->taskUserGroups()->get();
 
                 $state = $pivots
-                    ->map(fn (TaskUserGroup $pivot): string => "{$pivot->user_group_type}:::{$pivot->user_group_id}")
+                    ->map(UserGroupsHelper::getMorphKey(...))
                     ->all();
 
                 $component->state($state);
@@ -80,7 +81,7 @@ class UserGroupSelect
 
                 return $groups->mapWithKeys(function (Model $group): array {
                     /** @var TaskUserGroupInterface&Model $group */
-                    return ["{$group->getMorphClass()}:::{$group->getKey()}" => $group->displayName()];
+                    return [UserGroupsHelper::getMorphKey($group) => $group->displayName()];
                 });
             });
     }
@@ -101,7 +102,7 @@ class UserGroupSelect
                     ->get()
                     ->mapWithKeys(function (Model $group) {
                         /** @var TaskUserGroupInterface&Model $group */
-                        return ["{$group->getMorphClass()}:::{$group->getKey()}" => $group->displayName()];
+                        return [UserGroupsHelper::getMorphKey($group) => $group->displayName()];
                     });
             });
     }
