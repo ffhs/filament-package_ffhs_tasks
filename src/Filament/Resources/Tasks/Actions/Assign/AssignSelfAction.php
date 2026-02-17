@@ -1,6 +1,6 @@
 <?php
 
-namespace Ffhs\FfhsTasks\Filament\Resources\Tasks\Actions;
+namespace Ffhs\FfhsTasks\Filament\Resources\Tasks\Actions\Assign;
 
 use Ffhs\FfhsTasks\Models\Task;
 use Filament\Actions\Action;
@@ -18,7 +18,7 @@ final class AssignSelfAction
             ->visible(function (Task $record) {
                 $user = auth()->user()?->withoutRelations();
 
-                return $record->users->doesntContain($user);
+                return $record->users->doesntContain($user) && $record->canBeEdited();
             })
             ->action(function (Task $record): void {
                 $user = auth()->user();

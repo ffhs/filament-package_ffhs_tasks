@@ -2,17 +2,16 @@
 
 namespace Ffhs\FfhsTasks\Filament\Resources\Tasks\Tables;
 
-use Ffhs\FfhsTasks\Filament\Resources\Tasks\Actions\AssignGroupAction;
-use Ffhs\FfhsTasks\Filament\Resources\Tasks\Actions\AssignSelfAction;
-use Ffhs\FfhsTasks\Filament\Resources\Tasks\Actions\AssignUserAction;
 use Ffhs\FfhsTasks\Contracts\AssignableInterface;
+use Ffhs\FfhsTasks\Filament\Resources\Tasks\Actions\Assign\AssignAction;
+use Ffhs\FfhsTasks\Filament\Resources\Tasks\Actions\Assign\AssignSelfAction;
+use Ffhs\FfhsTasks\Filament\Resources\Tasks\Actions\Assign\UnassignSelfAction;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Actions\HandleAction;
-use Ffhs\FfhsTasks\Filament\Resources\Tasks\Actions\UnassignSelfAction;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Actions\ViewOrEditAction;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\ListTasks;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\TaskResource;
-use Ffhs\FfhsTasks\Models\Task;
 use Ffhs\FfhsTasks\Models\Assignable;
+use Ffhs\FfhsTasks\Models\Task;
 use Ffhs\FfhsTasks\TaskType\TaskType;
 use Filament\Actions\ActionGroup;
 use Filament\Pages\Page;
@@ -107,8 +106,7 @@ class TasksTable
                 ActionGroup::make([
                     AssignSelfAction::make(),
                     UnassignSelfAction::make(),
-                    AssignGroupAction::make(),
-                    AssignUserAction::make(),
+                    AssignAction::make(),
                 ])
                     ->tooltip(__('ffhs-tasks::actions.group_assign.label'))
                     ->iconButton()

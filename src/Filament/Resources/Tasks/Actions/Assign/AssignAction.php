@@ -1,31 +1,31 @@
 <?php
 
-namespace Ffhs\FfhsTasks\Filament\Resources\Tasks\Actions;
+namespace Ffhs\FfhsTasks\Filament\Resources\Tasks\Actions\Assign;
 
-use Ffhs\FfhsTasks\Filament\Resources\Tasks\Components\UserGroupSelect;
+use Ffhs\FfhsTasks\Filament\Resources\Tasks\Components\AssignablesSelect;
 use Ffhs\FfhsTasks\Models\Task;
-use Ffhs\FfhsTasks\Support\UserGroupsHelper;
+use Ffhs\FfhsTasks\Support\AssignableHelper;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Filament\Support\Enums\Width;
 use Filament\Support\Icons\Heroicon;
 
-final class AssignGroupAction
+final class AssignAction
 {
     public static function make(): Action
     {
-        return Action::make('assign_group')
+        return Action::make('assign')
             ->closeModalByClickingAway(false)
-            ->label(__('ffhs-tasks::actions.assign_group.label'))
+            ->label(__('ffhs-tasks::actions.assign.label'))
             ->icon(Heroicon::OutlinedUsers)
             ->modalWidth(Width::Large)
             ->authorize('update', Task::class)
-            ->visible(fn (Task $record) => UserGroupsHelper::hasModels() && ! $record->isArchived())
+            ->visible(fn (Task $record) => AssignableHelper::hasModels() && $record->canBeEdited())
             ->schema([
-                UserGroupSelect::make('taskUserGroups'),
+                AssignablesSelect::make('assignables'),
             ])
             ->fillForm(fn (Task $record) => [
-                'taskUserGroups' => $record->taskUserGroups,
+                'assignables' => $record->assignables,
             ])
             ->action(function (): void {
                 Notification::make()

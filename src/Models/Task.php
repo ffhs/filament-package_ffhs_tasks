@@ -120,6 +120,11 @@ class Task extends Model
 
     /** Methods */
 
+    public function canBeEdited(): bool
+    {
+        return ! $this->isArchived();
+    }
+
     public function isArchived(): bool
     {
         return $this->status !== TaskStatus::InProgress;

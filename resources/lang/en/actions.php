@@ -29,26 +29,15 @@ return [
         'label' => 'Assign',
     ],
 
+    'assign' => [
+        'label' => 'Assign',
+    ],
+
     'assign_me' => [
         'label' => 'Assign me',
     ],
 
     'unassign_me' => [
         'label' => 'Unassign me',
-    ],
-
-    'assign_group' => [
-        'label' => 'Assign group',
-    ],
-
-    'assign_user' => [
-        'label' => 'Assign user',
-
-        'schema' => [
-            'users' => [
-                'label' => 'Users',
-                'helper_text' => 'Select users to assign to this task',
-            ],
-        ],
     ],
 ];
