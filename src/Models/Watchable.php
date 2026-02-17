@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
-class Assignable extends Pivot
+class Watchable extends Pivot
 {
     protected $fillable = [
         'task_id',
@@ -17,7 +17,7 @@ class Assignable extends Pivot
 
     public function getTable(): string
     {
-        return config('ffhs-tasks.tables.task_assignables');
+        return config('ffhs-tasks.tables.task_watchables');
     }
 
     /**
@@ -31,7 +31,7 @@ class Assignable extends Pivot
     /**
      * @return MorphTo<Model, $this>
      */
-    public function assignable(): MorphTo
+    public function assignale(): MorphTo
     {
         return $this->morphTo();
     }

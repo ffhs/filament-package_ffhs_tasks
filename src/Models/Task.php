@@ -111,6 +111,14 @@ class Task extends Model
     }
 
     /**
+     * @return HasMany<Assignable, $this>
+     */
+    public function watchables(): HasMany
+    {
+        return $this->hasMany(Watchable::class, 'task_id');
+    }
+
+    /**
      * @return MorphTo<Model, $this>
      */
     public function creator(): MorphTo

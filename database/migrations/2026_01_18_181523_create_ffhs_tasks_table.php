@@ -9,6 +9,7 @@ return new class () extends Migration {
     {
         $taskTable = config('ffhs-tasks.tables.tasks');
         $taskAssignablesTable = config('ffhs-tasks.tables.task_assignables');
+        $taskWatchablesTable = config('ffhs-tasks.tables.task_watchables');
 
         Schema::create($taskTable, static function (Blueprint $table) {
             $table->id();
@@ -36,6 +37,13 @@ return new class () extends Migration {
         });
 
         Schema::create($taskAssignablesTable, static function (Blueprint $table) use ($taskTable) {
+            $table->id();
+            $table->foreignId('task_id')->constrained($taskTable)->cascadeOnDelete();
+            $table->morphs('assignable');
+            $table->timestamps();
+        });
+
+        Schema::create($taskWatchablesTable, static function (Blueprint $table) use ($taskTable) {
             $table->id();
             $table->foreignId('task_id')->constrained($taskTable)->cascadeOnDelete();
             $table->morphs('assignable');

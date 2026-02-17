@@ -119,7 +119,11 @@ class CreateTask extends CreateRecord
                                             return false;
                                         }),
 
-                                    AssignablesSelect::make('assignables'),
+                                    AssignablesSelect::make('assignables')
+                                        ->required(),
+
+                                    AssignablesSelect::make('watchables')
+                                        ->label(__('ffhs-tasks::tasks.attributes.watchables')),
                                 ]),
 
                                 Section::make()

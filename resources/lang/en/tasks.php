@@ -14,6 +14,7 @@ return [
         'title' => 'Title',
         'description' => 'Description',
         'assignables' => 'Assigned To',
+        'watchables' => 'Collaborators',
         'creator' => 'Creator',
         'starts_at' => 'Starts',
         'deadline_at' => 'Deadline',

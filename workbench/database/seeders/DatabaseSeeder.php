@@ -7,6 +7,7 @@ use App\Models\SecondUserGroup;
 use App\Models\User;
 use Ffhs\FfhsTasks\Models\Assignable;
 use Ffhs\FfhsTasks\Models\Task;
+use Ffhs\FfhsTasks\Models\Watchable;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -107,6 +108,12 @@ class DatabaseSeeder extends Seeder
             );
 
             Assignable::insert([
+                'task_id' => $task->id,
+                'assignable_id' => $group->getKey(),
+                'assignable_type' => $group::class,
+            ]);
+
+            Watchable::insert([
                 'task_id' => $task->id,
                 'assignable_id' => $group->getKey(),
                 'assignable_type' => $group::class,

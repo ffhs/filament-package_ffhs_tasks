@@ -129,7 +129,10 @@ class TaskForm
                                         }),
 
                                     AssignablesSelect::make('assignables')
-                                        ->required()
+                                        ->required(),
+
+                                    AssignablesSelect::make('watchables')
+                                        ->label(__('ffhs-tasks::tasks.attributes.watchables')),
                                 ]),
 
                                 Section::make()

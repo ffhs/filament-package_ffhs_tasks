@@ -17,14 +17,12 @@ class AssignablesSelect
     public static function make(string $name): ?Select
     {
         return Select::make($name)
-            ->label('Assigned To')
-            ->required()
+            ->label(__('ffhs-tasks::tasks.attributes.assignables'))
             ->multiple()
-            ->live()
             ->visible(AssignableHelper::hasModels())
             ->getSearchResultsUsing(fn (string $search): array => static::buildOptions($search)->all())
             ->getOptionLabelsUsing(fn (array $values): array => static::buildOptionLabels($values)->all())
-            ->loadStateFromRelationshipsUsing(function (Select $component): void {
+            ->loadStateFromRelationshipsUsing(function (Select $component) use ($name): void {
                 $record = $component->getRecord();
 
                 if (! $record instanceof Task) {
@@ -32,7 +30,8 @@ class AssignablesSelect
                 }
 
                 /** @var EloquentCollection<int, Assignable> $pivots */
-                $pivots = $record->assignables()->get();
+
+                $pivots = $record->{$name}()->get();
 
                 $state = $pivots
                     ->map(AssignableHelper::getMorphKey(...))
@@ -40,14 +39,14 @@ class AssignablesSelect
 
                 $component->state($state);
             })
-            ->saveRelationshipsUsing(function (Select $component, ?array $state): void {
+            ->saveRelationshipsUsing(function (Select $component, ?array $state) use ($name): void {
                 $record = $component->getRecord();
 
                 if (! $record instanceof Task) {
                     return;
                 }
 
-                $record->assignables()->delete();
+                $record->{$name}()->delete();
 
                 if (empty($state)) {
                     return;
@@ -63,7 +62,7 @@ class AssignablesSelect
                         ];
                     });
 
-                $record->assignables()->createMany($pivotRecords->all());
+                $record->{$name}()->createMany($pivotRecords->all());
             })
             ->dehydrateStateUsing(null);
     }

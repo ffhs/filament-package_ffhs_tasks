@@ -13,6 +13,7 @@ return [
     'tables' => [
         'tasks' => 'ffhs_tasks',
         'task_assignables' => 'ffhs_task_assignables',
+        'task_watchables' => 'ffhs_task_watchables',
     ],
 
     'models' => [

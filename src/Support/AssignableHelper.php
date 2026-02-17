@@ -4,6 +4,7 @@ namespace Ffhs\FfhsTasks\Support;
 
 use Ffhs\FfhsTasks\Contracts\AssignableInterface;
 use Ffhs\FfhsTasks\Models\Assignable;
+use Ffhs\FfhsTasks\Models\Watchable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Collection;
@@ -46,9 +47,9 @@ class AssignableHelper
         });
     }
 
-    public static function getMorphKey(Assignable|(Model&AssignableInterface) $assignable): string
+    public static function getMorphKey(Assignable|Watchable|(Model&AssignableInterface) $assignable): string
     {
-        if ($assignable instanceof Assignable) {
+        if ($assignable instanceof Assignable || $assignable instanceof Watchable) {
             return $assignable->assignable_type.':::'.$assignable->assignable_id;
         }
 
