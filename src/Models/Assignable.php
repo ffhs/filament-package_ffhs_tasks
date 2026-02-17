@@ -2,40 +2,43 @@
 
 namespace Ffhs\FfhsTasks\Models;
 
-use Ffhs\FfhsTasks\Database\Factories\TaskUserGroupFactory;
+use Ffhs\FfhsTasks\Database\Factories\AssignableFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
-/**
- * @property \Ffhs\FfhsTasks\Contracts\TaskUserGroupInterface|Model|null $userGroup
- */
-class TaskUserGroup extends Pivot
+class Assignable extends Pivot
 {
-    /** @use HasFactory<TaskUserGroupFactory> */
+    /** @use HasFactory<AssignableFactory> */
     use HasFactory;
 
     protected $fillable = [
         'task_id',
-        'user_group_id',
-        'user_group_type',
+        'assignable_id',
+        'assignable_type',
     ];
 
-    protected static string $factory = TaskUserGroupFactory::class;
+    protected static string $factory = AssignableFactory::class;
 
     public function getTable(): string
     {
-        return config('ffhs-tasks.tables.task_user_group', 'ffhs_task_user_group');
+        return config('ffhs-tasks.tables.task_assignables', 'ffhs_task_assignables');
     }
 
+    /**
+     * @return BelongsTo<Task, $this>
+     */
     public function task(): BelongsTo
     {
         return $this->belongsTo(Task::class, 'task_id');
     }
 
-    public function userGroup(): MorphTo
+    /**
+     * @return MorphTo<Model, $this>
+     */
+    public function assignable(): MorphTo
     {
         return $this->morphTo();
     }

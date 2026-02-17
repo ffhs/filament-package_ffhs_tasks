@@ -8,7 +8,7 @@ return [
         'tabs' => [
             'my' => 'My Tasks',
             'created' => 'Created Tasks',
-            'groups' => 'Group Tasks',
+            'assigned' => 'Assigned Tasks',
         ],
     ],
 

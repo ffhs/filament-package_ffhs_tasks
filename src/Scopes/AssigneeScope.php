@@ -16,9 +16,10 @@ final class AssigneeScope
     public function __invoke(Builder $query): Builder
     {
         return $query
-            ->whereHas(
-                'users',
-                fn (Builder $query) => $query->whereKey($this->assignee->getKey())
-            );
+            ->whereHas('assignables', function (Builder $query) {
+                $query
+                    ->where('assignable_type', $this->assignee::class)
+                    ->where('assignable_id', $this->assignee->getKey());
+            });
     }
 }

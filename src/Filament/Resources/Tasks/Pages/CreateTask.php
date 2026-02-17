@@ -2,7 +2,7 @@
 
 namespace Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages;
 
-use Ffhs\FfhsTasks\Filament\Resources\Tasks\Components\UserGroupSelect;
+use Ffhs\FfhsTasks\Filament\Resources\Tasks\Components\AssignablesSelect;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\TaskResource;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -119,7 +119,7 @@ class CreateTask extends CreateRecord
                                             return false;
                                         }),
 
-                                    UserGroupSelect::make('taskUserGroups'),
+                                    AssignablesSelect::make('assignables'),
                                 ]),
 
                                 Section::make()

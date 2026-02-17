@@ -2,25 +2,25 @@
 
 use App\Models\User;
 use Ffhs\FfhsTasks\Models\Task;
-use Ffhs\FfhsTasks\Models\TaskUserGroup;
-use Ffhs\FfhsTasks\Scopes\TaskUserGroupScope;
-use Ffhs\FfhsTasks\Tests\Fixtures\UserGroups\AnotherTestUserGroup;
-use Ffhs\FfhsTasks\Tests\Fixtures\UserGroups\TestUserGroup;
+use Ffhs\FfhsTasks\Models\Assignable;
+use Ffhs\FfhsTasks\Scopes\AssignablesScope;
+use App\Models\SecondUserGroup;
+use App\Models\FirstUserGroup;
 
 test('filters tasks belonging to the authenticated user groups', function () {
     // Arrange
-    config()->set('ffhs-tasks.user_groups', [TestUserGroup::class]);
+    config()->set('ffhs-tasks.assignable_models', [FirstUserGroup::class]);
 
     $user = User::factory()->create();
-    $group = TestUserGroup::factory()->create();
+    $group = FirstUserGroup::factory()->create();
     $group->users()->attach($user);
 
     $taskInGroup = Task::factory()->create();
 
-    TaskUserGroup::query()->create([
+    Assignable::query()->create([
         'task_id' => $taskInGroup->id,
-        'user_group_type' => TestUserGroup::class,
-        'user_group_id' => $group->id,
+        'assignable_type' => FirstUserGroup::class,
+        'assignable_id' => $group->id,
     ]);
 
     $taskOutsideGroup = Task::factory()->create();
@@ -29,7 +29,7 @@ test('filters tasks belonging to the authenticated user groups', function () {
 
     // Act
     $results = Task::query()
-        ->tap(new TaskUserGroupScope())
+        ->tap(new AssignablesScope())
         ->get();
 
     // Assert
@@ -39,30 +39,30 @@ test('filters tasks belonging to the authenticated user groups', function () {
 
 test('filters tasks across multiple user group types', function () {
     // Arrange
-    config()->set('ffhs-tasks.user_groups', [TestUserGroup::class, AnotherTestUserGroup::class]);
+    config()->set('ffhs-tasks.assignable_models', [FirstUserGroup::class, SecondUserGroup::class]);
 
     $user = User::factory()->create();
 
-    $firstGroup = TestUserGroup::factory()->create();
+    $firstGroup = FirstUserGroup::factory()->create();
     $firstGroup->users()->attach($user);
 
-    $secondGroup = AnotherTestUserGroup::factory()->create();
+    $secondGroup = SecondUserGroup::factory()->create();
     $secondGroup->users()->attach($user);
 
     $taskA = Task::factory()->create();
 
-    TaskUserGroup::query()->create([
+    Assignable::query()->create([
         'task_id' => $taskA->id,
-        'user_group_type' => TestUserGroup::class,
-        'user_group_id' => $firstGroup->id,
+        'assignable_type' => FirstUserGroup::class,
+        'assignable_id' => $firstGroup->id,
     ]);
 
     $taskB = Task::factory()->create();
 
-    TaskUserGroup::query()->create([
+    Assignable::query()->create([
         'task_id' => $taskB->id,
-        'user_group_type' => AnotherTestUserGroup::class,
-        'user_group_id' => $secondGroup->id,
+        'assignable_type' => SecondUserGroup::class,
+        'assignable_id' => $secondGroup->id,
     ]);
 
     $taskC = Task::factory()->create();
@@ -71,7 +71,7 @@ test('filters tasks across multiple user group types', function () {
 
     // Act
     $results = Task::query()
-        ->tap(new TaskUserGroupScope())
+        ->tap(new AssignablesScope())
         ->get();
 
     // Assert
@@ -81,7 +81,7 @@ test('filters tasks across multiple user group types', function () {
 
 test('returns empty collection when no tasks have user groups', function () {
     // Arrange
-    config()->set('ffhs-tasks.user_groups', [TestUserGroup::class]);
+    config()->set('ffhs-tasks.assignable_models', [FirstUserGroup::class]);
 
     $user = User::factory()->create();
     Task::factory()->create();
@@ -90,7 +90,7 @@ test('returns empty collection when no tasks have user groups', function () {
 
     // Act
     $results = Task::query()
-        ->tap(new TaskUserGroupScope())
+        ->tap(new AssignablesScope())
         ->get();
 
     // Assert
@@ -99,38 +99,38 @@ test('returns empty collection when no tasks have user groups', function () {
 
 test('does not return tasks from groups the user does not belong to', function () {
     // Arrange
-    config()->set('ffhs-tasks.user_groups', [TestUserGroup::class]);
+    config()->set('ffhs-tasks.assignable_models', [FirstUserGroup::class]);
 
     $user = User::factory()->create();
     $otherUser = User::factory()->create();
 
-    $userGroup = TestUserGroup::factory()->create();
+    $userGroup = FirstUserGroup::factory()->create();
     $userGroup->users()->attach($user);
 
-    $otherGroup = TestUserGroup::factory()->create();
+    $otherGroup = FirstUserGroup::factory()->create();
     $otherGroup->users()->attach($otherUser);
 
     $userTask = Task::factory()->create();
 
-    TaskUserGroup::query()->create([
+    Assignable::query()->create([
         'task_id' => $userTask->id,
-        'user_group_type' => TestUserGroup::class,
-        'user_group_id' => $userGroup->id,
+        'assignable_type' => FirstUserGroup::class,
+        'assignable_id' => $userGroup->id,
     ]);
 
     $otherTask = Task::factory()->create();
 
-    TaskUserGroup::query()->create([
+    Assignable::query()->create([
         'task_id' => $otherTask->id,
-        'user_group_type' => TestUserGroup::class,
-        'user_group_id' => $otherGroup->id,
+        'assignable_type' => FirstUserGroup::class,
+        'assignable_id' => $otherGroup->id,
     ]);
 
     $this->actingAs($user);
 
     // Act
     $results = Task::query()
-        ->tap(new TaskUserGroupScope())
+        ->tap(new AssignablesScope())
         ->get();
 
     // Assert

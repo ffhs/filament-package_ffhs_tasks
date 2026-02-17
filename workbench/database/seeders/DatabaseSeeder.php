@@ -5,10 +5,10 @@ namespace Database\Seeders;
 use App\Models\FirstUserGroup;
 use App\Models\SecondUserGroup;
 use App\Models\User;
+use Ffhs\FfhsTasks\Models\Assignable;
 use Ffhs\FfhsTasks\Models\Task;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
@@ -29,10 +29,12 @@ class DatabaseSeeder extends Seeder
             ->create();
 
         $firstUserGroups = FirstUserGroup::factory()
+            ->hasAttached($users->slice(5))
             ->count(5)
             ->create();
 
         $secondUserGroups = SecondUserGroup::factory()
+            ->hasAttached($users->slice(5))
             ->count(5)
             ->create();
 
@@ -51,24 +53,33 @@ class DatabaseSeeder extends Seeder
             ]);
 
         // My Tasks
-        Task::factory()
-            ->hasAttached($user)
+        $tasks = Task::factory()
             ->count(5)
             ->create();
 
+        foreach ($tasks as $task) {
+            $task->users()->attach($user->id);
+        }
+
         // Canceled Tasks
-        Task::factory()
-            ->hasAttached($user)
+        $tasks = Task::factory()
             ->count(5)
             ->cancelled()
             ->create();
 
+        foreach ($tasks as $task) {
+            $task->users()->attach($user->id);
+        }
+
         // Finished tasks
-        Task::factory()
-            ->hasAttached($user)
+        $tasks = Task::factory()
             ->count(5)
             ->completed()
             ->create();
+
+        foreach ($tasks as $task) {
+            $task->users()->attach($user->id);
+        }
 
         // Group tasks
         $groupedTasks = Task::factory()
@@ -83,13 +94,22 @@ class DatabaseSeeder extends Seeder
             $randomUsers = $users->random(rand(0, 3));
 
             $task->creator()->associate($creator);
-            $task->users()->attach($randomUsers);
             $task->save();
 
-            DB::table('ffhs_task_user_group')->insert([
+            $userData = $randomUsers->map(fn (User $user) => [
                 'task_id' => $task->id,
-                'user_group_id' => $group->getKey(),
-                'user_group_type' => $group::class,
+                'assignable_type' => User::class,
+                'assignable_id' => $user->id,
+            ])->toArray();
+
+            Assignable::insert(
+                $userData,
+            );
+
+            Assignable::insert([
+                'task_id' => $task->id,
+                'assignable_id' => $group->getKey(),
+                'assignable_type' => $group::class,
             ]);
         }
     }

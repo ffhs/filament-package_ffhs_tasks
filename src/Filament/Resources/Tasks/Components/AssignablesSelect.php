@@ -2,26 +2,26 @@
 
 namespace Ffhs\FfhsTasks\Filament\Resources\Tasks\Components;
 
-use Ffhs\FfhsTasks\Contracts\TaskUserGroupInterface;
+use Ffhs\FfhsTasks\Contracts\AssignableInterface;
 use Ffhs\FfhsTasks\Models\Task;
-use Ffhs\FfhsTasks\Models\TaskUserGroup;
-use Ffhs\FfhsTasks\Support\UserGroupsHelper;
+use Ffhs\FfhsTasks\Models\Assignable;
+use Ffhs\FfhsTasks\Support\AssignableHelper;
 use Filament\Forms\Components\Select;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 
-class UserGroupSelect
+class AssignablesSelect
 {
     public static function make(string $name): ?Select
     {
         return Select::make($name)
-            ->label('User Groups')
+            ->label('Assigned To')
             ->required()
             ->multiple()
             ->live()
-            ->visible(UserGroupsHelper::hasModels())
+            ->visible(AssignableHelper::hasModels())
             ->getSearchResultsUsing(fn (string $search): array => static::buildOptions($search)->all())
             ->getOptionLabelsUsing(fn (array $values): array => static::buildOptionLabels($values)->all())
             ->loadStateFromRelationshipsUsing(function (Select $component): void {
@@ -31,11 +31,11 @@ class UserGroupSelect
                     return;
                 }
 
-                /** @var EloquentCollection<int, TaskUserGroup> $pivots */
-                $pivots = $record->taskUserGroups()->get();
+                /** @var EloquentCollection<int, Assignable> $pivots */
+                $pivots = $record->assignables()->get();
 
                 $state = $pivots
-                    ->map(UserGroupsHelper::getMorphKey(...))
+                    ->map(AssignableHelper::getMorphKey(...))
                     ->all();
 
                 $component->state($state);
@@ -47,7 +47,7 @@ class UserGroupSelect
                     return;
                 }
 
-                $record->taskUserGroups()->delete();
+                $record->assignables()->delete();
 
                 if (empty($state)) {
                     return;
@@ -58,12 +58,12 @@ class UserGroupSelect
                         [$type, $id] = explode(':::', $composite, 2);
 
                         return [
-                            'user_group_type' => $type,
-                            'user_group_id' => $id,
+                            'assignable_type' => $type,
+                            'assignable_id' => $id,
                         ];
                     });
 
-                $record->taskUserGroups()->createMany($pivotRecords->all());
+                $record->assignables()->createMany($pivotRecords->all());
             })
             ->dehydrateStateUsing(null);
     }
@@ -71,17 +71,17 @@ class UserGroupSelect
     /** @return Collection<string, string> */
     protected static function buildOptions(?string $search = null): Collection
     {
-        /** @var Collection<int, class-string<TaskUserGroupInterface>> $userGroups */
-        $userGroups = config()->collection('ffhs-tasks.user_groups');
+        /** @var Collection<int, class-string<AssignableInterface>> $userGroups */
+        $userGroups = AssignableHelper::models();
 
         return $userGroups
             ->flatMap(function (string $groupClass) use ($search) {
-                /** @var class-string<TaskUserGroupInterface> $groupClass */
+                /** @var class-string<AssignableInterface> $groupClass */
                 $groups = $groupClass::searchQuery($search)->get();
 
                 return $groups->mapWithKeys(function (Model $group): array {
-                    /** @var TaskUserGroupInterface&Model $group */
-                    return [UserGroupsHelper::getMorphKey($group) => $group->displayName()];
+                    /** @var AssignableInterface&Model $group */
+                    return [AssignableHelper::getMorphKey($group) => $group->displayName()];
                 });
             });
     }
@@ -94,15 +94,15 @@ class UserGroupSelect
             ->flatMap(function (Collection $items, string $morphType) {
                 $ids = $items->map(fn (string $composite) => explode(':::', $composite, 2)[1]);
 
-                /** @var class-string<Model&TaskUserGroupInterface> $modelClass */
+                /** @var class-string<Model&AssignableInterface> $modelClass */
                 $modelClass = Relation::getMorphedModel($morphType) ?? $morphType;
 
                 return $modelClass::query()
                     ->whereIn((new $modelClass())->getKeyName(), $ids)
                     ->get()
                     ->mapWithKeys(function (Model $group) {
-                        /** @var TaskUserGroupInterface&Model $group */
-                        return [UserGroupsHelper::getMorphKey($group) => $group->displayName()];
+                        /** @var AssignableInterface&Model $group */
+                        return [AssignableHelper::getMorphKey($group) => $group->displayName()];
                     });
             });
     }

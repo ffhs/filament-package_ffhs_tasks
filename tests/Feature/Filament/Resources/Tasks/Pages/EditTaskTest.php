@@ -97,7 +97,7 @@ describe('save lifecycle hooks', function () {
         TestTaskType::resetFlags();
 
         config()->set('ffhs-tasks.types', [TestTaskType::class]);
-        config()->set('ffhs-tasks.user_groups', []);
+        config()->set('ffhs-tasks.assignable_models', []);
     });
 
     test('calls mutateDataBeforeSave on task type', function () {

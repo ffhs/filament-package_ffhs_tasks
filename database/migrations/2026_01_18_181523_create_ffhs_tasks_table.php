@@ -8,8 +8,7 @@ return new class () extends Migration {
     public function up(): void
     {
         $taskTable = config('ffhs-tasks.tables.tasks');
-        $userGroupTable = config('ffhs-tasks.tables.task_user_group');
-        $taskUsers = config('ffhs-tasks.tables.task_user');
+        $taskAssignablesTable = config('ffhs-tasks.tables.task_assignables');
 
         Schema::create($taskTable, static function (Blueprint $table) {
             $table->id();
@@ -36,17 +35,10 @@ return new class () extends Migration {
             $table->timestamps();
         });
 
-        Schema::create($userGroupTable, static function (Blueprint $table) use ($taskTable) {
+        Schema::create($taskAssignablesTable, static function (Blueprint $table) use ($taskTable) {
             $table->id();
             $table->foreignId('task_id')->constrained($taskTable)->cascadeOnDelete();
-            $table->morphs('user_group');
-            $table->timestamps();
-        });
-
-        Schema::create($taskUsers, static function (Blueprint $table) use ($taskTable) {
-            $table->id();
-            $table->foreignId('task_id')->constrained($taskTable)->cascadeOnDelete();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->morphs('assignable');
             $table->timestamps();
         });
     }

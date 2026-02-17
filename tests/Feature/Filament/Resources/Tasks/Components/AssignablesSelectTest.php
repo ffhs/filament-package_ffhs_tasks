@@ -1,14 +1,14 @@
 <?php
 
 use App\Models\User;
-use Ffhs\FfhsTasks\Filament\Resources\Tasks\Components\UserGroupSelect;
+use Ffhs\FfhsTasks\Filament\Resources\Tasks\Components\AssignablesSelect;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\CreateTask;
 use Ffhs\FfhsTasks\Models\Task;
-use Ffhs\FfhsTasks\Models\TaskUserGroup;
+use Ffhs\FfhsTasks\Models\Assignable;
 use Ffhs\FfhsTasks\Policies\TaskPolicy;
 use Ffhs\FfhsTasks\Tests\Fixtures\TaskTypes\TestTaskType;
-use Ffhs\FfhsTasks\Tests\Fixtures\UserGroups\AnotherTestUserGroup;
-use Ffhs\FfhsTasks\Tests\Fixtures\UserGroups\TestUserGroup;
+use App\Models\SecondUserGroup;
+use App\Models\FirstUserGroup;
 use Livewire\Livewire;
 
 describe('visibility', function () {
@@ -22,13 +22,13 @@ describe('visibility', function () {
 
         // Act & Assert
         Livewire::test(CreateTask::class, ['type' => TestTaskType::identifier()])
-            ->assertFormFieldIsVisible('taskUserGroups');
+            ->assertFormFieldIsVisible('assignables');
     });
 
     test('is hidden when no user groups are configured', function () {
         // Arrange
         config()->set('ffhs-tasks.types', [TestTaskType::class]);
-        config()->set('ffhs-tasks.user_groups', []);
+        config()->set('ffhs-tasks.assignable_models', []);
         $user = User::factory()->create();
 
         TaskPolicy::fake(['create' => true]);
@@ -36,15 +36,15 @@ describe('visibility', function () {
 
         // Act & Assert
         Livewire::test(CreateTask::class, ['type' => TestTaskType::identifier()])
-            ->assertFormFieldIsHidden('taskUserGroups');
+            ->assertFormFieldIsHidden('assignables');
     });
 });
 
 describe('make', function () {
     test('returns null-safe Select when user groups are empty', function () {
-        config()->set('ffhs-tasks.user_groups', []);
+        config()->set('ffhs-tasks.assignable_models', []);
 
-        $select = UserGroupSelect::make('taskUserGroups');
+        $select = AssignablesSelect::make('assignables');
 
         expect($select)->not->toBeNull();
     });
@@ -53,12 +53,12 @@ describe('make', function () {
 describe('search results', function () {
     test('returns options from all configured user group models', function () {
         // Arrange
-        config()->set('ffhs-tasks.user_groups', [TestUserGroup::class, AnotherTestUserGroup::class]);
-        TestUserGroup::factory()->create(['display_name' => 'Team Alpha']);
-        AnotherTestUserGroup::factory()->create(['display_name' => 'Squad Alpha']);
+        config()->set('ffhs-tasks.assignable_models', [FirstUserGroup::class, SecondUserGroup::class]);
+        FirstUserGroup::factory()->create(['display_name' => 'Team Alpha']);
+        SecondUserGroup::factory()->create(['display_name' => 'Squad Alpha']);
 
         // Act
-        $options = invade(new UserGroupSelect())->buildOptions('Alpha');
+        $options = invade(new AssignablesSelect())->buildOptions('Alpha');
 
         // Assert
         expect($options)->toHaveCount(2)
@@ -67,12 +67,12 @@ describe('search results', function () {
 
     test('filters options by search term', function () {
         // Arrange
-        config()->set('ffhs-tasks.user_groups', [TestUserGroup::class]);
-        TestUserGroup::factory()->create(['display_name' => 'Team Alpha']);
-        TestUserGroup::factory()->create(['display_name' => 'Team Beta']);
+        config()->set('ffhs-tasks.assignable_models', [FirstUserGroup::class]);
+        FirstUserGroup::factory()->create(['display_name' => 'Team Alpha']);
+        FirstUserGroup::factory()->create(['display_name' => 'Team Beta']);
 
         // Act
-        $options = invade(new UserGroupSelect())->buildOptions('Alpha');
+        $options = invade(new AssignablesSelect())->buildOptions('Alpha');
 
         // Assert
         expect($options)->toHaveCount(1)
@@ -81,14 +81,14 @@ describe('search results', function () {
 
     test('uses composite key format for option values', function () {
         // Arrange
-        config()->set('ffhs-tasks.user_groups', [TestUserGroup::class]);
-        $group = TestUserGroup::factory()->create(['display_name' => 'Team Alpha']);
+        config()->set('ffhs-tasks.assignable_models', [FirstUserGroup::class]);
+        $group = FirstUserGroup::factory()->create(['display_name' => 'Team Alpha']);
 
         // Act
-        $options = invade(new UserGroupSelect())->buildOptions('Alpha');
+        $options = invade(new AssignablesSelect())->buildOptions('Alpha');
 
         // Assert
-        $expectedKey = TestUserGroup::class . ':::' . $group->id;
+        $expectedKey = FirstUserGroup::class . ':::' . $group->id;
         expect($options->keys()->first())->toBe($expectedKey);
     });
 });
@@ -96,16 +96,16 @@ describe('search results', function () {
 describe('option labels', function () {
     test('resolves labels from composite values', function () {
         // Arrange
-        $firstGroup = TestUserGroup::factory()->create(['display_name' => 'Team Alpha']);
-        $secondGroup = AnotherTestUserGroup::factory()->create(['display_name' => 'Squad Beta']);
+        $firstGroup = FirstUserGroup::factory()->create(['display_name' => 'Team Alpha']);
+        $secondGroup = SecondUserGroup::factory()->create(['display_name' => 'Squad Beta']);
 
         $values = [
-            TestUserGroup::class . ':::' . $firstGroup->id,
-            AnotherTestUserGroup::class . ':::' . $secondGroup->id,
+            FirstUserGroup::class . ':::' . $firstGroup->id,
+            SecondUserGroup::class . ':::' . $secondGroup->id,
         ];
 
         // Act
-        $labels = invade(new UserGroupSelect())->buildOptionLabels($values);
+        $labels = invade(new AssignablesSelect())->buildOptionLabels($values);
 
         // Assert
         expect($labels)->toHaveCount(2)
@@ -117,20 +117,20 @@ describe('save relationships', function () {
     test('saves user group relationships on task creation', function () {
         // Arrange
         config()->set('ffhs-tasks.types', [TestTaskType::class]);
-        config()->set('ffhs-tasks.user_groups', [TestUserGroup::class]);
+        config()->set('ffhs-tasks.assignable_models', [FirstUserGroup::class]);
         $user = User::factory()->create();
-        $group = TestUserGroup::factory()->create(['display_name' => 'Team Alpha']);
+        $group = FirstUserGroup::factory()->create(['display_name' => 'Team Alpha']);
 
         TaskPolicy::fake(['create' => true]);
         $this->actingAs($user);
 
-        $compositeValue = TestUserGroup::class . ':::' . $group->id;
+        $compositeValue = FirstUserGroup::class . ':::' . $group->id;
 
         // Act
         Livewire::test(CreateTask::class, ['type' => TestTaskType::identifier()])
             ->fillForm([
                 'title' => 'Test Task',
-                'taskUserGroups' => [$compositeValue],
+                'assignables' => [$compositeValue],
             ])
             ->call('create')
             ->assertHasNoFormErrors();
@@ -139,10 +139,10 @@ describe('save relationships', function () {
         $task = Task::query()->latest('id')->first();
 
         expect(
-            TaskUserGroup::query()
+            Assignable::query()
                 ->where('task_id', $task->id)
-                ->where('user_group_type', TestUserGroup::class)
-                ->where('user_group_id', $group->id)
+                ->where('assignable_type', FirstUserGroup::class)
+                ->where('assignable_id', $group->id)
                 ->exists()
         )->toBeTrue();
     });

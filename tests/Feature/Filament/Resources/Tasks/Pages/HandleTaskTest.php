@@ -130,7 +130,7 @@ describe('form field state', function () {
             ->assertFormFieldIsDisabled('description')
             ->assertFormFieldIsDisabled('starts_at')
             ->assertFormFieldIsDisabled('deadline_at')
-            ->assertFormFieldIsDisabled('users')
+            ->assertFormFieldIsDisabled('assignables')
             ->fillForm([
                 'data.handled' => true,
                 'data.notes' => 'Test notes',
@@ -161,7 +161,7 @@ describe('save lifecycle hooks', function () {
         // Arrange
         TestTaskType::resetFlags();
         config()->set('ffhs-tasks.types', [TestTaskType::class]);
-        config()->set('ffhs-tasks.user_groups', []);
+        config()->set('ffhs-tasks.assignable_models', []);
 
         $user = User::factory()->create();
         $task = Task::factory()->create(['type' => TestTaskType::identifier()]);
@@ -183,7 +183,7 @@ describe('save lifecycle hooks', function () {
         TestTaskType::resetFlags();
 
         config()->set('ffhs-tasks.types', [TestTaskType::class]);
-        config()->set('ffhs-tasks.user_groups', []);
+        config()->set('ffhs-tasks.assignable_models', []);
 
         $user = User::factory()->create();
         $task = Task::factory()->create(['type' => TestTaskType::identifier()]);
