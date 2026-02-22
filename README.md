@@ -98,6 +98,99 @@ $task = $taskType->createTask([
 
 A `ValidationException` is thrown when required fields are missing or invalid.
 
+## Notifications
+
+The package ships with notifications for task lifecycle events. Enable them individually by adding their class names to the `enabled` array in your config:
+
+```php
+// config/ffhs-tasks.php
+use Ffhs\FfhsTasks\Notifications;
+
+'notifications' => [
+    'enabled' => [
+        Notifications\TaskAssignedNotification::class,
+        Notifications\TaskStatusChangedNotification::class,
+        Notifications\TaskStartDateReachedNotification::class,
+        Notifications\TaskDeadlineApproachingNotification::class,
+        Notifications\TaskDeadlineExceededNotification::class,
+    ],
+    'deadline_remind_before' => [CarbonInterval::days(7), CarbonInterval::days(3), CarbonInterval::days(1)],
+    'deadline_remind_after' => [CarbonInterval::hours(0), CarbonInterval::days(3), CarbonInterval::days(7)],
+],
+```
+
+Only notifications listed in the `enabled` array will be sent. An empty array disables all notifications.
+
+Intervals use `CarbonInterval`, so you can mix units like `CarbonInterval::hours(12)` or `CarbonInterval::days(3)`. The smallest supported unit is 1 hour.
+
+### Customizing Notification Intervals Per Task Type
+
+Override `deadlineRemindBefore()` or `deadlineRemindAfter()` in your `TaskType` to use different intervals per type:
+
+```php
+class ApprovalTaskType extends TaskType
+{
+    public function deadlineRemindBefore(): array
+    {
+        return [CarbonInterval::days(14), CarbonInterval::days(7), CarbonInterval::hours(12)];
+    }
+
+    public function deadlineRemindAfter(): array
+    {
+        return [CarbonInterval::hours(0), CarbonInterval::days(1)];
+    }
+}
+```
+
+### Mail Recipients for Group Assignables
+
+When a notification is sent to a group assignable (i.e. a model implementing `AssignableInterface` that is not a `User`), the package determines the recipient as follows:
+
+1. If the model uses the `Notifiable` trait **and** defines a `routeNotificationForMail()` method that returns a non-empty address, the notification is sent directly to that address.
+2. Otherwise, the notification is sent individually to every user returned by the model's `usersQuery()` method.
+
+To send group notifications to a single address instead of every member, add `routeNotificationForMail()` to your assignable model:
+
+```php
+use Illuminate\Notifications\Notifiable;
+
+class Department extends Model implements AssignableInterface
+{
+    use Notifiable;
+
+    public function routeNotificationForMail(Notification $notification): string
+    {
+        return $this->email; // e.g. "department@example.com"
+    }
+}
+```
+
+### Customizing Mail Content
+
+Override `getMailForNotification()` in your `TaskType` to fully customize the mail for any notification. Return a `MailMessage` to replace the default, or `null` to use the translation-based default:
+
+```php
+use Ffhs\FfhsTasks\Models\Task;
+use Ffhs\FfhsTasks\Notifications\TaskDeadlineApproachingNotification;
+use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
+
+class ApprovalTaskType extends TaskType
+{
+    public function getMailForNotification(Notification $notification, Task $task): ?MailMessage
+    {
+        if ($notification instanceof TaskDeadlineApproachingNotification) {
+            return (new MailMessage())
+                ->subject("Approval needed: {$task->title}")
+                ->greeting('Action required')
+                ->line("The approval for \"{$task->title}\" is due in {$notification->remainingTime->forHumans()}.");
+        }
+
+        return null;
+    }
+}
+```
+
 ## License
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.

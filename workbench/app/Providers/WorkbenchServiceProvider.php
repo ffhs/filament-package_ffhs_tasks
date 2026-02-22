@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Console\DbOpenCommand;
 use Illuminate\Console\Events\CommandStarting;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
 class WorkbenchServiceProvider extends ServiceProvider
@@ -31,6 +32,7 @@ class WorkbenchServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        //
+        Route::middleware('web')
+            ->group(__DIR__.'/../../routes/dev.php');
     }
 }

@@ -6,6 +6,7 @@ use Closure;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\CreateTask;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Schemas\TaskForm;
 use Ffhs\FfhsTasks\Models\Task;
+use Ffhs\FfhsTasks\Traits\HasMailTexts;
 use Ffhs\FfhsTasks\Traits\HasTaskLifeCycle;
 use Ffhs\FfhsUtils\Contracts\Type;
 use Ffhs\FfhsUtils\Traits\IsType;
@@ -16,6 +17,7 @@ use Illuminate\Validation\ValidationException;
 
 abstract class TaskType implements Type
 {
+    use HasMailTexts;
     use HasTaskLifeCycle;
     use IsType;
 

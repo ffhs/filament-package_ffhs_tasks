@@ -57,8 +57,8 @@ class TaskPolicy
         }
 
         // Is assigned through group
-        $userGroupKeys = AssignableHelper::assignablesForUser($user)->map(AssignableHelper::getMorphKey(...));
-        $taskGroupKeys = $task->assignables->map(AssignableHelper::getMorphKey(...));
+        $userGroupKeys = AssignableHelper::assignablesForUser($user)->map(AssignableHelper::getCompositeKey(...));
+        $taskGroupKeys = $task->assignables->map(AssignableHelper::getCompositeKey(...));
 
         return $userGroupKeys->intersect($taskGroupKeys)->isNotEmpty();
     }

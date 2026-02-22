@@ -67,7 +67,7 @@ describe('action', function () {
 
         TaskPolicy::fake(['update' => true]);
 
-        $morphKey = AssignableHelper::getMorphKey($group);
+        $morphKey = AssignableHelper::getCompositeKey($group);
 
         // Act
         $this->actingAs($user);
@@ -104,7 +104,7 @@ describe('action', function () {
 
         $newGroup = FirstUserGroup::factory()->create();
 
-        $morphKey = AssignableHelper::getMorphKey($newGroup);
+        $morphKey = AssignableHelper::getCompositeKey($newGroup);
 
         // Act
         $this->actingAs($user);

@@ -2,15 +2,16 @@
 
 namespace Ffhs\FfhsTasks\Filament\Resources\Tasks\Components;
 
+use Ffhs\FfhsTasks\Actions\SendTaskNotification;
 use Ffhs\FfhsTasks\Contracts\AssignableInterface;
-use Ffhs\FfhsTasks\Models\Task;
 use Ffhs\FfhsTasks\Models\Assignable;
+use Ffhs\FfhsTasks\Models\Task;
+use Ffhs\FfhsTasks\Notifications\TaskAssignedNotification;
 use Ffhs\FfhsTasks\Support\AssignableHelper;
 use Filament\Forms\Components\Select;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\Relation;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 class AssignablesSelect
 {
@@ -34,7 +35,7 @@ class AssignablesSelect
                 $pivots = $record->{$name}()->get();
 
                 $state = $pivots
-                    ->map(AssignableHelper::getMorphKey(...))
+                    ->map(AssignableHelper::getCompositeKey(...))
                     ->all();
 
                 $component->state($state);
@@ -46,6 +47,10 @@ class AssignablesSelect
                     return;
                 }
 
+                $existingKeys = $record->{$name}()->get()
+                    ->map(AssignableHelper::getCompositeKey(...))
+                    ->toArray();
+
                 $record->{$name}()->delete();
 
                 if (empty($state)) {
@@ -54,7 +59,7 @@ class AssignablesSelect
 
                 $pivotRecords = collect($state)
                     ->map(function (string $composite): array {
-                        [$type, $id] = explode(':::', $composite, 2);
+                        ['type' => $type, 'id' => $id] = AssignableHelper::parseCompositeKey($composite);
 
                         return [
                             'assignable_type' => $type,
@@ -63,6 +68,12 @@ class AssignablesSelect
                     });
 
                 $record->{$name}()->createMany($pivotRecords->all());
+
+                $newKeys = collect($state)->diff($existingKeys);
+
+                if ($newKeys->isNotEmpty()) {
+                    static::notifyNewAssignables($record, $newKeys);
+                }
             })
             ->dehydrateStateUsing(null);
     }
@@ -80,29 +91,36 @@ class AssignablesSelect
 
                 return $groups->mapWithKeys(function (Model $group): array {
                     /** @var AssignableInterface&Model $group */
-                    return [AssignableHelper::getMorphKey($group) => $group->displayName()];
+                    return [AssignableHelper::getCompositeKey($group) => $group->displayName()];
                 });
             });
+    }
+
+    /**
+     * @param  Collection<int, string>  $compositeKeys
+     */
+    protected static function notifyNewAssignables(Task $task, Collection $compositeKeys): void
+    {
+        if (! in_array(TaskAssignedNotification::class, config('ffhs-tasks.notifications.enabled', []))) {
+            return;
+        }
+
+        $sender = app(SendTaskNotification::class);
+        $notification = new TaskAssignedNotification($task);
+        $excludeActor = auth()->user();
+
+        foreach (AssignableHelper::getModelsByComposite($compositeKeys) as $model) {
+            $sender->notifyModel($model, $notification, $excludeActor);
+        }
     }
 
     /** @return Collection<string, string> */
     protected static function buildOptionLabels(array $values): Collection
     {
-        return collect($values)
-            ->groupBy(fn (string $composite): string => explode(':::', $composite, 2)[0])
-            ->flatMap(function (Collection $items, string $morphType) {
-                $ids = $items->map(fn (string $composite) => explode(':::', $composite, 2)[1]);
-
-                /** @var class-string<Model&AssignableInterface> $modelClass */
-                $modelClass = Relation::getMorphedModel($morphType) ?? $morphType;
-
-                return $modelClass::query()
-                    ->whereIn((new $modelClass())->getKeyName(), $ids)
-                    ->get()
-                    ->mapWithKeys(function (Model $group) {
-                        /** @var AssignableInterface&Model $group */
-                        return [AssignableHelper::getMorphKey($group) => $group->displayName()];
-                    });
+        return AssignableHelper::getModelsByComposite(collect($values))
+            ->mapWithKeys(function (Model $model): array {
+                /** @var AssignableInterface&Model $model */
+                return [AssignableHelper::getCompositeKey($model) => $model->displayName()];
             });
     }
 }

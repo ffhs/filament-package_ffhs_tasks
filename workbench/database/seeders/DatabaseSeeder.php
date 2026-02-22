@@ -25,20 +25,13 @@ class DatabaseSeeder extends Seeder
                 'password' => Hash::make('password'),
             ]);
 
-        $users = User::factory()
-            ->count(10)
-            ->create();
+        $this->createBasicTasks($user);
+        $this->createGroupTasks();
+        $this->createTasksForNotifications($user);
+    }
 
-        $firstUserGroups = FirstUserGroup::factory()
-            ->hasAttached($users->slice(5))
-            ->count(5)
-            ->create();
-
-        $secondUserGroups = SecondUserGroup::factory()
-            ->hasAttached($users->slice(5))
-            ->count(5)
-            ->create();
-
+    private function createBasicTasks(User $user): void
+    {
         // Created tasks
         Task::factory()
             ->for($user, 'creator')
@@ -56,7 +49,10 @@ class DatabaseSeeder extends Seeder
         // My Tasks
         $tasks = Task::factory()
             ->count(5)
-            ->create();
+            ->create([
+                'starts_at' => null,
+                'deadline_at' => null,
+            ]);
 
         foreach ($tasks as $task) {
             $task->users()->attach($user->id);
@@ -81,11 +77,31 @@ class DatabaseSeeder extends Seeder
         foreach ($tasks as $task) {
             $task->users()->attach($user->id);
         }
+    }
+
+    private function createGroupTasks(): void
+    {
+        $users = User::factory()
+            ->count(10)
+            ->create();
+
+        $firstUserGroups = FirstUserGroup::factory()
+            ->hasAttached($users->slice(5))
+            ->count(5)
+            ->create();
+
+        $secondUserGroups = SecondUserGroup::factory()
+            ->hasAttached($users->slice(5))
+            ->count(5)
+            ->create();
 
         // Group tasks
         $groupedTasks = Task::factory()
             ->count(10)
-            ->create();
+            ->create([
+                'starts_at' => null,
+                'deadline_at' => null,
+            ]);
 
         $groups = collect([...$firstUserGroups, ...$secondUserGroups]);
 
@@ -119,5 +135,38 @@ class DatabaseSeeder extends Seeder
                 'assignable_type' => $group::class,
             ]);
         }
+    }
+
+    private function createTasksForNotifications(User $user): void
+    {
+        // Deadline
+        $task = Task::factory()->create([
+            'type' => 'approval',
+            'title' => 'Deadline Approaching',
+            'starts_at' => null,
+            'deadline_at' => now()->addDay(),
+        ]);
+
+        $task->users()->attach($user->id);
+
+        // Deadline exceeded
+        $task = Task::factory()->create([
+            'type' => 'approval',
+            'title' => 'Deadline Exceeded',
+            'starts_at' => null,
+            'deadline_at' => now()->subDays(7),
+        ]);
+
+        $task->users()->attach($user->id);
+
+        // Started
+        $task = Task::factory()->create([
+            'type' => 'approval',
+            'title' => 'Start date reached today',
+            'starts_at' => now(),
+            'deadline_at' => now()->addDays(14),
+        ]);
+
+        $task->users()->attach($user->id);
     }
 }

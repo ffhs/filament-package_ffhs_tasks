@@ -78,7 +78,7 @@
         "serve": [
             "Composer\\Config::disableProcessTimeout",
             "@build",
-            "@php vendor/bin/testbench serve --ansi"
+            "npx concurrently -c \"#93c5fd,#bef264,#fdba74\" \"php vendor/bin/testbench serve --ansi\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" --names=server,\" queue\",\"  logs\""
         ]},
     "extra": {
         "laravel": {

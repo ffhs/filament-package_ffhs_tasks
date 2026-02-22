@@ -119,6 +119,14 @@ class Task extends Model
     }
 
     /**
+     * @return HasMany<NotificationLog, $this>
+     */
+    public function notificationLogs(): HasMany
+    {
+        return $this->hasMany(NotificationLog::class, 'task_id');
+    }
+
+    /**
      * @return MorphTo<Model, $this>
      */
     public function creator(): MorphTo
