@@ -132,6 +132,7 @@ describe('save relationships', function () {
         Livewire::test(CreateTask::class, ['type' => TestTaskType::identifier()])
             ->fillForm([
                 'title' => 'Test Task',
+                'description' => 'Test Task',
                 'privacy' => TaskPrivacy::Public,
                 'assignables' => [$compositeValue],
             ])
