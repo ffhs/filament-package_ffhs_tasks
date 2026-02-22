@@ -62,6 +62,7 @@ class AssignableHelper
                 /** @var class-string<Model&AssignableInterface> $modelClass */
                 $modelClass = Relation::getMorphedModel($morphType) ?? $morphType;
 
+                /** @var Collection<Model&AssignableInterface> */
                 return $modelClass::query()
                     ->whereIn((new $modelClass())->getKeyName(), $ids)
                     ->get();
