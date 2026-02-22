@@ -2,9 +2,9 @@
 
 namespace Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages;
 
+use Ffhs\FfhsTasks\Filament\Resources\Tasks\Actions\CreateTaskAction;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Tables\TasksTable;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\TaskResource;
-use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Support\Enums\Width;
 use Filament\Tables\Table;
@@ -42,7 +42,7 @@ class ListAllTasks extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make(),
+            CreateTaskAction::make(),
         ];
     }
 }
