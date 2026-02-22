@@ -67,7 +67,7 @@ class User extends Authenticatable implements AssignableInterface
 
     public static function queryForUser($user): Builder
     {
-        return static::query();
+        return static::query()->where('id', $user->getKey());
     }
 
     public function usersQuery(): Builder|Relation
