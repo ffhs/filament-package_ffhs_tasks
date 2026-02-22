@@ -72,6 +72,32 @@ class User extends Authenticatable
 
 
 
+## Programmatic Task Creation
+
+Tasks can be created programmatically via the `createTask()` method on any `TaskType` instance. This method validates the input data against the same form rules used in the Filament UI (including type-specific fields from `getMainComponents()` and `getSidebarComponents()`) and then creates the task.
+
+```php
+use Ffhs\FfhsTasks\TaskType\TaskType;
+
+$taskType = TaskType::getTypeFromIdentifier('approval');
+
+$task = $taskType->createTask([
+    'type' => 'approval',
+    'title' => 'Review budget proposal',
+    'description' => 'Please review the Q3 budget proposal.',
+    'privacy' => 'public',
+    'can_be_cancelled' => true,
+    'starts_at' => '2026-03-01 10:00:00',   // optional, if the type supports it
+    'deadline_at' => '2026-03-15 18:00:00',  // optional, if the type supports it
+    'extra' => [
+        // Type-specific fields defined in getMainComponents() / getSidebarComponents()
+        'approval_notes' => 'Needs CFO sign-off',
+    ],
+]);
+```
+
+A `ValidationException` is thrown when required fields are missing or invalid.
+
 ## License
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.

@@ -39,7 +39,7 @@ class ApprovalTaskType extends TaskType
     public function getMainComponents(): array|Closure
     {
         return [
-            Textarea::make('approval_notes')
+            Textarea::make('approval_notes'),
         ];
     }
 

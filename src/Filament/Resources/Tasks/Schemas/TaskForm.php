@@ -119,6 +119,7 @@ class TaskForm
                     RichEditor::make('description')
                         ->label(__('ffhs-tasks::tasks.attributes.description'))
                         ->extraInputAttributes(['style' => '--rows: 3'])
+                        ->required()
                         ->toolbarButtons([
                             ['bold', 'italic', 'underline'],
                             ['bulletList', 'orderedList'],
@@ -204,6 +205,7 @@ class TaskForm
 
                     Toggle::make('can_be_cancelled')
                         ->label(__('ffhs-tasks::tasks.attributes.can_be_cancelled'))
+                        ->required()
                         ->visible(function (CreateTask|HandleTask|EditTask $livewire) {
                             if (! $livewire instanceof CreateTask) {
                                 return false;
