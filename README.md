@@ -27,20 +27,20 @@ composer require ffhs/filament-package_ffhs_tasks
 Then publish and run the migrations with:
 
 ```bash
-php artisan vendor:publish --tag="filament-package_ffhs_tasks-migrations"
+php artisan vendor:publish --tag="ffhs-tasks-migrations"
 php artisan migrate
 ```
 
 You can publish the config file with:
 
 ```bash
-php artisan vendor:publish --tag="filament-package_ffhs_tasks-config"
+php artisan vendor:publish --tag="ffhs-tasks-config"
 ```
 
 Optionally, you can publish the views using
 
 ```bash
-php artisan vendor:publish --tag="filament-package_ffhs_tasks-views"
+php artisan vendor:publish --tag="ffhs-tasks-views"
 ```
 
 ## Setup
