@@ -35,6 +35,10 @@ return new class () extends Migration {
 
             $table->softDeletes();
             $table->timestamps();
+
+            $table->index(['status', 'privacy']);
+            $table->index(['privacy', 'creator_type', 'creator_id']);
+            $table->index('deadline_at');
         });
 
         Schema::create($taskAssignablesTable, static function (Blueprint $table) use ($taskTable) {
@@ -42,6 +46,8 @@ return new class () extends Migration {
             $table->foreignId('task_id')->constrained($taskTable)->cascadeOnDelete();
             $table->morphs('assignable');
             $table->timestamps();
+
+            $table->index(['task_id', 'assignable_type', 'assignable_id']);
         });
 
         Schema::create($taskWatchablesTable, static function (Blueprint $table) use ($taskTable) {
@@ -49,6 +55,8 @@ return new class () extends Migration {
             $table->foreignId('task_id')->constrained($taskTable)->cascadeOnDelete();
             $table->morphs('assignable');
             $table->timestamps();
+
+            $table->index(['task_id', 'assignable_type', 'assignable_id']);
         });
     }
 };
