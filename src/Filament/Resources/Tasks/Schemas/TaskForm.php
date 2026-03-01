@@ -194,6 +194,7 @@ class TaskForm
                         ->label(__('ffhs-tasks::tasks.attributes.privacy'))
                         ->required()
                         ->selectablePlaceholder(false)
+                        ->default(TaskPrivacy::Public)
                         ->enum(TaskPrivacy::class)
                         ->options(TaskPrivacy::options()),
 
