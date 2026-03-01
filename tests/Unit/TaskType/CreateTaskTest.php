@@ -1,6 +1,7 @@
 <?php
 
 use Ffhs\FfhsTasks\Enums\TaskPrivacy;
+use Ffhs\FfhsTasks\Enums\TaskStatus;
 use Ffhs\FfhsTasks\Models\Task;
 use Ffhs\FfhsTasks\Tests\Fixtures\TaskTypes\CreateTaskType;
 use Ffhs\FfhsTasks\Tests\Fixtures\TaskTypes\TestTaskType;
@@ -140,7 +141,6 @@ describe('createTask validation', function () {
 
         // Act & Assert
         $taskType->createTask([
-            'type' => CreateTaskType::identifier(),
             'description' => 'A description',
             'privacy' => TaskPrivacy::Public->value,
             'can_be_cancelled' => false,
@@ -157,19 +157,34 @@ describe('createTask validation', function () {
 
         // Act & Assert
         try {
-            $taskType->createTask([
-                'type' => CreateTaskType::identifier(),
-            ]);
+            $taskType->createTask([]);
         } catch (ValidationException $e) {
             expect($e->errors())
                 ->toHaveKey('title')
-                ->toHaveKey('privacy')
-                ->toHaveKey('can_be_cancelled')
-                ->toHaveKey('extra.reason');
+                ->toHaveKey('description');
 
             return;
         }
 
         $this->fail('ValidationException was not thrown.');
+    });
+
+
+    it('backfills defaults', function () {
+        // Arrange
+        config()->set('ffhs-tasks.types', [CreateTaskType::class]);
+        config()->set('ffhs-tasks.assignable_models', []);
+
+        $taskType = new CreateTaskType();
+
+        // Act & Assert
+        $task = $taskType->createTask([
+            'title' => 'Title',
+            'description' => 'Description',
+        ]);
+
+        expect($task)
+            ->status->toBe(TaskStatus::InProgress)
+            ->privacy->toBe(TaskPrivacy::Public);
     });
 });

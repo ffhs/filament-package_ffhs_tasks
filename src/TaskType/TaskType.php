@@ -3,16 +3,15 @@
 namespace Ffhs\FfhsTasks\TaskType;
 
 use Closure;
-use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\CreateTask;
-use Ffhs\FfhsTasks\Filament\Resources\Tasks\Schemas\TaskForm;
+use Ffhs\FfhsTasks\Enums\TaskPrivacy;
+use Ffhs\FfhsTasks\Enums\TaskStatus;
 use Ffhs\FfhsTasks\Models\Task;
 use Ffhs\FfhsTasks\Traits\HasMailTexts;
 use Ffhs\FfhsTasks\Traits\HasTaskLifeCycle;
 use Ffhs\FfhsUtils\Contracts\Type;
 use Ffhs\FfhsUtils\Traits\IsType;
-use Filament\Schemas\Schema;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\ValidationException;
 
 abstract class TaskType implements Type
@@ -69,50 +68,38 @@ abstract class TaskType implements Type
     /**
      * @throws ValidationException
      */
-    public function validateTaskData(array $data): array
+    public function createTask(array $data): Task
     {
-        $component = new CreateTask();
-        $component->type = static::identifier();
-
-        $schema = new Schema($component);
-
-        TaskForm::configure($schema, $component);
-
-        $rules = [
-            ...$schema->getValidationRules(),
-            'type' => ['required'],
+        $data = [
+            'type' => static::identifier(),
+            'status' => TaskStatus::InProgress,
+            'privacy' => TaskPrivacy::Public,
+            ...$data,
         ];
-
-        // Closure validation will not fail if key is not present so we
-        // initialize all fields with null
-        $keys = array_keys($rules);
-
-        foreach ($keys as $key) {
-            if (! Arr::has($data, $key)) {
-                Arr::set($data, $key, null);
-            }
-        }
 
         $validator = Validator::make(
             $data,
-            rules: $rules,
-            messages: $schema->getValidationMessages(),
-            attributes: $schema->getValidationAttributes(),
+            rules: [
+                'type' => ['required'],
+                'title' => ['required'],
+                'description' => ['required'],
+                'privacy' => ['required', new Enum(TaskPrivacy::class)],
+                'status' => ['required', new Enum(TaskStatus::class)],
+                'data' => ['nullable', 'array'],
+                'extra' => ['nullable', 'array'],
+
+            ],
+            attributes: [
+                'title' => __('ffhs-tasks::tasks.attributes.title'),
+                'description' => __('ffhs-tasks::tasks.attributes.description'),
+                'privacy' => __('ffhs-tasks::tasks.attributes.privacy'),
+                'status' => __('ffhs-tasks::tasks.attributes.status'),
+            ],
         );
 
-        return $validator->validate();
-    }
+        $validator->validate();
 
-    /**
-     * @throws ValidationException
-     */
-    public function createTask(array $data): Task
-    {
-        $data['type'] = static::identifier();
-
-        $validated = $this->validateTaskData($data);
-
-        return Task::create($validated);
+        return Task::create($data);
     }
 
     public function getMainComponents(): array|Closure
