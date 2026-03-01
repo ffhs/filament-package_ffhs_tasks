@@ -7,9 +7,11 @@ use App\Models\SecondUserGroup;
 use App\Models\User;
 use Ffhs\FfhsTasks\Models\Assignable;
 use Ffhs\FfhsTasks\Models\Task;
+use Ffhs\FfhsTasks\Models\TaskTag;
 use Ffhs\FfhsTasks\Models\Watchable;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
@@ -25,12 +27,14 @@ class DatabaseSeeder extends Seeder
                 'password' => Hash::make('password'),
             ]);
 
-        $this->createBasicTasks($user);
+        $tags = TaskTag::factory()->count(5)->create();
+
+        $this->createBasicTasks($user, $tags);
         $this->createGroupTasks();
         $this->createTasksForNotifications($user);
     }
 
-    private function createBasicTasks(User $user): void
+    private function createBasicTasks(User $user, Collection $tags): void
     {
         // Created tasks
         Task::factory()
@@ -56,6 +60,7 @@ class DatabaseSeeder extends Seeder
 
         foreach ($tasks as $task) {
             $task->users()->attach($user->id);
+            $task->tags()->attach($tags->pluck('id'));
         }
 
         // Canceled Tasks
@@ -66,6 +71,7 @@ class DatabaseSeeder extends Seeder
 
         foreach ($tasks as $task) {
             $task->users()->attach($user->id);
+            $task->tags()->attach($tags->pluck('id'));
         }
 
         // Finished tasks
@@ -76,6 +82,7 @@ class DatabaseSeeder extends Seeder
 
         foreach ($tasks as $task) {
             $task->users()->attach($user->id);
+            $task->tags()->attach($tags->pluck('id'));
         }
     }
 

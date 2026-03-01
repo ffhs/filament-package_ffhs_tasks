@@ -28,6 +28,8 @@ return [
         'task_assignables' => 'ffhs_task_assignables',
         'task_watchables' => 'ffhs_task_watchables',
         'task_notification_log' => 'ffhs_task_notification_log',
+        'task_tag' => 'ffhs_task_tag',
+        'task_tags' => 'ffhs_task_tags',
     ],
 
     'models' => [

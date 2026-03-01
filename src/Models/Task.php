@@ -9,6 +9,7 @@ use Ffhs\FfhsTasks\TaskType\TaskType;
 use Ffhs\FfhsUtils\Traits\HasType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
@@ -141,6 +142,21 @@ class Task extends Model
     public function creator(): MorphTo
     {
         return $this->morphTo('creator');
+    }
+
+    /**
+     * @return BelongsToMany<TaskTag, $this>
+     */
+    public function tags(): BelongsToMany
+    {
+        $modelClass = resolve_model_class(TaskTag::class);
+
+        return $this->belongsToMany(
+            $modelClass,
+            table: config('ffhs-tasks.tables.task_tag'),
+            foreignPivotKey: 'task_id',
+            relatedPivotKey: 'tag_id',
+        );
     }
 
     /** Methods */

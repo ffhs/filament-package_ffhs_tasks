@@ -13,6 +13,7 @@ return [
         'privacy' => 'Privacy',
         'type' => 'Type',
         'title' => 'Title',
+        'tags' => 'Tags',
         'description' => 'Description',
         'assignables' => 'Assigned To',
         'watchables' => 'Collaborators',

@@ -13,6 +13,7 @@ return [
         'privacy' => 'Sichtbarkeit',
         'type' => 'Typ',
         'title' => 'Titel',
+        'tags' => 'Tags',
         'description' => 'Beschreibung',
         'assignables' => 'Zugewiesen an',
         'watchables' => 'Mitwirkende',

@@ -34,6 +34,8 @@ return [
         'task_assignables' => 'task_assignables',
         'task_watchables' => 'task_watchables',
         'task_notification_log' => 'task_notification_log',
+        'task_tag' => 'task_tag',
+        'task_tags' => 'task_tags',
     ],
 
     'models' => [

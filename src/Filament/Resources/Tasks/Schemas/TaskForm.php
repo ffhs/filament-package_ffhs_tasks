@@ -198,6 +198,18 @@ class TaskForm
                         ->enum(TaskPrivacy::class)
                         ->options(TaskPrivacy::options()),
 
+                    Select::make('tags')
+                        ->label(__('ffhs-tasks::tasks.attributes.tags'))
+                        ->multiple()
+                        ->nullable()
+                        ->relationship('tags', 'display_name')
+                        ->preload()
+                        ->createOptionForm([
+                            TextInput::make('display_name')
+                                ->label(__('ffhs-tasks::tags.attributes.display_name'))
+                                ->unique(),
+                        ]),
+
                     AssignablesSelect::make('assignables')
                         ->required(),
 

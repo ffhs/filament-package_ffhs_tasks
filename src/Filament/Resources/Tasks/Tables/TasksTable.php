@@ -66,6 +66,13 @@ class TasksTable
                     ->limit(50)
                     ->searchable(),
 
+                TextColumn::make('tags.display_name')
+                    ->label(__('ffhs-tasks::tasks.attributes.tags'))
+                    ->badge()
+                    ->limitList(2)
+                    ->toggleable()
+                    ->searchable(),
+
                 TextColumn::make('creator.name')
                     ->label(__('ffhs-tasks::tasks.attributes.creator'))
                     ->toggleable()

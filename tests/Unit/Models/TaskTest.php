@@ -3,6 +3,7 @@
 use Ffhs\FfhsTasks\Enums\TaskStatus;
 use Ffhs\FfhsTasks\Events\StatusChangedEvent;
 use Ffhs\FfhsTasks\Models\Task;
+use Ffhs\FfhsTasks\Models\TaskTag;
 use Ffhs\FfhsTasks\Tests\Fixtures\TaskTypes\TestTaskType;
 use App\Models\FirstUserGroup;
 use Illuminate\Support\Facades\Event;
@@ -196,6 +197,21 @@ describe('complete()', function () {
 
         // Assert
         expect(TestTaskType::$afterCompleteCalled)->toBeTrue();
+    });
+});
+
+describe('tags()', function () {
+    it('returns associated tags', function () {
+        // Arrange
+        $task = Task::factory()->create();
+        $tags = TaskTag::factory()->count(2)->create();
+        $task->tags()->attach($tags);
+
+        // Act
+        $result = $task->tags;
+
+        // Assert
+        expect($result)->toHaveCount(2);
     });
 });
 

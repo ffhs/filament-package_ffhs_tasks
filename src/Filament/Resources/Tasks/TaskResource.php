@@ -11,6 +11,7 @@ use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\ListAllTasks;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\ListArchivedTasks;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages\ListTasks;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Tables\TasksTable;
+use Ffhs\FfhsTasks\Filament\Resources\TaskTags\Pages\ListTaskTags;
 use Ffhs\FfhsTasks\Models\Task;
 use Ffhs\FfhsTasks\Scopes\IsActiveScope;
 use Ffhs\FfhsTasks\Scopes\PrivacyScope;
@@ -108,6 +109,7 @@ class TaskResource extends Resource
             fn (NavigationItem $item) => $item->childItems([
                 ...ListAllTasks::getNavigationItems(),
                 ...ListArchivedTasks::getNavigationItems(),
+                ...ListTaskTags::getNavigationItems(),
             ]),
             parent::getNavigationItems()
         );
