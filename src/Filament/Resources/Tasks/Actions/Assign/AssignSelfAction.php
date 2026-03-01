@@ -6,6 +6,8 @@ use Ffhs\FfhsTasks\Models\Task;
 use Filament\Actions\Action;
 use Filament\Support\Icons\Heroicon;
 
+use function Ffhs\FfhsTasks\resolve_model_class;
+
 final class AssignSelfAction
 {
     public static function make(): Action
@@ -14,7 +16,7 @@ final class AssignSelfAction
             ->closeModalByClickingAway(false)
             ->label(__('ffhs-tasks::actions.assign_me.label'))
             ->icon(Heroicon::OutlinedUserCircle)
-            ->authorize('update', Task::class)
+            ->authorize('update', resolve_model_class(Task::class))
             ->visible(function (Task $record) {
                 $user = auth()->user()?->withoutRelations();
 

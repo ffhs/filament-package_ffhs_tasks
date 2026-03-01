@@ -1,12 +1,16 @@
 <?php
 
+use App\Models\CustomNotificationLog;
+use App\Models\CustomTask;
 use App\Models\FirstUserGroup;
 use App\Models\SecondUserGroup;
 use App\Models\User;
 use App\TaskTypes\ApprovalTaskType;
 use Carbon\CarbonInterval;
+use Ffhs\FfhsTasks\Models\Assignable;
 use Ffhs\FfhsTasks\Models\NotificationLog;
 use Ffhs\FfhsTasks\Models\Task;
+use Ffhs\FfhsTasks\Models\Watchable;
 use Ffhs\FfhsTasks\Notifications;
 use Ffhs\FfhsTasks\TaskType\DefaultTaskType;
 
@@ -33,8 +37,10 @@ return [
     ],
 
     'models' => [
-        Task::class => Task::class,
-        NotificationLog::class => NotificationLog::class,
+        Task::class => CustomTask::class,
+        NotificationLog::class => CustomNotificationLog::class,
+        Assignable::class => Assignable::class,
+        Watchable::class => Watchable::class,
     ],
 
     'user' => [

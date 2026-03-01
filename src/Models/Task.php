@@ -14,6 +14,8 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+use function Ffhs\FfhsTasks\resolve_model_class;
+
 class Task extends Model
 {
     /** @use HasFactory<TaskFactory> */
@@ -99,6 +101,7 @@ class Task extends Model
             config('ffhs-tasks.user.model'),
             'assignable',
             config('ffhs-tasks.tables.task_assignables'),
+            'task_id',
         );
     }
 
@@ -107,7 +110,9 @@ class Task extends Model
      */
     public function assignables(): HasMany
     {
-        return $this->hasMany(Assignable::class, 'task_id');
+        $modelClass = resolve_model_class(Assignable::class);
+
+        return $this->hasMany($modelClass, 'task_id');
     }
 
     /**
@@ -115,7 +120,9 @@ class Task extends Model
      */
     public function watchables(): HasMany
     {
-        return $this->hasMany(Watchable::class, 'task_id');
+        $modelClass = resolve_model_class(Watchable::class);
+
+        return $this->hasMany($modelClass, 'task_id');
     }
 
     /**
@@ -123,7 +130,9 @@ class Task extends Model
      */
     public function notificationLogs(): HasMany
     {
-        return $this->hasMany(NotificationLog::class, 'task_id');
+        $modelClass = resolve_model_class(NotificationLog::class);
+
+        return $this->hasMany($modelClass, 'task_id');
     }
 
     /**

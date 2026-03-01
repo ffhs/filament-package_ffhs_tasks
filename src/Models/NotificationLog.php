@@ -5,6 +5,8 @@ namespace Ffhs\FfhsTasks\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+use function Ffhs\FfhsTasks\resolve_model_class;
+
 class NotificationLog extends Model
 {
     protected $fillable = [
@@ -23,6 +25,8 @@ class NotificationLog extends Model
      */
     public function task(): BelongsTo
     {
-        return $this->belongsTo(Task::class, 'task_id');
+        $modelClass = resolve_model_class(Task::class);
+
+        return $this->belongsTo($modelClass, 'task_id');
     }
 }

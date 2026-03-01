@@ -1,8 +1,10 @@
 <?php
 
 use Carbon\CarbonInterval;
+use Ffhs\FfhsTasks\Models\Assignable;
 use Ffhs\FfhsTasks\Models\NotificationLog;
 use Ffhs\FfhsTasks\Models\Task;
+use Ffhs\FfhsTasks\Models\Watchable;
 use Ffhs\FfhsTasks\Notifications;
 use Ffhs\FfhsTasks\TaskType\DefaultTaskType;
 
@@ -31,6 +33,8 @@ return [
     'models' => [
         Task::class => Task::class,
         NotificationLog::class => NotificationLog::class,
+        Assignable::class => Assignable::class,
+        Watchable::class => Watchable::class,
     ],
 
     'user' => [

@@ -51,7 +51,10 @@
         "psr-4": {
             "Ffhs\\FfhsTasks\\": "src/",
             "Ffhs\\FfhsTasks\\Database\\Factories\\": "database/factories/"
-        }
+        },
+        "files": [
+            "src/helpers.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

@@ -10,6 +10,8 @@ use Filament\Notifications\Notification;
 use Filament\Support\Enums\Width;
 use Filament\Support\Icons\Heroicon;
 
+use function Ffhs\FfhsTasks\resolve_model_class;
+
 final class AssignAction
 {
     public static function make(): Action
@@ -19,7 +21,7 @@ final class AssignAction
             ->label(__('ffhs-tasks::actions.assign.label'))
             ->icon(Heroicon::OutlinedUsers)
             ->modalWidth(Width::Large)
-            ->authorize('update', Task::class)
+            ->authorize('update', resolve_model_class(Task::class))
             ->visible(fn (Task $record) => AssignableHelper::hasModels() && $record->canBeEdited())
             ->schema([
                 AssignablesSelect::make('assignables'),

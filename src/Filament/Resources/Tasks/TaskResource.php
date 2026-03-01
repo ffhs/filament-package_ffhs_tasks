@@ -22,10 +22,10 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use UnitEnum;
 
+use function Ffhs\FfhsTasks\resolve_model_class;
+
 class TaskResource extends Resource
 {
-    protected static ?string $model = Task::class;
-
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedDocumentCheck;
 
     /**
@@ -33,9 +33,7 @@ class TaskResource extends Resource
      */
     public static function getModel(): string
     {
-        $modelClass = static::$model;
-
-        return config('ffhs-tasks.models.'.$modelClass) ?: $modelClass;
+        return resolve_model_class(Task::class);
     }
 
     public static function getNavigationGroup(): string|UnitEnum|null

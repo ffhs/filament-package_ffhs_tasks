@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
+use function Ffhs\FfhsTasks\resolve_model_class;
+
 class Assignable extends Pivot
 {
     protected $fillable = [
@@ -25,7 +27,9 @@ class Assignable extends Pivot
      */
     public function task(): BelongsTo
     {
-        return $this->belongsTo(Task::class, 'task_id');
+        $modelClass = resolve_model_class(Task::class);
+
+        return $this->belongsTo($modelClass, 'task_id');
     }
 
     /**

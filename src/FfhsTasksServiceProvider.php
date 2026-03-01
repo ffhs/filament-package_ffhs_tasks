@@ -51,7 +51,9 @@ class FfhsTasksServiceProvider extends PackageServiceProvider
 
     public function packageBooted(): void
     {
-        Gate::policy(Task::class, TaskPolicy::class);
+        $modelClass = resolve_model_class(Task::class);
+
+        Gate::policy($modelClass, TaskPolicy::class);
 
         FilamentAsset::register(
             $this->getAssets(),
