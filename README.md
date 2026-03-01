@@ -77,18 +77,18 @@ class User extends Authenticatable
 Tasks can be created programmatically via the `createTask()` method on any `TaskType` instance. This method validates the input data against the same form rules used in the Filament UI (including type-specific fields from `getMainComponents()` and `getSidebarComponents()`) and then creates the task.
 
 ```php
+use Carbon\Carbon;
 use Ffhs\FfhsTasks\TaskType\TaskType;
 
 $taskType = TaskType::getTypeFromIdentifier('approval');
 
 $task = $taskType->createTask([
-    'type' => 'approval',
     'title' => 'Review budget proposal',
     'description' => 'Please review the Q3 budget proposal.',
     'privacy' => 'public',
     'can_be_cancelled' => true,
-    'starts_at' => '2026-03-01 10:00:00',   // optional, if the type supports it
-    'deadline_at' => '2026-03-15 18:00:00',  // optional, if the type supports it
+    'starts_at' => \Illuminate\Support\Facades\Date::parse('2026-03-01 10:00:00'),   // optional, if the type supports it
+    'deadline_at' => \Illuminate\Support\Facades\Date::parse('2026-03-15 18:00:00'),  // optional, if the type supports it
     'extra' => [
         // Type-specific fields defined in getMainComponents() / getSidebarComponents()
         'approval_notes' => 'Needs CFO sign-off',

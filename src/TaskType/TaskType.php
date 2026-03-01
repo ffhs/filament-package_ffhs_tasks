@@ -108,6 +108,8 @@ abstract class TaskType implements Type
      */
     public function createTask(array $data): Task
     {
+        $data['type'] = static::identifier();
+
         $validated = $this->validateTaskData($data);
 
         return Task::create($validated);

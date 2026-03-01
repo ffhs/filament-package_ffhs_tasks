@@ -16,7 +16,6 @@ describe('createTask', function () {
 
         // Act
         $task = $taskType->createTask([
-            'type' => CreateTaskType::identifier(),
             'title' => 'My Task',
             'description' => 'A description',
             'privacy' => TaskPrivacy::Public->value,
@@ -43,7 +42,6 @@ describe('createTask', function () {
 
         // Act
         $task = $taskType->createTask([
-            'type' => CreateTaskType::identifier(),
             'title' => 'My Task',
             'description' => 'A description',
             'privacy' => TaskPrivacy::Public->value,
@@ -67,7 +65,6 @@ describe('createTask', function () {
 
         // Act
         $task = $taskType->createTask([
-            'type' => CreateTaskType::identifier(),
             'title' => 'My Task',
             'description' => 'A description',
             'privacy' => TaskPrivacy::Public->value,
@@ -93,7 +90,6 @@ describe('createTask', function () {
 
         // Act
         $task = $taskType->createTask([
-            'type' => TestTaskType::identifier(),
             'title' => 'Simple Task',
             'description' => 'A simple description',
             'privacy' => TaskPrivacy::Private->value,
@@ -116,13 +112,12 @@ describe('createTask', function () {
 
         // Act
         $task = $taskType->createTask([
-            'type' => CreateTaskType::identifier(),
             'title' => 'Scheduled Task',
             'description' => 'A description',
             'privacy' => TaskPrivacy::Public->value,
             'can_be_cancelled' => false,
-            'starts_at' => '2026-03-01 10:00:00',
-            'deadline_at' => '2026-03-15 18:00:00',
+            'starts_at' => \Illuminate\Support\Facades\Date::parse('2026-03-01 10:00:00'),
+            'deadline_at' => \Illuminate\Support\Facades\Date::parse('2026-03-15 18:00:00'),
             'extra' => [
                 'reason' => 'A reason',
             ],
