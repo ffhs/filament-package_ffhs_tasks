@@ -30,10 +30,10 @@ return [
     ],
 
     'tables' => [
-        'tasks' => 'ffhs_tasks',
-        'task_assignables' => 'ffhs_task_assignables',
-        'task_watchables' => 'ffhs_task_watchables',
-        'task_notification_log' => 'ffhs_task_notification_log',
+        'tasks' => 'tasks',
+        'task_assignables' => 'task_assignables',
+        'task_watchables' => 'task_watchables',
+        'task_notification_log' => 'task_notification_log',
     ],
 
     'models' => [
@@ -45,7 +45,7 @@ return [
 
     'user' => [
         'model' => User::class,
-        'name_attribute' => 'name',
+        'name_attribute' => 'displayName',
     ],
 
     'assignable_models' => [
