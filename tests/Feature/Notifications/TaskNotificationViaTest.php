@@ -8,6 +8,7 @@ use Ffhs\FfhsTasks\Notifications\TaskDeadlineApproachingNotification;
 use Ffhs\FfhsTasks\Notifications\TaskDeadlineExceededNotification;
 use Ffhs\FfhsTasks\Notifications\TaskStartDateReachedNotification;
 use Ffhs\FfhsTasks\Notifications\TaskStatusChangedNotification;
+use Ffhs\FfhsTasks\Notifications\WeeklyTasksNotification;
 
 describe('notification via channels', function () {
     it('returns empty array when notifications are disabled', function (string $notificationClass) {
@@ -20,6 +21,7 @@ describe('notification via channels', function () {
         $notification = match ($notificationClass) {
             TaskDeadlineApproachingNotification::class => new $notificationClass($task, CarbonInterval::days(3)),
             TaskDeadlineExceededNotification::class => new $notificationClass($task, CarbonInterval::hours(0)),
+            WeeklyTasksNotification::class => new $notificationClass(collect([$task])),
             default => new $notificationClass($task),
         };
 
@@ -34,6 +36,7 @@ describe('notification via channels', function () {
         'TaskDeadlineExceededNotification' => TaskDeadlineExceededNotification::class,
         'TaskStatusChangedNotification' => TaskStatusChangedNotification::class,
         'TaskStartDateReachedNotification' => TaskStartDateReachedNotification::class,
+        'WeeklyTasksNotification' => WeeklyTasksNotification::class,
     ]);
 
     it('returns mail channel when notification is enabled', function (string $notificationClass) {
@@ -46,6 +49,7 @@ describe('notification via channels', function () {
         $notification = match ($notificationClass) {
             TaskDeadlineApproachingNotification::class => new $notificationClass($task, CarbonInterval::days(3)),
             TaskDeadlineExceededNotification::class => new $notificationClass($task, CarbonInterval::hours(0)),
+            WeeklyTasksNotification::class => new $notificationClass(collect([$task])),
             default => new $notificationClass($task),
         };
 
@@ -60,5 +64,6 @@ describe('notification via channels', function () {
         'TaskDeadlineExceededNotification' => TaskDeadlineExceededNotification::class,
         'TaskStatusChangedNotification' => TaskStatusChangedNotification::class,
         'TaskStartDateReachedNotification' => TaskStartDateReachedNotification::class,
+        'WeeklyTasksNotification' => WeeklyTasksNotification::class,
     ]);
 });

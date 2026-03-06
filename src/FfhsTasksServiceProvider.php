@@ -7,6 +7,7 @@ use Ffhs\FfhsTasks\Jobs\ExpireOverdueTasksJob;
 use Ffhs\FfhsTasks\Jobs\SendDeadlineApproachingNotificationsJob;
 use Ffhs\FfhsTasks\Jobs\SendDeadlineExceededNotificationsJob;
 use Ffhs\FfhsTasks\Jobs\SendStartDateReachedNotificationsJob;
+use Ffhs\FfhsTasks\Jobs\SendWeeklyTasksNotificationJob;
 use Ffhs\FfhsTasks\Listeners\SendStatusChangedNotification;
 use Ffhs\FfhsTasks\Models\Task;
 use Ffhs\FfhsTasks\Policies\TaskPolicy;
@@ -69,6 +70,8 @@ class FfhsTasksServiceProvider extends PackageServiceProvider
             $schedule->job(new SendDeadlineApproachingNotificationsJob())->hourly();
             $schedule->job(new SendDeadlineExceededNotificationsJob())->hourly();
             $schedule->job(new SendStartDateReachedNotificationsJob())->hourly();
+            $schedule->job(new SendWeeklyTasksNotificationJob())
+                ->weeklyOn(Schedule::MONDAY, config('ffhs-tasks.notifications.weekly_tasks.time', '08:00'));
         });
     }
 

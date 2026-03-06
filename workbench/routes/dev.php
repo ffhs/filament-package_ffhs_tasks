@@ -8,6 +8,7 @@ use Ffhs\FfhsTasks\Notifications\TaskDeadlineApproachingNotification;
 use Ffhs\FfhsTasks\Notifications\TaskDeadlineExceededNotification;
 use Ffhs\FfhsTasks\Notifications\TaskStartDateReachedNotification;
 use Ffhs\FfhsTasks\Notifications\TaskStatusChangedNotification;
+use Ffhs\FfhsTasks\Notifications\WeeklyTasksNotification;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('notifications')->group(function () {
@@ -25,4 +26,5 @@ Route::prefix('notifications')->group(function () {
     Route::get('/deadline-exceeded', fn () => (new TaskDeadlineExceededNotification($task()))->toMail($user()));
     Route::get('/start-date-reached', fn () => (new TaskStartDateReachedNotification($task()))->toMail($user()));
     Route::get('/status-changed', fn () => (new TaskStatusChangedNotification($task()))->toMail($user()));
+    Route::get('/weekly', fn () => (new WeeklyTasksNotification(collect([$task(), $task()])))->toMail($user()));
 });

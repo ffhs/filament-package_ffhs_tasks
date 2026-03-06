@@ -18,9 +18,13 @@ return [
             Notifications\TaskStartDateReachedNotification::class,
             Notifications\TaskDeadlineApproachingNotification::class,
             Notifications\TaskDeadlineExceededNotification::class,
+            Notifications\WeeklyTasksNotification::class,
         ],
         'deadline_remind_before' => [CarbonInterval::days(7), CarbonInterval::days(3), CarbonInterval::days(1)],
         'deadline_remind_after' => [CarbonInterval::hours(0), CarbonInterval::days(3), CarbonInterval::days(7)],
+        'weekly_tasks' => [
+            'time' => '08:00',
+        ],
     ],
 
     'tables' => [

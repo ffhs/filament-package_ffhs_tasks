@@ -55,4 +55,11 @@ return [
         'line2' => 'Du kannst nun mit der Bearbeitung beginnen.',
         'action' => 'Aufgabe ansehen',
     ],
+
+    'weekly_tasks' => [
+        'subject' => 'Deine Aufgaben diese Woche (:from – :to)',
+        'greeting' => 'Hallo!',
+        'line1' => 'Hier sind deine Aufgaben mit Fristen diese Woche (:from – :to):',
+        'line2' => 'Bitte stelle sicher, dass alle Aufgaben rechtzeitig erledigt werden.',
+    ],
 ];
