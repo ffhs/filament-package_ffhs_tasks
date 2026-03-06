@@ -14,8 +14,14 @@ class SendTaskNotification
     public function execute(Task $task, Notification $notification, ?Model $excludeActor = null): void
     {
         $assignables = $task->assignables()->with('assignable')->get();
+        $watchables = $task->watchables()->with('assignable')->get();
 
-        foreach ($assignables as $pivot) {
+        /** @phpstan-ignore argument.type */
+        $pivots = $assignables->merge($watchables)->unique(
+            fn (Model $pivot) => $pivot->assignable_type.'_'.$pivot->assignable_id,
+        );
+
+        foreach ($pivots as $pivot) {
             $assignable = $pivot->assignable;
 
             if (! $assignable) {

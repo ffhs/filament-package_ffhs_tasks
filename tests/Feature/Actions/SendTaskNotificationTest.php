@@ -140,4 +140,79 @@ describe('SendTaskNotification', function () {
         Notification::assertSentTo($assigneeA, TaskAssignedNotification::class);
         Notification::assertSentTo($assigneeB, TaskAssignedNotification::class);
     });
+
+    it('sends notification to watchables', function () {
+        // Arrange
+        Notification::fake();
+
+        $watcher = User::factory()->create();
+        $task = Task::factory()->create(['status' => TaskStatus::InProgress]);
+
+        $task->watchables()->create([
+            'assignable_type' => User::class,
+            'assignable_id' => $watcher->id,
+        ]);
+
+        $notification = new TaskAssignedNotification($task);
+
+        // Act
+        app(SendTaskNotification::class)->execute($task, $notification);
+
+        // Assert
+        Notification::assertSentTo($watcher, TaskAssignedNotification::class);
+    });
+
+    it('does not send duplicate notifications when user is both assignee and watcher', function () {
+        // Arrange
+        Notification::fake();
+
+        $user = User::factory()->create();
+        $task = Task::factory()->create(['status' => TaskStatus::InProgress]);
+
+        $task->assignables()->create([
+            'assignable_type' => User::class,
+            'assignable_id' => $user->id,
+        ]);
+
+        $task->watchables()->create([
+            'assignable_type' => User::class,
+            'assignable_id' => $user->id,
+        ]);
+
+        $notification = new TaskAssignedNotification($task);
+
+        // Act
+        app(SendTaskNotification::class)->execute($task, $notification);
+
+        // Assert
+        Notification::assertSentToTimes($user, TaskAssignedNotification::class, 1);
+    });
+
+    it('excludes the actor from watchable notifications', function () {
+        // Arrange
+        Notification::fake();
+
+        $actor = User::factory()->create();
+        $watcher = User::factory()->create();
+        $task = Task::factory()->create(['status' => TaskStatus::InProgress]);
+
+        $task->watchables()->create([
+            'assignable_type' => User::class,
+            'assignable_id' => $actor->id,
+        ]);
+
+        $task->watchables()->create([
+            'assignable_type' => User::class,
+            'assignable_id' => $watcher->id,
+        ]);
+
+        $notification = new TaskAssignedNotification($task);
+
+        // Act
+        app(SendTaskNotification::class)->execute($task, $notification, $actor);
+
+        // Assert
+        Notification::assertSentTo($watcher, TaskAssignedNotification::class);
+        Notification::assertNotSentTo($actor, TaskAssignedNotification::class);
+    });
 });
