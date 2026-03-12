@@ -47,7 +47,7 @@ return new class () extends Migration {
             $table->morphs('assignable');
             $table->timestamps();
 
-            $table->index(['task_id', 'assignable_type', 'assignable_id']);
+            $table->index(['task_id', 'assignable_type', 'assignable_id'], 'idx_task_id_assignable');
         });
 
         Schema::create($taskWatchablesTable, static function (Blueprint $table) use ($taskTable) {
@@ -56,7 +56,7 @@ return new class () extends Migration {
             $table->morphs('assignable');
             $table->timestamps();
 
-            $table->index(['task_id', 'assignable_type', 'assignable_id']);
+            $table->index(['task_id', 'assignable_type', 'assignable_id'], 'idx_task_id_watchable');
         });
     }
 };

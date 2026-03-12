@@ -18,7 +18,7 @@ return new class () extends Migration {
             $table->string('notification_key');
             $table->timestamps();
 
-            $table->unique(['task_id', 'notification_type', 'notification_key']);
+            $table->unique(['task_id', 'notification_type', 'notification_key'], 'uq_task_notify_log');
         });
     }
 };
