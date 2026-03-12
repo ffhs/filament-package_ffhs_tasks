@@ -20,6 +20,13 @@ abstract class TaskType implements Type
     use HasTaskLifeCycle;
     use IsType;
 
+
+    protected static bool $canBeCreatedViaUi = true;
+    protected static bool $canBeCancelled = true;
+    protected static bool $hasStartDate = false;
+    protected static bool $hasDeadline = false;
+    protected static bool $shouldExpireAfterDeadline = false;
+
     public static function getTypeListConfig(): array
     {
         return config('ffhs-tasks.types');
@@ -27,27 +34,27 @@ abstract class TaskType implements Type
 
     public function canBeCreatedViaUi(): bool
     {
-        return true;
+        return static::$canBeCreatedViaUi;
     }
 
     public function canBeCancelled(): bool
     {
-        return false;
+        return static::$canBeCancelled;
     }
 
     public function hasStartDate(): bool
     {
-        return false;
+        return static::$hasStartDate;
     }
 
     public function hasDeadline(): bool
     {
-        return false;
+        return static::$hasDeadline;
     }
 
     public function shouldExpireAfterDeadline(): bool
     {
-        return false;
+        return static::$shouldExpireAfterDeadline;
     }
 
     public function canViewTask(Task $task): bool

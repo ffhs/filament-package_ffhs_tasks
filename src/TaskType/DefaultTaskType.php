@@ -6,6 +6,10 @@ use Closure;
 
 class DefaultTaskType extends TaskType
 {
+    protected static bool $hasStartDate = false;
+    protected static bool $hasDeadline = false;
+    protected static bool $canBeCancelled = true;
+
     public static function identifier(): string
     {
         return 'default';
@@ -14,21 +18,6 @@ class DefaultTaskType extends TaskType
     public static function displayname(): string
     {
         return 'Default';
-    }
-
-    public function hasStartDate(): bool
-    {
-        return false;
-    }
-
-    public function hasDeadline(): bool
-    {
-        return false;
-    }
-
-    public function canBeCancelled(): bool
-    {
-        return true;
     }
 
     public function getMainComponents(): array|Closure
