@@ -10,10 +10,10 @@ use Ffhs\FfhsTasks\Traits\HasMailTexts;
 use Ffhs\FfhsTasks\Traits\HasTaskLifeCycle;
 use Ffhs\FfhsUtils\Contracts\Type;
 use Ffhs\FfhsUtils\Traits\IsType;
-use http\Exception\RuntimeException;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\ValidationException;
+use RuntimeException;
 
 abstract class TaskType implements Type
 {
@@ -81,7 +81,7 @@ abstract class TaskType implements Type
     public function createTask(array $data): Task
     {
         $data = [
-            'type' => TaskType::identifier(),
+            'type' => static::identifier(),
             'status' => TaskStatus::InProgress,
             'privacy' => TaskPrivacy::Public,
             ...$data,
@@ -107,7 +107,10 @@ abstract class TaskType implements Type
             ],
         );
 
-        $validator->validate();
+
+        if (($errors = $validator->errors())->isNotEmpty()) {
+            throw new \Exception('Validation failed: ' . json_encode($errors));
+        }
 
         return Task::create($data);
     }

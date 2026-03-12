@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use Carbon\CarbonInterval;
 use Ffhs\FfhsTasks\Models\Assignable;
 use Ffhs\FfhsTasks\Models\NotificationLog;
