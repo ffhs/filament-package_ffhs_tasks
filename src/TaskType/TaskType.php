@@ -10,6 +10,7 @@ use Ffhs\FfhsTasks\Traits\HasMailTexts;
 use Ffhs\FfhsTasks\Traits\HasTaskLifeCycle;
 use Ffhs\FfhsUtils\Contracts\Type;
 use Ffhs\FfhsUtils\Traits\IsType;
+use http\Exception\RuntimeException;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\ValidationException;
@@ -26,6 +27,8 @@ abstract class TaskType implements Type
     protected static bool $hasStartDate = false;
     protected static bool $hasDeadline = false;
     protected static bool $shouldExpireAfterDeadline = false;
+    protected static string $identifier;
+
 
     public static function getTypeListConfig(): array
     {
@@ -78,7 +81,7 @@ abstract class TaskType implements Type
     public function createTask(array $data): Task
     {
         $data = [
-            'type' => static::identifier(),
+            'type' => TaskType::identifier(),
             'status' => TaskStatus::InProgress,
             'privacy' => TaskPrivacy::Public,
             ...$data,
@@ -107,6 +110,14 @@ abstract class TaskType implements Type
         $validator->validate();
 
         return Task::create($data);
+    }
+
+    public static function identifier(): string
+    {
+        if (!isset(static::$identifier)) {
+            throw new RuntimeException('Task type identifier must be set [' . static::class . ']');
+        }
+        return static::$identifier;
     }
 
     public function getMainComponents(): array|Closure

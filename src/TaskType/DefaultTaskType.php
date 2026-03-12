@@ -9,11 +9,7 @@ class DefaultTaskType extends TaskType
     protected static bool $hasStartDate = false;
     protected static bool $hasDeadline = false;
     protected static bool $canBeCancelled = true;
-
-    public static function identifier(): string
-    {
-        return 'default';
-    }
+    protected static string $identifier = 'default';
 
     public static function displayname(): string
     {
