@@ -5,6 +5,7 @@ namespace Ffhs\FfhsTasks\TaskType;
 use Closure;
 use Ffhs\FfhsTasks\Enums\TaskPrivacy;
 use Ffhs\FfhsTasks\Enums\TaskStatus;
+use Ffhs\FfhsTasks\Exceptions\TaskCreateDataException;
 use Ffhs\FfhsTasks\Models\Task;
 use Ffhs\FfhsTasks\Traits\HasMailTexts;
 use Ffhs\FfhsTasks\Traits\HasTaskLifeCycle;
@@ -108,8 +109,10 @@ abstract class TaskType implements Type
         );
 
 
-        if (($errors = $validator->errors())->isNotEmpty()) {
-            throw new \Exception('Validation failed: ' . json_encode($errors));
+        try {
+            $validator->validate();
+        } catch (ValidationException $e) {
+            throw new TaskCreateDataException('Validation failed: ' . json_encode($e->errors()), previous: $e);
         }
 
         return Task::create($data);

@@ -2,6 +2,7 @@
 
 use Ffhs\FfhsTasks\Enums\TaskPrivacy;
 use Ffhs\FfhsTasks\Enums\TaskStatus;
+use Ffhs\FfhsTasks\Exceptions\TaskCreateDataException;
 use Ffhs\FfhsTasks\Models\Task;
 use Ffhs\FfhsTasks\Tests\Fixtures\TaskTypes\CreateTaskType;
 use Ffhs\FfhsTasks\Tests\Fixtures\TaskTypes\TestTaskType;
@@ -146,7 +147,7 @@ describe('createTask validation', function () {
             'can_be_cancelled' => false,
             'extra' => ['reason' => 'A reason'],
         ]);
-    })->throws(ValidationException::class);
+    })->throws(TaskCreateDataException::class);
 
     it('returns validation errors for the correct fields', function () {
         // Arrange
@@ -158,8 +159,10 @@ describe('createTask validation', function () {
         // Act & Assert
         try {
             $taskType->createTask([]);
-        } catch (ValidationException $e) {
-            expect($e->errors())
+        } catch (TaskCreateDataException $e) {
+            expect($e->getPrevious())
+                ->toBeInstanceOf(ValidationException::class)
+                ->and($e->getPrevious()->errors())
                 ->toHaveKey('title')
                 ->toHaveKey('description');
 
