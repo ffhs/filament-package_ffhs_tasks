@@ -50,7 +50,7 @@ return [
     ],
 
     'assignable_models' => [
-
+        User::class,
     ],
 
     'types' => [
