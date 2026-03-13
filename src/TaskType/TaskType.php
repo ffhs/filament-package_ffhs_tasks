@@ -24,7 +24,7 @@ abstract class TaskType implements Type
 
 
     protected static bool $canBeCreatedViaUi = true;
-    protected static bool $canBeCancelled = true;
+    protected static bool $canBeCancelled = false;
     protected static bool $hasStartDate = false;
     protected static bool $hasDeadline = false;
     protected static bool $shouldExpireAfterDeadline = false;
