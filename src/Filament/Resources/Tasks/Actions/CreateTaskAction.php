@@ -14,24 +14,31 @@ final class CreateTaskAction
     {
         $creatableTypes = array_filter(
             TaskType::getAllTypes(),
-            fn (string $type): bool => (new $type())->canBeCreatedViaUi()
+            fn(TaskType $type): bool => $type->canBeCreatedViaUi()
         );
 
         $options = array_map(
-            fn ($type) => $type::displayname(),
+            fn($type) => $type::displayname(),
             $creatableTypes
         );
 
         if (count($options) <= 1) {
             return Action::make('create')
-                ->label(fn (Action $action) => __('filament-actions::create.single.label', ['label' => $action->getModelLabel()]))
+                ->label(
+                    fn(Action $action) => __(
+                        'filament-actions::create.single.label',
+                        ['label' => $action->getModelLabel()]
+                    )
+                )
                 ->url(
-                    fn (array $data, Action $action) => TaskResource::getUrl('create', ['type' => key($options)])
+                    fn(array $data, Action $action) => TaskResource::getUrl('create', ['type' => key($options)])
                 );
         }
 
         return Action::make('create')
-            ->label(fn (Action $action) => __('filament-actions::create.single.label', ['label' => $action->getModelLabel()]))
+            ->label(
+                fn(Action $action) => __('filament-actions::create.single.label', ['label' => $action->getModelLabel()])
+            )
             ->modalWidth(Width::Small)
             ->modalFooterActions([])
             ->schema([
@@ -44,7 +51,7 @@ final class CreateTaskAction
                     ])
             ])
             ->action(
-                fn (array $data, Action $action) => $action->redirect(
+                fn(array $data, Action $action) => $action->redirect(
                     TaskResource::getUrl('create', ['type' => $data['type']])
                 )
             );
