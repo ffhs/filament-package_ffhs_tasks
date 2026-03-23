@@ -222,6 +222,19 @@ class TaskForm
 
                             return $taskType->canBeCancelled();
                         }),
+
+                    Toggle::make('expires_after_deadline')
+                        ->label(__('ffhs-tasks::tasks.attributes.expires_after_deadline'))
+                        ->required()
+                        ->visible(function (CreateTask|HandleTask|EditTask $livewire) {
+                            if (! $livewire instanceof CreateTask) {
+                                return false;
+                            }
+
+                            $taskType = static::getTaskType();
+
+                            return $taskType->canExpireAfterDeadline();
+                        }),
                 ]),
 
             Section::make()

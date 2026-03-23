@@ -26,7 +26,7 @@ class ExpirableTaskType extends TaskType
         return true;
     }
 
-    public function shouldExpireAfterDeadline(): bool
+    public function canExpireAfterDeadline(): bool
     {
         return true;
     }

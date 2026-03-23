@@ -19,12 +19,13 @@ beforeEach(function () {
 });
 
 describe('ExpireOverdueTasksJob', function () {
-    it('expires tasks that are past their deadline when taskType allows expiration', function () {
+    it('expires tasks that are past their deadline when expires_after_deadline is enabled', function () {
         // Arrange
         $overdueTask = Task::factory()->create([
             'type' => 'expirable',
             'status' => TaskStatus::InProgress,
             'deadline_at' => Carbon::now()->subDay(),
+            'expires_after_deadline' => true,
         ]);
 
         // Act
@@ -34,12 +35,13 @@ describe('ExpireOverdueTasksJob', function () {
         expect($overdueTask->fresh()->status)->toBe(TaskStatus::Expired);
     });
 
-    it('does not expire tasks when taskType does not allow expiration', function () {
+    it('does not expire tasks when expires_after_deadline is disabled', function () {
         // Arrange
         $overdueTask = Task::factory()->create([
             'type' => 'non-expirable',
             'status' => TaskStatus::InProgress,
             'deadline_at' => Carbon::now()->subDay(),
+            'expires_after_deadline' => false,
         ]);
 
         // Act
@@ -55,6 +57,7 @@ describe('ExpireOverdueTasksJob', function () {
             'type' => 'expirable',
             'status' => TaskStatus::InProgress,
             'deadline_at' => Carbon::now()->addDay(),
+            'expires_after_deadline' => true,
         ]);
 
         // Act
@@ -69,12 +72,14 @@ describe('ExpireOverdueTasksJob', function () {
         $completedTask = Task::factory()->create([
             'type' => 'expirable',
             'deadline_at' => Carbon::now()->subDay(),
+            'expires_after_deadline' => true,
         ]);
         $completedTask->update(['status' => TaskStatus::Completed]);
 
         $cancelledTask = Task::factory()->create([
             'type' => 'expirable',
             'deadline_at' => Carbon::now()->subDay(),
+            'expires_after_deadline' => true,
         ]);
         $cancelledTask->update(['status' => TaskStatus::Cancelled]);
 
@@ -96,12 +101,14 @@ describe('ExpireOverdueTasksJob', function () {
                 'type' => 'expirable',
                 'status' => TaskStatus::InProgress,
                 'deadline_at' => Carbon::now()->subDay(),
+                'expires_after_deadline' => true,
             ]);
 
         Task::factory()->create([
             'type' => 'non-expirable',
             'status' => TaskStatus::InProgress,
             'deadline_at' => Carbon::now()->subDay(),
+            'expires_after_deadline' => false,
         ]);
 
         // Act
@@ -119,12 +126,14 @@ describe('ExpireOverdueTasksJob', function () {
             'type' => 'expirable',
             'status' => TaskStatus::InProgress,
             'deadline_at' => Carbon::now()->addDay(),
+            'expires_after_deadline' => true,
         ]);
 
         Task::factory()->create([
             'type' => 'non-expirable',
             'status' => TaskStatus::InProgress,
             'deadline_at' => Carbon::now()->subDay(),
+            'expires_after_deadline' => false,
         ]);
 
         // Act
@@ -140,6 +149,7 @@ describe('ExpireOverdueTasksJob', function () {
             'type' => 'expirable',
             'status' => TaskStatus::InProgress,
             'deadline_at' => null,
+            'expires_after_deadline' => true,
         ]);
 
         // Act
@@ -155,6 +165,7 @@ describe('ExpireOverdueTasksJob', function () {
             'type' => ExpirableTaskType::identifier(),
             'status' => TaskStatus::InProgress,
             'deadline_at' => Carbon::now()->subDay(),
+            'expires_after_deadline' => true,
         ]);
 
         // Act
@@ -170,6 +181,7 @@ describe('ExpireOverdueTasksJob', function () {
             'type' => ExpirableTaskType::identifier(),
             'status' => TaskStatus::InProgress,
             'deadline_at' => Carbon::now()->subDay(),
+            'expires_after_deadline' => true,
         ]);
 
         // Act

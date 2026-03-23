@@ -21,7 +21,7 @@ class NonExpirableTaskType extends TaskType
         return true;
     }
 
-    public function shouldExpireAfterDeadline(): bool
+    public function canExpireAfterDeadline(): bool
     {
         return false;
     }

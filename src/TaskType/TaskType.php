@@ -27,7 +27,7 @@ abstract class TaskType implements Type
     protected static bool $canBeCancelled = false;
     protected static bool $hasStartDate = false;
     protected static bool $hasDeadline = false;
-    protected static bool $shouldExpireAfterDeadline = false;
+    protected static bool $canExpireAfterDeadline = false;
     protected static string $identifier;
 
 
@@ -56,9 +56,9 @@ abstract class TaskType implements Type
         return static::$hasDeadline;
     }
 
-    public function shouldExpireAfterDeadline(): bool
+    public function canExpireAfterDeadline(): bool
     {
-        return static::$shouldExpireAfterDeadline;
+        return static::$canExpireAfterDeadline;
     }
 
     public function canViewTask(Task $task): bool

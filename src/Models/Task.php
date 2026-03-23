@@ -41,6 +41,7 @@ class Task extends Model
      * @return array{
      *     status: 'Ffhs\\FfhsTasks\\Enums\\TaskStatus',
      *     can_be_cancelled: 'boolean',
+     *     expires_after_deadline: 'boolean',
      *     completed_at: 'datetime',
      *     cancelled_at: 'datetime',
      *     starts_at: 'datetime',
@@ -54,6 +55,7 @@ class Task extends Model
         return [
             'status' => TaskStatus::class,
             'can_be_cancelled' => 'boolean',
+            'expires_after_deadline' => 'boolean',
             'completed_at' => 'datetime',
             'cancelled_at' => 'datetime',
 
