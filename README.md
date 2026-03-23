@@ -295,8 +295,9 @@ The package dispatches events for key moments in a task's lifecycle:
 | `StatusChangedEvent` | Task status changes (e.g. InProgress to Completed) |
 | `TaskStartedEvent` | Task reaches its `starts_at` date |
 | `TaskReachedDeadlineEvent` | Task reaches its `deadline_at` date |
+| `TaskExpiredEvent` | Task expires after its deadline |
 
-`TaskStartedEvent` and `TaskReachedDeadlineEvent` are dispatched once per task via scheduled jobs that run every minute.
+`TaskStartedEvent` and `TaskReachedDeadlineEvent` are dispatched once per task via scheduled jobs that run every minute. `TaskExpiredEvent` is dispatched when a task actually expires via the `expire()` method.
 
 ```php
 use Ffhs\FfhsTasks\Events\TaskStartedEvent;

@@ -5,6 +5,7 @@ namespace Ffhs\FfhsTasks\Models;
 use Ffhs\FfhsTasks\Database\Factories\TaskFactory;
 use Ffhs\FfhsTasks\Enums\TaskStatus;
 use Ffhs\FfhsTasks\Events\StatusChangedEvent;
+use Ffhs\FfhsTasks\Events\TaskExpiredEvent;
 use Ffhs\FfhsTasks\TaskType\TaskType;
 use Ffhs\FfhsUtils\Traits\HasType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -206,6 +207,8 @@ class Task extends Model
         }
 
         $this->update($data);
+
+        event(new TaskExpiredEvent($this));
 
         $taskType?->afterExpire($this);
     }
