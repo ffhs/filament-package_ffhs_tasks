@@ -98,6 +98,26 @@ $task = $taskType->createTask([
 
 A `ValidationException` is thrown when required fields are missing or invalid.
 
+## Events
+
+The package dispatches events for key moments in a task's lifecycle:
+
+| Event | When |
+|---|---|
+| `StatusChangedEvent` | Task status changes (e.g. InProgress to Completed) |
+| `TaskStartedEvent` | Task reaches its `starts_at` date |
+| `TaskReachedDeadlineEvent` | Task reaches its `deadline_at` date |
+
+`TaskStartedEvent` and `TaskReachedDeadlineEvent` are dispatched once per task via scheduled jobs that run every minute.
+
+```php
+use Ffhs\FfhsTasks\Events\TaskStartedEvent;
+
+Event::listen(TaskStartedEvent::class, function (TaskStartedEvent $event) {
+    $event->task; // The task that started
+});
+```
+
 ## Notifications
 
 The package ships with notifications for task lifecycle events. Enable them individually by adding their class names to the `enabled` array in your config:

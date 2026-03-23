@@ -3,6 +3,8 @@
 namespace Ffhs\FfhsTasks;
 
 use Ffhs\FfhsTasks\Events\StatusChangedEvent;
+use Ffhs\FfhsTasks\Jobs\DispatchTaskReachedDeadlineEventJob;
+use Ffhs\FfhsTasks\Jobs\DispatchTaskStartedEventJob;
 use Ffhs\FfhsTasks\Jobs\ExpireOverdueTasksJob;
 use Ffhs\FfhsTasks\Jobs\SendDeadlineApproachingNotificationsJob;
 use Ffhs\FfhsTasks\Jobs\SendDeadlineExceededNotificationsJob;
@@ -67,6 +69,8 @@ class FfhsTasksServiceProvider extends PackageServiceProvider
             $schedule = $this->app->make(Schedule::class);
 
             $schedule->job(new ExpireOverdueTasksJob())->everyMinute();
+            $schedule->job(new DispatchTaskStartedEventJob())->everyMinute();
+            $schedule->job(new DispatchTaskReachedDeadlineEventJob())->everyMinute();
             $schedule->job(new SendDeadlineApproachingNotificationsJob())->hourly();
             $schedule->job(new SendDeadlineExceededNotificationsJob())->hourly();
             $schedule->job(new SendStartDateReachedNotificationsJob())->hourly();
