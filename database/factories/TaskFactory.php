@@ -28,6 +28,7 @@ class TaskFactory extends Factory
             'data' => null,
 
             'can_be_cancelled' => $this->faker->boolean(),
+            'expires_after_deadline' => $this->faker->boolean(),
             'cancelled_at' => null,
             'completed_at' => null,
 

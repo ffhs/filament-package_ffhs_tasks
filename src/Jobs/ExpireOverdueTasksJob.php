@@ -17,13 +17,10 @@ class ExpireOverdueTasksJob implements ShouldQueue
         Task::query()
             ->where('status', TaskStatus::InProgress)
             ->where('deadline_at', '<', Carbon::now())
+            ->where('expires_after_deadline', true)
             ->chunkById(100, function ($tasks) {
                 foreach ($tasks as $task) {
-                    $taskType = $task->getType();
-
-                    if ($taskType->shouldExpireAfterDeadline()) {
-                        $task->expire();
-                    }
+                    $task->expire();
                 }
             });
     }

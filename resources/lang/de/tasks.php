@@ -21,5 +21,6 @@ return [
         'starts_at' => 'Startdatum',
         'deadline_at' => 'Frist',
         'can_be_cancelled' => 'Kann abgebrochen werden',
+        'expires_after_deadline' => 'Nach Frist ablaufen lassen',
     ],
 ];

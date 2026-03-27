@@ -21,5 +21,6 @@ return [
         'starts_at' => 'Starts',
         'deadline_at' => 'Deadline',
         'can_be_cancelled' => 'Can be cancelled',
+        'expires_after_deadline' => 'Expire after deadline',
     ],
 ];

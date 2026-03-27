@@ -96,7 +96,216 @@ $task = $taskType->createTask([
 ]);
 ```
 
-A `ValidationException` is thrown when required fields are missing or invalid.
+A `TaskCreateDataException` is thrown when required fields are missing or invalid.
+
+## Task Types
+
+Task types define the behavior, form fields, and lifecycle of tasks. Create a custom type by extending `TaskType`:
+
+```php
+use Ffhs\FfhsTasks\TaskType\TaskType;
+
+class ApprovalTaskType extends TaskType
+{
+    protected static string $identifier = 'approval';
+    protected static bool $canBeCreatedViaUi = true;
+    protected static bool $canBeCancelled = true;
+    protected static bool $hasStartDate = true;
+    protected static bool $hasDeadline = true;
+    protected static bool $canExpireAfterDeadline = true;
+}
+```
+
+Register it in your config:
+
+```php
+'types' => [
+    ApprovalTaskType::class,
+],
+```
+
+### Static Properties
+
+| Property | Default | Description                                                                     |
+|---|---|---------------------------------------------------------------------------------|
+| `$identifier` | *(required)* | Unique string identifying this type                                             |
+| `$canBeCreatedViaUi` | `true` | Whether the type appears in the Filament create form                            |
+| `$canBeCancelled` | `false` | Whether tasks of this type can be cancelled                                     |
+| `$canExpireAfterDeadline` | `false` | Whether tasks of this type can expire (see [Task Expiration](#task-expiration)) |
+| `$hasStartDate` | `false` | Enables the `starts_at` date picker                                             |
+| `$hasDeadline` | `false` | Enables the `deadline_at` date picker                                           |
+
+
+### Custom Form Fields
+
+Override these methods to add type-specific Filament form components:
+
+```php
+class ApprovalTaskType extends TaskType
+{
+    // Fields in the main content area (below description; stored in the `extra` column)
+    public function getMainComponents(): array|Closure
+    {
+        return [
+            TextInput::make('approval_notes')->required(),
+        ];
+    }
+
+    // Fields in the sidebar (below dates, privacy, tags; stored in the `extra` column)
+    public function getSidebarComponents(): array|Closure
+    {
+        return [
+            Select::make('priority')->options(['low' => 'Low', 'high' => 'High']),
+        ];
+    }
+
+    // Fields shown on the "Handle Task" page (stored in the `data` column)
+    public function getHandleComponents(): array|Closure
+    {
+        return [
+            Textarea::make('resolution')->label('Resolution'),
+        ];
+    }
+}
+```
+
+### Authorization
+
+Override these methods to customize per-type authorization:
+
+```php
+public function canViewTask(Task $task): bool;
+public function canEditTask(Task $task): bool;
+public function canHandleTask(Task $task): bool;
+```
+
+## Lifecycle Hooks
+
+Override lifecycle hooks in your `TaskType` to run custom logic during state transitions:
+
+```php
+class ApprovalTaskType extends TaskType
+{
+    // Mutate data before saving/completing/cancelling/expiring
+    public function mutateDataBeforeSave(Task $record, array $data): array
+    {
+        $data['extra']['reviewed_by'] = auth()->id();
+        return $data;
+    }
+
+    public function mutateDataBeforeComplete(Task $record, array $data): array { return $data; }
+    public function mutateDataBeforeCancel(Task $record, array $data): array { return $data; }
+    public function mutateDataBeforeExpire(Task $record, array $data): array { return $data; }
+
+    // Run logic after a transition completes
+    public function afterSave(Task $record): void { }
+    public function afterComplete(Task $record): void { }
+    public function afterCancel(Task $record): void { }
+    public function afterExpire(Task $record): void { }
+}
+```
+
+## Assignable Models
+
+By default only `User` can be assigned to tasks. To assign tasks to groups (teams, departments, etc.), implement `AssignableInterface`:
+
+```php
+use Ffhs\FfhsTasks\Contracts\AssignableInterface;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Foundation\Auth\User;
+
+class Department extends Model implements AssignableInterface
+{
+    public static function label(): string
+    {
+        return 'Department';
+    }
+
+    public static function searchQuery(?string $search = null): Builder
+    {
+        return static::query()->when($search, fn (Builder $query) => $query->where('name', 'like', "%{$search}%"));
+    }
+
+    public static function queryForUser(User $user): Builder
+    {
+        return static::query()->whereHas('members', fn (Builder $query) => $query->where('user_id', $user->id));
+    }
+
+    public function displayName(): string
+    {
+        return $this->name;
+    }
+
+    public function usersQuery(): Builder|Relation
+    {
+        return $this->members(); // Must return User models
+    }
+}
+```
+
+Register it in your config:
+
+```php
+'assignable_models' => [
+    User::class,
+    Department::class,
+],
+```
+
+## Watchables
+
+Tasks support **watchers** (collaborators) in addition to assignees. Watchers receive notifications but do not have edit permissions. Watchers can be added via the task form sidebar.
+
+## Tags
+
+The package includes a built-in tagging system. Tags can be managed through the Filament panel (`TaskTagResource`) and assigned to tasks via the form sidebar. Tags support soft deletes.
+
+## Privacy
+
+Tasks have two privacy levels:
+
+- **Public** — visible to all users
+- **Private** — visible only to the creator, assignees, and watchers
+
+Set via the `privacy` field when creating a task (defaults to `public`).
+
+## Task Expiration
+
+When a task type sets `$canExpireAfterDeadline = true`, the create form shows a toggle for `expires_after_deadline`. If enabled on a task, the `ExpireOverdueTasksJob` (runs every minute) automatically transitions overdue tasks to the `Expired` status.
+
+## Model Overrides
+
+Swap any internal model with your own subclass via the `models` config key:
+
+```php
+'models' => [
+    \Ffhs\FfhsTasks\Models\Task::class => \App\Models\CustomTask::class,
+],
+```
+
+This works for `Task`, `NotificationLog`, `Assignable`, and `Watchable`.
+
+## Events
+
+The package dispatches events for key moments in a task's lifecycle:
+
+| Event | When |
+|---|---|
+| `StatusChangedEvent` | Task status changes (e.g. InProgress to Completed) |
+| `TaskStartedEvent` | Task reaches its `starts_at` date |
+| `TaskReachedDeadlineEvent` | Task reaches its `deadline_at` date |
+| `TaskExpiredEvent` | Task expires after its deadline |
+
+`TaskStartedEvent` and `TaskReachedDeadlineEvent` are dispatched once per task via scheduled jobs that run every minute. `TaskExpiredEvent` is dispatched when a task actually expires via the `expire()` method.
+
+```php
+use Ffhs\FfhsTasks\Events\TaskStartedEvent;
+
+Event::listen(TaskStartedEvent::class, function (TaskStartedEvent $event) {
+    $event->task; // The task that started
+});
+```
 
 ## Notifications
 
@@ -113,13 +322,19 @@ use Ffhs\FfhsTasks\Notifications;
         Notifications\TaskStartDateReachedNotification::class,
         Notifications\TaskDeadlineApproachingNotification::class,
         Notifications\TaskDeadlineExceededNotification::class,
+        Notifications\WeeklyTasksNotification::class,
     ],
     'deadline_remind_before' => [CarbonInterval::days(7), CarbonInterval::days(3), CarbonInterval::days(1)],
     'deadline_remind_after' => [CarbonInterval::hours(0), CarbonInterval::days(3), CarbonInterval::days(7)],
+    'weekly_tasks' => [
+        'time' => '08:00', // Sent on Mondays at this time
+    ],
 ],
 ```
 
 Only notifications listed in the `enabled` array will be sent. An empty array disables all notifications.
+
+`WeeklyTasksNotification` sends a digest of all tasks with deadlines in the current week. It is sent every Monday at the configured time.
 
 Intervals use `CarbonInterval`, so you can mix units like `CarbonInterval::hours(12)` or `CarbonInterval::days(3)`. The smallest supported unit is 1 hour.
 

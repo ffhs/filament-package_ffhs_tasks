@@ -5,6 +5,7 @@ namespace Ffhs\FfhsTasks\Models;
 use Ffhs\FfhsTasks\Database\Factories\TaskFactory;
 use Ffhs\FfhsTasks\Enums\TaskStatus;
 use Ffhs\FfhsTasks\Events\StatusChangedEvent;
+use Ffhs\FfhsTasks\Events\TaskExpiredEvent;
 use Ffhs\FfhsTasks\TaskType\TaskType;
 use Ffhs\FfhsUtils\Traits\HasType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -41,6 +42,7 @@ class Task extends Model
      * @return array{
      *     status: 'Ffhs\\FfhsTasks\\Enums\\TaskStatus',
      *     can_be_cancelled: 'boolean',
+     *     expires_after_deadline: 'boolean',
      *     completed_at: 'datetime',
      *     cancelled_at: 'datetime',
      *     starts_at: 'datetime',
@@ -54,6 +56,7 @@ class Task extends Model
         return [
             'status' => TaskStatus::class,
             'can_be_cancelled' => 'boolean',
+            'expires_after_deadline' => 'boolean',
             'completed_at' => 'datetime',
             'cancelled_at' => 'datetime',
 
@@ -204,6 +207,8 @@ class Task extends Model
         }
 
         $this->update($data);
+
+        event(new TaskExpiredEvent($this));
 
         $taskType?->afterExpire($this);
     }

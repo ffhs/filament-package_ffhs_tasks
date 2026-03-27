@@ -32,7 +32,8 @@ final class AssignAction
             ->action(function (): void {
                 Notification::make()
                     ->success()
-                    ->title('Assigned group');
+                    ->title('Assigned group')
+                    ->send();
             });
     }
 }
