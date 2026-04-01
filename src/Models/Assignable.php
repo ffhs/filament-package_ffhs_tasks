@@ -9,6 +9,26 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 
 use function Ffhs\FfhsTasks\resolve_model_class;
 
+/**
+ * @property int $id
+ * @property int $task_id
+ * @property string $assignable_type
+ * @property int $assignable_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Model $assignable
+ * @property-read \Ffhs\FfhsTasks\Models\Task|null $task
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Assignable newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Assignable newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Assignable query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Assignable whereAssignableId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Assignable whereAssignableType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Assignable whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Assignable whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Assignable whereTaskId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Assignable whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class Assignable extends Pivot
 {
     protected $fillable = [

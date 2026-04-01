@@ -18,6 +18,63 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 use function Ffhs\FfhsTasks\resolve_model_class;
 
+/**
+ * @property int $id
+ * @property string $title
+ * @property string $description
+ * @property string $type
+ * @property TaskStatus $status
+ * @property string $privacy
+ * @property string|null $creator_type
+ * @property int|null $creator_id
+ * @property bool $can_be_cancelled
+ * @property \Illuminate\Support\Carbon|null $cancelled_at
+ * @property \Illuminate\Support\Carbon|null $completed_at
+ * @property \Illuminate\Support\Carbon|null $starts_at
+ * @property \Illuminate\Support\Carbon|null $deadline_at
+ * @property array<array-key, mixed>|null $extra
+ * @property array<array-key, mixed>|null $data
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ffhs\FfhsTasks\Models\Assignable> $assignables
+ * @property-read int|null $assignables_count
+ * @property-read \Illuminate\Database\Eloquent\Model|null $creator
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ffhs\FfhsTasks\Models\NotificationLog> $notificationLogs
+ * @property-read int|null $notification_logs_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ffhs\FfhsTasks\Models\TaskTag> $tags
+ * @property-read int|null $tags_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $users
+ * @property-read int|null $users_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Ffhs\FfhsTasks\Models\Watchable> $watchables
+ * @property-read int|null $watchables_count
+ * @method static \Ffhs\FfhsTasks\Database\Factories\TaskFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Task newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Task newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Task onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Task query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Task whereCanBeCancelled($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Task whereCancelledAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Task whereCompletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Task whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Task whereCreatorId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Task whereCreatorType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Task whereData($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Task whereDeadlineAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Task whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Task whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Task whereExtra($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Task whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Task wherePrivacy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Task whereStartsAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Task whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Task whereTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Task whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Task whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Task withTrashed(bool $withTrashed = true)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Task withoutTrashed()
+ * @mixin \Eloquent
+ */
 class Task extends Model
 {
     /** @use HasFactory<TaskFactory> */
@@ -38,43 +95,12 @@ class Task extends Model
         'deleted_at',
     ];
 
-    /**
-     * @return array{
-     *     status: 'Ffhs\\FfhsTasks\\Enums\\TaskStatus',
-     *     can_be_cancelled: 'boolean',
-     *     expires_after_deadline: 'boolean',
-     *     completed_at: 'datetime',
-     *     cancelled_at: 'datetime',
-     *     starts_at: 'datetime',
-     *     deadline_at: 'datetime',
-     *     extra: 'array',
-     *     data: 'array'
-     * }
-     */
-    protected function casts(): array
-    {
-        return [
-            'status' => TaskStatus::class,
-            'can_be_cancelled' => 'boolean',
-            'expires_after_deadline' => 'boolean',
-            'completed_at' => 'datetime',
-            'cancelled_at' => 'datetime',
-
-            'starts_at' => 'datetime',
-            'deadline_at' => 'datetime',
-
-            'extra' => 'array',
-            'data' => 'array',
-        ];
-    }
-
-
     protected static function booted(): void
     {
         static::creating(function (Task $task) {
             $task->status ??= TaskStatus::InProgress;
 
-            if (! $task->creator_id) {
+            if (!$task->creator_id) {
                 $task->creator()->associate(auth()->user());
             }
         });
@@ -86,15 +112,17 @@ class Task extends Model
         });
     }
 
+    /**
+     * @return MorphTo<Model, $this>
+     */
+    public function creator(): MorphTo
+    {
+        return $this->morphTo('creator');
+    }
+
     public function getTable(): string
     {
         return config('ffhs-tasks.tables.tasks', 'ffhs_tasks');
-    }
-
-    public function getType(): ?TaskType
-    {
-        /**@phpstan-ignore-next-line */
-        return $this->getTaskType();
     }
 
     /** Relations */
@@ -140,14 +168,6 @@ class Task extends Model
     }
 
     /**
-     * @return MorphTo<Model, $this>
-     */
-    public function creator(): MorphTo
-    {
-        return $this->morphTo('creator');
-    }
-
-    /**
      * @return BelongsToMany<TaskTag, $this>
      */
     public function tags(): BelongsToMany
@@ -166,7 +186,7 @@ class Task extends Model
 
     public function canBeEdited(): bool
     {
-        return ! $this->isArchived();
+        return !$this->isArchived();
     }
 
     public function isArchived(): bool
@@ -191,6 +211,12 @@ class Task extends Model
         $this->update($data);
 
         $taskType?->afterCancel($this);
+    }
+
+    public function getType(): ?TaskType
+    {
+        /**@phpstan-ignore-next-line */
+        return $this->getTaskType();
     }
 
     public function expire(array $data = []): void
@@ -230,5 +256,35 @@ class Task extends Model
         $this->update($data);
 
         $taskType?->afterComplete($this);
+    }
+
+    /**
+     * @return array{
+     *     status: 'Ffhs\\FfhsTasks\\Enums\\TaskStatus',
+     *     can_be_cancelled: 'boolean',
+     *     expires_after_deadline: 'boolean',
+     *     completed_at: 'datetime',
+     *     cancelled_at: 'datetime',
+     *     starts_at: 'datetime',
+     *     deadline_at: 'datetime',
+     *     extra: 'array',
+     *     data: 'array'
+     * }
+     */
+    protected function casts(): array
+    {
+        return [
+            'status' => TaskStatus::class,
+            'can_be_cancelled' => 'boolean',
+            'expires_after_deadline' => 'boolean',
+            'completed_at' => 'datetime',
+            'cancelled_at' => 'datetime',
+
+            'starts_at' => 'datetime',
+            'deadline_at' => 'datetime',
+
+            'extra' => 'array',
+            'data' => 'array',
+        ];
     }
 }

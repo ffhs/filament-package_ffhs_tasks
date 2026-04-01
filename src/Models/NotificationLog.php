@@ -7,6 +7,25 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 use function Ffhs\FfhsTasks\resolve_model_class;
 
+/**
+ * @property int $id
+ * @property int $task_id
+ * @property string $notification_type
+ * @property string $notification_key
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Ffhs\FfhsTasks\Models\Task|null $task
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationLog newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationLog newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationLog query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationLog whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationLog whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationLog whereNotificationKey($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationLog whereNotificationType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationLog whereTaskId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NotificationLog whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class NotificationLog extends Model
 {
     protected $fillable = [
