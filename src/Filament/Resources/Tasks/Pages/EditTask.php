@@ -3,7 +3,7 @@
 namespace Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages;
 
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Actions\HandleAction;
-use Ffhs\FfhsTasks\Filament\Resources\Tasks\Schemas\TaskForm;
+use Ffhs\FfhsTasks\Filament\Resources\Tasks\Schemas\TaskGroupForm;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\TaskResource;
 use Ffhs\FfhsTasks\Models\Task;
 use Filament\Resources\Pages\EditRecord;
@@ -41,7 +41,14 @@ class EditTask extends EditRecord
 
     public function form(Schema $schema): Schema
     {
-        return TaskForm::configure($schema, $this);
+        return TaskGroupForm::configure($schema, $this);
+    }
+
+    public function afterSave(): void
+    {
+        /** @var Task $task */
+        $task = $this->getRecord();
+        $task->getType()?->afterSave($task);
     }
 
     protected function mutateFormDataBeforeSave(array $data): array
@@ -55,13 +62,6 @@ class EditTask extends EditRecord
         }
 
         return $data;
-    }
-
-    public function afterSave(): void
-    {
-        /** @var Task $task */
-        $task = $this->getRecord();
-        $task->getType()?->afterSave($task);
     }
 
     protected function getHeaderActions(): array

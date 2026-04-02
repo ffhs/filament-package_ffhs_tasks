@@ -6,7 +6,7 @@ use Ffhs\FfhsTasks\Filament\Resources\Tasks\Actions\CancelTaskAction;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Actions\CompleteTaskAction;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Actions\SaveWithoutValidationAction;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Actions\ViewOrEditAction;
-use Ffhs\FfhsTasks\Filament\Resources\Tasks\Schemas\TaskForm;
+use Ffhs\FfhsTasks\Filament\Resources\Tasks\Schemas\TaskGroupForm;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\TaskResource;
 use Ffhs\FfhsTasks\Models\Task;
 use Filament\Actions\ActionGroup;
@@ -59,14 +59,14 @@ class HandleTask extends EditRecord
             $this->redirect($this::$resource::getUrl());
         }
 
-        if (! $record->getType()->canHandleTask($record)) {
+        if (!$record->getType()->canHandleTask($record)) {
             $this->redirect($this::$resource::getUrl());
         }
     }
 
     public function form(Schema $schema): Schema
     {
-        return TaskForm::configure($schema, $this);
+        return TaskGroupForm::configure($schema, $this);
     }
 
     /**
@@ -75,7 +75,7 @@ class HandleTask extends EditRecord
     #[Override]
     public function getFormContentComponent(): Component
     {
-        if (! $this->hasFormWrapper()) {
+        if (!$this->hasFormWrapper()) {
             return Group::make([
                 EmbeddedSchema::make('form'),
                 $this->getFormActionsContentComponent(),
@@ -89,6 +89,13 @@ class HandleTask extends EditRecord
             ->footer([
                 $this->getFormActionsContentComponent(),
             ]);
+    }
+
+    public function afterSave(): void
+    {
+        /** @var Task $task */
+        $task = $this->getRecord();
+        $task->getType()?->afterSave($task);
     }
 
     protected function getHeaderActions(): array
@@ -123,12 +130,5 @@ class HandleTask extends EditRecord
         }
 
         return $data;
-    }
-
-    public function afterSave(): void
-    {
-        /** @var Task $task */
-        $task = $this->getRecord();
-        $task->getType()?->afterSave($task);
     }
 }

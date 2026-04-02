@@ -2,6 +2,7 @@
 
 namespace Ffhs\FfhsTasks;
 
+use Ffhs\FfhsTasks\Filament\Resources\TaskGroups\TaskGroupResource;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\TaskResource;
 use Ffhs\FfhsTasks\Filament\Resources\TaskTags\TaskTagResource;
 use Filament\Contracts\Plugin;
@@ -33,11 +34,11 @@ class FfhsTasksPlugin implements Plugin
             ->resources([
                 TaskResource::class,
                 TaskTagResource::class,
+                TaskGroupResource::class,
             ]);
     }
 
     public function boot(Panel $panel): void
     {
-
     }
 }
