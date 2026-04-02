@@ -4,7 +4,6 @@ namespace Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages;
 
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Actions\HandleAction;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Schemas\TaskForm;
-use Ffhs\FfhsTasks\Filament\Resources\Tasks\Schemas\TaskGroupForm;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\TaskResource;
 use Ffhs\FfhsTasks\Models\Task;
 use Filament\Resources\Pages\EditRecord;
