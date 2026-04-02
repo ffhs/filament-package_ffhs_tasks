@@ -6,7 +6,7 @@ use Ffhs\FfhsTasks\Filament\Resources\Tasks\Actions\CancelTaskAction;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Actions\CompleteTaskAction;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Actions\SaveWithoutValidationAction;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Actions\ViewOrEditAction;
-use Ffhs\FfhsTasks\Filament\Resources\Tasks\Schemas\TaskGroupForm;
+use Ffhs\FfhsTasks\Filament\Resources\Tasks\Schemas\TaskForm;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\TaskResource;
 use Ffhs\FfhsTasks\Models\Task;
 use Filament\Actions\ActionGroup;
@@ -66,7 +66,7 @@ class HandleTask extends EditRecord
 
     public function form(Schema $schema): Schema
     {
-        return TaskGroupForm::configure($schema, $this);
+        return TaskForm::configure($schema, $this);
     }
 
     /**
