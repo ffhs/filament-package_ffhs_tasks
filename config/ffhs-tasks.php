@@ -66,12 +66,15 @@ return [
     */
 
     'tables' => [
+        'users' => 'users',
         'tasks' => 'ffhs_tasks',
         'task_assignables' => 'ffhs_task_assignables',
         'task_watchables' => 'ffhs_task_watchables',
         'task_notification_log' => 'ffhs_task_notification_log',
         'task_tag' => 'ffhs_task_tag',
         'task_tags' => 'ffhs_task_tags',
+        'task_groups' => 'ffhs_task_groups',
+        'task_group_user' => 'ffhs_task_group_user',
     ],
 
     /*
@@ -117,6 +120,7 @@ return [
 
     'assignable_models' => [
         User::class,
+        \Ffhs\FfhsTasks\Models\TaskGroup::class,
     ],
 
     /*
