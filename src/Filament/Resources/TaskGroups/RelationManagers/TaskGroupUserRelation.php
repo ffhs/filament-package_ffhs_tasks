@@ -35,7 +35,7 @@ class TaskGroupUserRelation extends RelationManager
             ->filters([])
             ->headerActions([
                 AttachAction::make()
-                    ->schema(fn() => [
+                    ->schema(fn () => [
                         Select::make('userIds')
                             ->hiddenLabel()
                             ->searchable()

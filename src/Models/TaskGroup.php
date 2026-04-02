@@ -28,7 +28,7 @@ class TaskGroup extends Model implements AssignableInterface
 
     public static function queryForUser(\Illuminate\Foundation\Auth\User $user): Builder
     {
-        return static::query()->whereHas('users', fn(Builder $query) => $query->where('users.id', $user->getKey()));
+        return static::query()->whereHas('users', fn (Builder $query) => $query->where('users.id', $user->getKey()));
     }
 
     public function getTable(): string
