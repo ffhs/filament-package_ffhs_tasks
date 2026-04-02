@@ -2,6 +2,7 @@
 
 namespace Ffhs\FfhsTasks\Filament\Resources\Tasks\Pages;
 
+use Ffhs\FfhsTasks\Filament\Resources\Tasks\Schemas\TaskForm;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\Schemas\TaskGroupForm;
 use Ffhs\FfhsTasks\Filament\Resources\Tasks\TaskResource;
 use Filament\Resources\Pages\CreateRecord;
@@ -17,7 +18,7 @@ class CreateTask extends CreateRecord
 
     public function form(Schema $schema): Schema
     {
-        return TaskGroupForm::configure($schema, $this);
+        return TaskForm::configure($schema, $this);
     }
 
     protected function mutateFormDataBeforeCreate(array $data): array
