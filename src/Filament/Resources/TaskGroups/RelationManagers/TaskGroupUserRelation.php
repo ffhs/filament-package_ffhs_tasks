@@ -21,7 +21,7 @@ class TaskGroupUserRelation extends RelationManager
 
     public static function getTitle(Model $ownerRecord, string $pageClass): string
     {
-        return __('ffhs-tasks::task-groups.task_groups.attributes.user');
+        return __('ffhs-tasks::task_groups.attributes.user');
     }
 
 
